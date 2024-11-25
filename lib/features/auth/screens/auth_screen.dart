@@ -74,7 +74,13 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                   });
                 },
-                children: const [Text("Create an Account"), Text("Login")],
+                children: const [Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text("🙌 Sign Up", style: TextStyle(fontWeight: FontWeight.bold),),
+                ), Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text("👋 Login", style: TextStyle(fontWeight: FontWeight.bold)),
+                )],
               ),
               const SizedBox(
                 height: 25,
@@ -101,6 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextfield(
                         controller: _passwordController,
                         hintText: "Your Password",
+                        obscured: true,
                       ),
                       const SizedBox(
                         height: 18,

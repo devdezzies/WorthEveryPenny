@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,
           fontFamily: 'Satoshi',
           colorScheme:
-              const ColorScheme.light(primary: GlobalVariables.secondaryColor),
+              const ColorScheme.dark(primary: GlobalVariables.secondaryColor),
           useMaterial3: true,
           appBarTheme: const AppBarTheme(
               color: Colors.green,
