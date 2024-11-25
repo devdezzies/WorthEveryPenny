@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,
+          fontFamily: 'Satoshi',
           colorScheme:
               const ColorScheme.light(primary: GlobalVariables.secondaryColor),
           useMaterial3: true,
