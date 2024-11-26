@@ -45,43 +45,69 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Know Your Money in One Look",
-                style: TextStyle(
-                    color: GlobalVariables.secondaryColor,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
+              RichText(
+                strutStyle: const StrutStyle(
+                  fontFamily: 'Satoshi'
+                ),
+                text: const TextSpan(
+                  text: 'Know Your ', 
+                  style: TextStyle(
+                    fontSize: 30, 
+                    fontFamily: 'Satoshi'
+                  ),
+                  children: [
+                    TextSpan(text: 'Money ', style: TextStyle(color: GlobalVariables.secondaryColor, fontSize: 30, fontFamily: 'Satoshi', fontWeight: FontWeight.bold)), 
+                    TextSpan(text: 'in ', style: TextStyle(fontWeight: FontWeight.w300)), 
+                  ]
+                ),
               ),
+              const Text("One Look", style: TextStyle(color: GlobalVariables.secondaryColor, fontSize: 30, fontWeight: FontWeight.bold)),
               const SizedBox(
-                height: 18,
+                height: 30,
               ),
-              ToggleButtons(
-                isSelected: isSelected,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                onPressed: (int index) {
-                  setState(() {
-                    if (authState[index] != _auth) {
-                      for (int buttonIndex = 0;
-                          buttonIndex < isSelected.length;
-                          buttonIndex++) {
-                        if (buttonIndex == index) {
-                          isSelected[buttonIndex] = true;
-                        } else {
-                          isSelected[buttonIndex] = false;
-                        }
-                      }
-                      _auth = _auth == Auth.signin ? Auth.signup : Auth.signin;
-                    }
-                  });
-                },
-                children: const [Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text("🙌 Sign Up", style: TextStyle(fontWeight: FontWeight.bold),),
-                ), Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text("👋 Login", style: TextStyle(fontWeight: FontWeight.bold)),
-                )],
-              ),
+              LayoutBuilder(
+                  builder: (context, constraint) => ToggleButtons(
+                        constraints: BoxConstraints.expand(
+                            width: (constraint.maxWidth - 18) / 2),
+                        borderWidth: 1.5,
+                        borderColor: Colors.white,
+                        selectedBorderColor: Colors.white,
+                        isSelected: isSelected,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(25)),
+                        onPressed: (int index) {
+                          setState(() {
+                            if (authState[index] != _auth) {
+                              for (int buttonIndex = 0;
+                                  buttonIndex < isSelected.length;
+                                  buttonIndex++) {
+                                if (buttonIndex == index) {
+                                  isSelected[buttonIndex] = true;
+                                } else {
+                                  isSelected[buttonIndex] = false;
+                                }
+                              }
+                              _auth = _auth == Auth.signin
+                                  ? Auth.signup
+                                  : Auth.signin;
+                            }
+                          });
+                        },
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text("Login",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          )
+                        ],
+                      )),
               const SizedBox(
                 height: 25,
               ),
@@ -110,7 +136,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         obscured: true,
                       ),
                       const SizedBox(
-                        height: 18,
+                        height: 40,
                       ),
                       CustomButton(textTitle: "Sign Up", onTap: () {}),
                     ],
@@ -131,9 +157,10 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextfield(
                         controller: _passwordController,
                         hintText: "Your Password",
+                        obscured: true,
                       ),
                       const SizedBox(
-                        height: 18,
+                        height: 40,
                       ),
                       CustomButton(textTitle: "Login", onTap: () {}),
                     ],
