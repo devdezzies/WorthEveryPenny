@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:swappp/constants/global_variables.dart';
 
-class CustomTextfield extends StatefulWidget {
+class CustomPasswordTextfield extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
-  const CustomTextfield(
-      {super.key, required this.controller, required this.hintText});
+  const CustomPasswordTextfield({super.key, required this.controller, required this.hintText});
 
   @override
-  State<CustomTextfield> createState() => _CustomTextfieldState();
+  State<CustomPasswordTextfield> createState() => _CustomPasswordTextfieldState();
 }
 
-class _CustomTextfieldState extends State<CustomTextfield> {
+class _CustomPasswordTextfieldState extends State<CustomPasswordTextfield> {
+  bool isObscuredText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        obscureText: isObscuredText,
         controller: widget.controller,
         decoration: InputDecoration(
+          suffixIcon: GestureDetector(
+            child: isObscuredText ? const Icon(Icons.visibility, color: GlobalVariables.secondaryColor,) : const Icon(Icons.visibility_off),
+            onTap: () { 
+              setState(() {
+                isObscuredText = !isObscuredText;
+              });
+            },
+          ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 20),
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
