@@ -35,6 +35,11 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                 BorderSide(color: Colors.white, width: 1.5),
           ),
         ),
-        validator: (val) {});
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return 'email can\'t be empty!'; 
+          }
+          return null;
+        });
   }
 }

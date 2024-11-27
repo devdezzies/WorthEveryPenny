@@ -45,6 +45,11 @@ class _CustomPasswordTextfieldState extends State<CustomPasswordTextfield> {
                 BorderSide(color: Colors.white, width: 1.5),
           ),
         ),
-        validator: (val) {});
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return 'password can\'t be empty';
+          }
+          return null;
+        });
   }
 }

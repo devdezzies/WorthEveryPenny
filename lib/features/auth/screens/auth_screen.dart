@@ -3,6 +3,7 @@ import 'package:swappp/common/widgets/custom_button.dart';
 import 'package:swappp/common/widgets/custom_password_textfield.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/auth/services/auth_service.dart';
 
 enum Auth {
   signin,
@@ -25,6 +26,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _nameController = TextEditingController();
   final List<bool> isSelected = <bool>[true, false];
   final List<Auth> authState = <Auth>[Auth.signup, Auth.signin];
+  final AuthService authService = AuthService();
 
   Auth _auth = Auth.signup;
 
@@ -34,6 +36,10 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(context: context, email: _emailController.text, password: _passwordController.text, name: _nameController.text);
   }
 
   @override
@@ -147,7 +153,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          CustomButton(textTitle: "Sign Up", onTap: () {}),
+                          CustomButton(textTitle: "Sign Up", onTap: () {
+                            if (_signUpFormKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          }),
                         ],
                       ),
                     ),
