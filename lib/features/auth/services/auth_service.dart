@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
@@ -33,6 +36,36 @@ class AuthService {
       // ignore: use_build_context_synchronously
       httpErrorHandle(response: res, context: context, onSuccess: () {
         showSnackBar(context, 'Hello 👋 ${user.name}');
+      });
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, '⚠️ $e.toString()');
+    }
+  }
+
+  // SIGN IN USER 
+  void signInUser(
+      {required BuildContext context,
+      required String email,
+      required String password}) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/signup'),
+        body: jsonEncode({
+          'email': email, 
+          'password': password
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      // ignore: use_build_context_synchronously
+      httpErrorHandle(response: res, context: context, onSuccess: () async {
+        // save the token on user's device
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+        
       });
     } catch (e) {
       // ignore: use_build_context_synchronously
