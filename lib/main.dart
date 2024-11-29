@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
+import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => UserProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

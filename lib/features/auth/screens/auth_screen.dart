@@ -183,7 +183,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          CustomButton(textTitle: "Login", onTap: () {}),
+                          CustomButton(textTitle: "Login", onTap: () {
+                            if (_signInFormKey.currentState!.validate()) {
+                              signInUser();
+                            }
+                          }),
                         ],
                       ),
                     )
