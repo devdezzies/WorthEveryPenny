@@ -20,7 +20,10 @@ class _CustomPasswordTextfieldState extends State<CustomPasswordTextfield> {
         controller: widget.controller,
         decoration: InputDecoration(
           suffixIcon: GestureDetector(
-            child: isObscuredText ? const Icon(Icons.visibility, color: GlobalVariables.secondaryColor,) : const Icon(Icons.visibility_off),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: isObscuredText ? const Icon(Icons.visibility, color: GlobalVariables.secondaryColor,) : const Icon(Icons.visibility_off),
+            ),
             onTap: () { 
               setState(() {
                 isObscuredText = !isObscuredText;
