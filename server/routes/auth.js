@@ -13,13 +13,19 @@ authRouter.post('/api/signup', async (req, res) => {
             return res.status(400).json({msg: '⚠️ User with the same email already exists!'})
         }
 
+        if (password.length < 6) {
+            return res.status(400).json({msg: 'Please enter at least 6 length password'})
+        }
+
         const hashedPassword = await bcryptjs.hash(password, 8)
     
         let user = new User({
             name, 
             email,
+            // RESOLVED: hashedPassword made the validator for password doesn't work, because it's always > 6 length
             password : hashedPassword,
         })
+
         user = await user.save()
         res.json(user)
     } catch (e) {
