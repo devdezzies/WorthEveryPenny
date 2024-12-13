@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swappp/features/auth/home/screens/home_screen.dart';
+import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {

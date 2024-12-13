@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
-import 'package:swappp/features/auth/home/screens/home_screen.dart';
+import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:swappp/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:swappp/providers/user_provider.dart';
