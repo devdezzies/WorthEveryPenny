@@ -1,3 +1,5 @@
+require('dotenv').config({path: '../.env'});
+
 // IMPORTS FROM PACKAGES
 const express = require('express');
 const mongoose = require('mongoose');
@@ -6,9 +8,9 @@ const mongoose = require('mongoose');
 const authRouter = require('./routes/auth'); 
 
 // INIT
-const PORT = 3000;
+const PORT = process.env.PORT;
 const app = express();
-const DB = "mongodb+srv://boltholt17:Npriwnl39zXZNaX3@cluster0.0x0x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const DB = process.env.DB;
 
 // MIDDLEWARE 
 app.use(express.json())
