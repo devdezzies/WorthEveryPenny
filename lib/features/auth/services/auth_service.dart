@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
-import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:swappp/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:swappp/providers/user_provider.dart';
@@ -37,12 +37,14 @@ class AuthService {
       );
 
       // ignore: use_build_context_synchronously
-      httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: () {
-            showSnackBar(context, 'Hello 👋 ${user.name}');
-          });
+      if (context.mounted) {
+        httpErrorHandle(
+            response: res,
+            context: context,
+            onSuccess: () {
+              showSnackBar(context, 'Hello 👋 ${user.name}');
+            });
+      }
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackBar(context, '⚠️ $e.toString()');
@@ -71,11 +73,16 @@ class AuthService {
           onSuccess: () async {
             // save the token on user's device
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            Provider.of<UserProvider>(context, listen: false).setUser(res.body);
+            if (context.mounted) {
+              Provider.of<UserProvider>(context, listen: false)
+                  .setUser(res.body);
+            }
             await prefs.setString(
                 'x-auth-token', jsonDecode(res.body)['token']);
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeScreen.routeName, (route) => false);
+            if (context.mounted) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, BottomBar.routeName, (route) => false);
+            }
           });
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -107,12 +114,16 @@ class AuthService {
               'Content-Type': 'application/json; charset=UTF-8',
               'x-auth-token': token
             });
-        
-        Provider.of<UserProvider>(context, listen: false).setUser(userResponse.body);
 
+        if (context.mounted) {
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(userResponse.body);
+        }
       }
     } catch (e) {
-      showSnackBar(context, '⚠️ $e.toString()');
+      if (context.mounted) {
+        showSnackBar(context, '⚠️ $e.toString()');
+      }
     }
   }
 }

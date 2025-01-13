@@ -31,7 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signup;
 
   @override
-  void dispose() {
+  void dispose() { // to avoid memory leaks
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
