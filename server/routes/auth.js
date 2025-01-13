@@ -1,8 +1,10 @@
-const express = require('express')
-const User = require("../models/user")
-const bcryptjs = require('bcryptjs')
+import express from 'express';
+import User from '../models/user.js';
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import auth from '../middlewares/auth.js';
+
 const authRouter = express.Router();
-const jwt = require('jsonwebtoken')
 
 authRouter.post('/api/signup', async (req, res) => {
     try {
@@ -56,4 +58,26 @@ authRouter.post('/api/signin', async (req, res) => {
     }
 })
 
-module.exports = authRouter;
+authRouter.post('/tokenIsValid', async (req, res) => {
+    try {
+        const token = req.header('x-auth-token'); 
+        if (!token) return res.json(false);
+        const isVerified = jwt.verify(token, 'passwordKey');
+        if (!isVerified) return res.json(false);
+
+        const user = await User.findById(isVerified.id);
+        if (!user) return res.json(false);
+        // if all valid
+        res.json(true);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+})
+
+// get user data 
+authRouter.get('/', auth, async (req, res) => {
+    const user = await User.findById(req.user); 
+    res.json({...user._doc, token: req.token}); 
+})
+
+export default authRouter;
