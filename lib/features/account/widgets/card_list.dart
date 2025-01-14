@@ -30,6 +30,7 @@ class CardList extends StatelessWidget {
         },
         loop: true,
         itemHeight: 200,
+        itemWidth: MediaQuery.of(context).size.width,
         itemCount: 3,
         control: const SwiperControl(
           color: Colors.transparent
