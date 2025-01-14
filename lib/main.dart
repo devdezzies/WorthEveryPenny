@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,
+          splashColor: Colors.transparent,
           fontFamily: 'Satoshi',
           colorScheme:
               const ColorScheme.dark(primary: GlobalVariables.secondaryColor),

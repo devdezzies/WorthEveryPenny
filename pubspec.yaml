@@ -40,6 +40,9 @@ dependencies:
   shared_preferences: ^2.3.3
   flutter_dotenv: ^5.2.1
   badges: ^3.1.2
+  cached_network_image: ^3.4.1
+  flutter_svg: ^2.0.17
+  u_credit_card: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -64,9 +67,15 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/icons/bill-vector.svg
+    - assets/icons/home-vector.svg
+    - assets/icons/people-vector.svg
+    - assets/icons/profile.svg
+    - assets/icons/profile-active.svg
+    - assets/icons/home-active.svg
+    - assets/icons/bill-active.svg
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

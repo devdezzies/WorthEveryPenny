@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/account/screens/account_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
@@ -14,12 +15,20 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   int _page = 0;
   double bottomBarWidth = 28;
-  double bottomBarBorderWidth = 5;
+  double bottomBarBorderWidth = 3;
 
   List<Widget> pages = [
     const HomeScreen(),
+    const Center(
+      child: Text("Home"),
+    ),
+    const Center(
+      child: Text("Home"),
+    ),
+    const Center(
+      child: Text("Home"),
+    ),
     const AccountScreen(),
-    const Center(child: Text("Home"),)
   ];
 
   // callback when icon tapped
@@ -32,68 +41,70 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[_page],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _page,
-        selectedItemColor: GlobalVariables.selectedNavBarColor,
-        unselectedItemColor: GlobalVariables.unselectedNavBarColor,
-        backgroundColor: GlobalVariables.backgroundColor,
-        onTap: updatePage,
-        iconSize: 28,
-        items: [
-          // HOME
-          BottomNavigationBarItem(
-              icon: Container(
-                width: bottomBarWidth,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                        color: _page == 0
-                            ? GlobalVariables.selectedNavBarColor
-                            : GlobalVariables.backgroundColor,
-                        width: bottomBarBorderWidth),
-                  ),
+        body: pages[_page],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              _page = 2;
+            });
+          },
+          shape: const CircleBorder(),
+
+          child: const Icon(
+            Icons.add,
+            size: 45,
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _page,
+          selectedLabelStyle:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          selectedItemColor: GlobalVariables.secondaryColor,
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          backgroundColor: GlobalVariables.backgroundColor,
+          selectedIconTheme: const IconThemeData(
+              color: GlobalVariables.secondaryColor, size: 30),
+          unselectedIconTheme:
+              const IconThemeData(color: Colors.white, size: 30),
+          onTap: updatePage,
+          enableFeedback: false,
+          items: [
+            // HOME
+            BottomNavigationBarItem(
+                icon: SizedBox(
+                  width: bottomBarWidth,
+                  child: SvgPicture.asset('assets/icons/home-vector.svg', width: 30,),
                 ),
-                child: const Icon(Icons.home_outlined),
-              ),
-              label: "Home"),
-          // MONEY
-          BottomNavigationBarItem(
-              icon: Container(
-                width: bottomBarWidth,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                        color: _page == 1
-                            ? GlobalVariables.selectedNavBarColor
-                            : GlobalVariables.backgroundColor,
-                        width: bottomBarBorderWidth),
-                  ),
+                activeIcon: SvgPicture.asset("assets/icons/home-active.svg", width: 30,),
+                label: "Home"),
+            // MONEY
+            BottomNavigationBarItem(
+                icon: SizedBox(
+                    width: bottomBarWidth,
+                    
+                    child: SvgPicture.asset('assets/icons/bill-vector.svg', width: 25,)),
+                activeIcon: SvgPicture.asset("assets/icons/bill-active.svg", width: 25,),
+                label: "Split Bills"),
+            // FAKE ITEM FOR GAP
+            const BottomNavigationBarItem(icon: SizedBox.shrink(), label: ""),
+            // PROFILE
+            BottomNavigationBarItem(
+                icon: SizedBox(
+                  width: bottomBarWidth,
+                  child: const Icon(Icons.people),
                 ),
-                child: const Badge(
-                  label: Text("1"),
-                  child: Icon(Icons.money)
-                )
-              ),
-              label: "Add"),
-          // PROFILE
-          BottomNavigationBarItem(
-              icon: Container(
-                width: bottomBarWidth,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                        color: _page == 2
-                            ? GlobalVariables.selectedNavBarColor
-                            : GlobalVariables.backgroundColor,
-                        width: bottomBarBorderWidth),
-                  ),
+                activeIcon: const Icon(Icons.people),
+                label: "Friends"),
+            BottomNavigationBarItem(
+                icon: SizedBox(
+                  width: bottomBarWidth,
+                  child: SvgPicture.asset("assets/icons/profile.svg", width: 30),
                 ),
-                child: const Icon(Icons.person),
-              ),
-              label: "Profile"),
-        ],
-      ),
-    );
+                activeIcon: SvgPicture.asset("assets/icons/profile-active.svg", width: 30),
+                label: "Profile"),
+          ],
+        ));
   }
 }
