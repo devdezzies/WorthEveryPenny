@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/account/widgets/card_list.dart';
 import 'package:swappp/features/account/widgets/user_data_form.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:u_credit_card/u_credit_card.dart';
@@ -136,17 +137,7 @@ class AccountScreen extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const CreditCardUi(
-                cardHolderFullName: "Abdullah",
-                cardNumber: "2462623683746235",
-                validThru: "10/24",
-                topLeftColor: GlobalVariables.darkerGreyBackgroundColor,
-                cardType: CardType.debit,
-                currencySymbol: r'Rp',
-                bottomRightColor: GlobalVariables.darkerGreyBackgroundColor,
-                enableFlipping: true,
-                cvvNumber: "251",
-              ), 
+              const CardList(), 
               const SizedBox(
                 height: 30,
               ),
