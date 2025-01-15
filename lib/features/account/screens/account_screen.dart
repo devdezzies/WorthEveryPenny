@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/account/widgets/card_list.dart';
 import 'package:swappp/features/account/widgets/user_data_form.dart';
+import 'package:swappp/features/settings/screens/setting_screen.dart';
 import 'package:swappp/providers/user_provider.dart';
-import 'package:u_credit_card/u_credit_card.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -25,18 +25,23 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16.0),
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: GlobalVariables.secondaryColor,
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 1.0)),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.settings,
-                  color: GlobalVariables.backgroundColor,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, SettingScreen.routeName);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 16.0),
+              child: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: GlobalVariables.secondaryColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 1.0)),
+                  padding: const EdgeInsets.all(4),
+                  child: const Icon(
+                    Icons.settings,
+                    color: GlobalVariables.backgroundColor,
+                  ),
                 ),
               ),
             ),
@@ -139,7 +144,7 @@ class AccountScreen extends StatelessWidget {
               ),
               const CardList(), 
               const SizedBox(
-                height: 30,
+                height: 10,
               ),
               GestureDetector(
                 child: Container(

@@ -18,10 +18,9 @@ class CardList extends StatelessWidget {
             child: const CreditCardUi(
               cardHolderFullName: "Abdullah",
               cardNumber: "2462623683746235",
-              validThru: "10/24",
+              validThru: "10/27",
               topLeftColor: GlobalVariables.darkerGreyBackgroundColor,
               cardType: CardType.debit,
-              currencySymbol: r'Rp',
               bottomRightColor: GlobalVariables.darkerGreyBackgroundColor,
               enableFlipping: true,
               cvvNumber: "251",
