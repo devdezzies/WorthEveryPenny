@@ -30,7 +30,7 @@ class _SettingScreenState extends State<SettingScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              SettingMenu(headIcon: Icons.attach_money, menuTitle: "Currency", onTap: () {}, previewTitle: "IDR",),
+              SettingMenu(headIcon: Icons.attach_money, menuTitle: "Currency", onTap: () {}, previewTitle: "Rupiah",),
               const SizedBox(height: 25,),
               SettingMenu(headIcon: Icons.language, menuTitle: "Language", onTap: () {}, previewTitle: "English",),
               const SizedBox(height: 25,),
