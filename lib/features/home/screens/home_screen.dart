@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/home/widgets/balance_card_empty.dart';
+import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
+import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
 import 'package:swappp/features/settings/screens/setting_screen.dart';
 import 'package:swappp/providers/user_provider.dart';
 
@@ -111,7 +113,25 @@ class _HomeScreenState extends State<HomeScreen> {
         child:  Column(
           children: [
             const SizedBox(height: 16,),
-            BalanceCardEmpty()
+            BalanceCardEmpty(), 
+            const SizedBox(height: 20,),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              width: double.infinity,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      PersonalizedInsightEmpty(),
+                      GoalWalletEmpty(),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       )
