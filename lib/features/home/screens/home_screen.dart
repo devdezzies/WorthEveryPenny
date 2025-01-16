@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/home/widgets/balance_card_empty.dart';
 import 'package:swappp/features/settings/screens/setting_screen.dart';
 import 'package:swappp/providers/user_provider.dart';
 
@@ -62,9 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 15,
                       ),
                     ),
-                    const Text(
-                      "Dasha",
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    Text(
+                      user.name,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     )
                   ],
                 ),
@@ -106,9 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Center(
-        child: Text(user.toJson()),
-      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child:  Column(
+          children: [
+            const SizedBox(height: 16,),
+            BalanceCardEmpty()
+          ],
+        ),
+      )
     );
   }
 }

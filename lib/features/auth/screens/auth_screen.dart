@@ -55,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
           alignment: Alignment.center,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
