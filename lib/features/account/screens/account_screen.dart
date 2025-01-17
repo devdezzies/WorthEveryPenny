@@ -142,19 +142,26 @@ class AccountScreen extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const CardList(), 
+              const CardList(),
               const SizedBox(
                 height: 10,
               ),
               GestureDetector(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
-                    decoration: BoxDecoration(
-                    border: Border.all(width: 3.0, color: GlobalVariables.secondaryColor),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 3.0, color: GlobalVariables.secondaryColor),
                     borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  child: const Text("Add Wallet", style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 15, color: GlobalVariables.secondaryColor),),
+                  ),
+                  child: const Text(
+                    "Add Wallet",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: GlobalVariables.secondaryColor),
+                  ),
                 ),
               )
             ],
