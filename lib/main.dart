@@ -7,6 +7,8 @@ import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
 
+import 'common/widgets/splash_screen.dart';
+
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserProvider())
@@ -45,7 +47,7 @@ class _MyAppState extends State<MyApp> {
               color: Colors.green,
               iconTheme: IconThemeData(color: Colors.black))),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ? const BottomBar() : const AuthScreen()
+      home: Provider.of<UserProvider>(context).isLoading ? const SplashScreen() : Provider.of<UserProvider>(context).user.token.isNotEmpty ? const BottomBar() : const AuthScreen(),
     );
   }
 }

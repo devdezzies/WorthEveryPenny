@@ -77,6 +77,7 @@ flutter:
     - assets/icons/profile-active.svg
     - assets/icons/home-active.svg
     - assets/icons/bill-active.svg
+    - assets/images/splash-logo.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

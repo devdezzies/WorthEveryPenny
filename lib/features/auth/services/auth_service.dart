@@ -120,6 +120,7 @@ class AuthService {
               .setUser(userResponse.body);
         }
       }
+      if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, '⚠️ $e.toString()');
