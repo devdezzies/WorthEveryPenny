@@ -1,50 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/home/widgets/card_content/bank_balance_card_content_empty.dart';
+import 'package:swappp/features/home/widgets/card_content/bank_balance_card_content_filled.dart';
+import 'package:swappp/features/home/widgets/card_content/total_balance_card_content.dart';
 
-class BalanceCardEmpty extends StatelessWidget {
-  const BalanceCardEmpty({super.key});
+class BalanceCard extends StatefulWidget {
+  const BalanceCard({super.key});
+
+  @override
+  State<BalanceCard> createState() => _BalanceCardState();
+}
+
+class _BalanceCardState extends State<BalanceCard> {
+  final PageController _pageController = PageController();
+  final Color _overlayColor = const Color.fromARGB(255, 23, 22, 22);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 210,
       decoration: BoxDecoration(
           color: GlobalVariables.greyBackgroundColor,
-          borderRadius: BorderRadius.circular(15)),
+          borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(
+            height: 110,
+            child: PageView(
+              physics: const BouncingScrollPhysics(),
+              controller: _pageController,
               children: [
-                const Text(
-                  "Total Balance",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                GestureDetector(
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                        color: GlobalVariables.secondaryColor,
-                        borderRadius: BorderRadius.circular(25)),
-                    width: double.infinity,
-                    child: const Text(
-                      "Add Wallet",
-                      style: TextStyle(
-                          color: GlobalVariables.backgroundColor,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16),
-                    ),
-                  ),
-                ),
+                const TotalBalanceCardContent(), 
+                const BankBalanceCardContentEmpty(),
+                const BankBalanceCardContentEmpty(),
               ],
             ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            width: double.infinity,
+            child: SmoothPageIndicator(
+                controller: _pageController,
+                count: 3,
+                effect: CustomizableEffect(
+                  activeDotDecoration: DotDecoration(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: 8,
+                    color: GlobalVariables.secondaryColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  dotDecoration: DotDecoration(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: 8,
+                    color: _overlayColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  spacing: 5.0, // No spacing between the bars
+                  inActiveColorOverride: (i) => _overlayColor, // Override inactive color
+                ),
+              ),
           ),
           Expanded(
             child: Container(

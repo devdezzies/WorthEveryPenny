@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/features/home/widgets/balance_card_empty.dart';
+import 'package:swappp/features/home/widgets/balance_card.dart';
 import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
 import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
 import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         children: [
           const SizedBox(height: 16,),
-            const BalanceCardEmpty(), 
+            const BalanceCard(), 
             const SizedBox(height: 20,),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
