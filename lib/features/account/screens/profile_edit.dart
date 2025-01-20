@@ -1,8 +1,8 @@
 import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:swappp/common/widgets/profile_button.dart';
+import 'package:swappp/common/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -14,6 +14,20 @@ class ProfileEdit extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
+  final TextEditingController _usernameController =
+      TextEditingController(text: "taraanka");
+  final TextEditingController _emailController =
+      TextEditingController(text: "taraanka@gmail.com");
+  final TextEditingController _cardController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _cardController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +51,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         child: Container(
           padding: const EdgeInsets.all(16),
           child: ListView(
+            physics: const BouncingScrollPhysics(),
             children: [
               const SizedBox(
                 height: 15,
@@ -63,7 +78,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                   ),
                   const Positioned(
                     bottom: 0,
-                    left: 10,
+                    right: 10,
                     child: Text(
                       "📸",
                       style: TextStyle(
@@ -73,6 +88,27 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ),
                   ),
                 ]),
+                const SizedBox(
+                  height: 50,
+                ),
+                ProfileTextfield(
+                  controller: _usernameController,
+                  prefixIcon: Icons.person,
+                ),
+                ProfileTextfield(
+                  controller: _emailController,
+                  prefixIcon: Icons.mail,
+                ),
+                ProfileTextfield(
+                  controller: _cardController,
+                  prefixIcon: Icons.credit_card,
+                  hintText: "Your Card Number for Payment",
+                  keyType: TextInputType.number,
+                ),
+                ProfileButton(
+                  onPressed: () {},
+                  title: "Save Changes 🌳",
+                )
               ]),
             ],
           ),
