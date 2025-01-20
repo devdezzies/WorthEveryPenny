@@ -46,6 +46,7 @@ dependencies:
   flutter_swiper_view: ^1.1.8
   syncfusion_flutter_charts: ^28.1.39
   smooth_page_indicator: ^1.2.0+3
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:

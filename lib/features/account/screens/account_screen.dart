@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/account/screens/profile_edit.dart';
 import 'package:swappp/features/account/widgets/card_list.dart';
 import 'package:swappp/features/account/widgets/user_data_form.dart';
 import 'package:swappp/features/settings/screens/setting_screen.dart';
@@ -17,7 +18,7 @@ class AccountScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Profile",
+        title: const Text("Your Profile",
             style: TextStyle(fontWeight: FontWeight.w900)),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -94,6 +95,9 @@ class AccountScreen extends StatelessWidget {
                     ],
                   )),
                   GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, ProfileEdit.routeName);
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         color: GlobalVariables.secondaryColor,
@@ -156,7 +160,7 @@ class AccountScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                   child: const Text(
-                    "Add Wallet",
+                    "Add Card",
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,

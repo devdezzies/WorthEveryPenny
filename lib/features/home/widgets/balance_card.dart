@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/home/widgets/card_content/bank_balance_card_content_empty.dart';
-import 'package:swappp/features/home/widgets/card_content/bank_balance_card_content_filled.dart';
 import 'package:swappp/features/home/widgets/card_content/total_balance_card_content.dart';
 
 class BalanceCard extends StatefulWidget {
@@ -31,10 +30,10 @@ class _BalanceCardState extends State<BalanceCard> {
             child: PageView(
               physics: const BouncingScrollPhysics(),
               controller: _pageController,
-              children: [
-                const TotalBalanceCardContent(), 
-                const BankBalanceCardContentEmpty(),
-                const BankBalanceCardContentEmpty(),
+              children: const [
+                TotalBalanceCardContent(), 
+                BankBalanceCardContentEmpty(),
+                BankBalanceCardContentEmpty(),
               ],
             ),
           ),
@@ -82,7 +81,7 @@ class _BalanceCardState extends State<BalanceCard> {
                           SizedBox(height: 5,),
                           Row(
                             children: [
-                              Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor,),
+                              Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, ),
                               Text("Rp 0,00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
                             ],
                           )

@@ -29,7 +29,7 @@ class BankBalanceCardContentEmpty extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25)),
               width: double.infinity,
               child: const Text(
-                "Add Wallet",
+                "Connect Your Bank",
                 style: TextStyle(
                     color: GlobalVariables.backgroundColor,
                     fontWeight: FontWeight.w700,

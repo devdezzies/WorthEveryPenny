@@ -21,8 +21,8 @@ class TotalBalanceCardContent extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
               Text(
-                "🦆 last updated 3 hrs ago",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: GlobalVariables.secondaryColor),
+                "🌳 Updated 2 minutes ago",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: GlobalVariables.secondaryColor),
               ),
             ],
           ),

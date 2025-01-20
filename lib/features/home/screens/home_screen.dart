@@ -61,13 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       getGreeting(),
                       style: const TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w500,
                         fontSize: 15,
                       ),
                     ),
                     Text(
-                      user.name,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      "${user.name} 🤘",
+                      style: const TextStyle(fontWeight: FontWeight.w900),
                     )
                   ],
                 ),

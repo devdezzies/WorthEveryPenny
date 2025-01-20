@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/bottom_bar.dart';
+import 'package:swappp/features/account/screens/account_screen.dart';
+import 'package:swappp/features/account/screens/profile_edit.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
 import 'package:swappp/features/settings/screens/setting_screen.dart';
@@ -17,6 +19,9 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
 
     case SettingScreen.routeName: 
       return MaterialPageRoute(settings: routeSettings, builder: (_) => const SettingScreen());
+
+    case ProfileEdit.routeName: 
+      return MaterialPageRoute(settings: routeSettings, builder: (_) => const ProfileEdit());
 
     default:
       return MaterialPageRoute(

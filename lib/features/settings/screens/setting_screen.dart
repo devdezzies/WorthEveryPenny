@@ -15,6 +15,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: GlobalVariables.backgroundColor,
         leading: GestureDetector(
           onTap: () => Navigator.pop(context),
