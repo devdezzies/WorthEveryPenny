@@ -86,27 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, SettingScreen.routeName);
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: GlobalVariables.secondaryColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 1.0)),
-                  padding: const EdgeInsets.all(4),
-                  child: const Icon(
-                    Icons.settings,
-                    color: GlobalVariables.backgroundColor,
-                  ),
-                ),
-              ),
-            ),
-          )
+          
         ],
       ),
       body: ListView(

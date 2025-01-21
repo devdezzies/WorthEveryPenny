@@ -1,172 +1,211 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:swappp/features/account/widgets/profile_button.dart';
+import 'package:swappp/features/account/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/features/account/screens/profile_edit.dart';
-import 'package:swappp/features/account/widgets/card_list.dart';
-import 'package:swappp/features/account/widgets/user_data_form.dart';
-import 'package:swappp/features/settings/screens/setting_screen.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/providers/user_provider.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  String pickedImagePath = "";
+
+  void _showImagePickerOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () async {
+                final imagePath = await pickImageFromGallery();
+                setState(() {
+                  pickedImagePath = imagePath ?? pickedImagePath;
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Camera'),
+              onTap: () async {
+                final imagePath = await pickImageFromCamera();
+                setState(() {
+                  pickedImagePath = imagePath ?? pickedImagePath;
+                  Navigator.pop(context);
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    final TextEditingController usernameController =
+        TextEditingController(text: user.name);
+    final TextEditingController emailController =
+        TextEditingController(text: user.email);
+    final TextEditingController cardNumberController =
+        TextEditingController(text: "1330024432882");
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Profile",
-            style: TextStyle(fontWeight: FontWeight.w900)),
+        title: const Text("Settings",
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30)),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: GlobalVariables.backgroundColor,
           ),
         ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, SettingScreen.routeName);
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: GlobalVariables.secondaryColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 1.0)),
-                  padding: const EdgeInsets.all(4),
-                  child: const Icon(
-                    Icons.settings,
-                    color: GlobalVariables.backgroundColor,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 16.0),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 0.0), shape: BoxShape.circle),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        imageUrl:
-                            "https://i.pinimg.com/736x/5e/3d/8c/5e3d8c6897f627e4a194d6cfbb8d8878.jpg",
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                        width: 100.0,
-                        height: 100.0,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 25),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        user.email,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15,
-                            color: Colors.grey),
-                      ),
-                    ],
-                  )),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, ProfileEdit.routeName);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: GlobalVariables.secondaryColor,
-                        border: Border.all(
-                            width: 3.0, color: GlobalVariables.backgroundColor),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3.0, horizontal: 15.0),
-                      child: const Text(
-                        "Edit",
-                        style: TextStyle(
-                            color: GlobalVariables.backgroundColor,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
               Container(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: const Column(
+                margin: const EdgeInsets.only(right: 16.0),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 0.0), shape: BoxShape.circle),
+                child: Stack(
                   children: [
-                    UserDataForm(headContent: "User ID", content: "10203342"),
-                    SizedBox(
-                      height: 16,
+                    ClipOval(
+                      child: pickedImagePath == ""
+                          ? CachedNetworkImage(
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              imageUrl:
+                                  "https://i.pinimg.com/736x/5e/3d/8c/5e3d8c6897f627e4a194d6cfbb8d8878.jpg",
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              width: 150.0,
+                              height: 150.0,
+                            )
+                          : Image.file(
+                              File(pickedImagePath),
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
                     ),
-                    UserDataForm(
-                        headContent: "Phone Number", content: "081584907425"),
-                    SizedBox(
-                      height: 16,
+                    Positioned(
+                      bottom: 0,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: () => _showImagePickerOptions(context),
+                        child: const Text(
+                          "📸",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 30,
+                              color: GlobalVariables.secondaryColor),
+                        ),
+                      ),
                     ),
-                    UserDataForm(
-                        headContent: "Account for Payment",
-                        content: "1330024432882"),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    UserDataForm(headContent: "My Wallet", content: ""),
                   ],
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
-              const CardList(),
-              const SizedBox(
-                height: 10,
+              Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "Account Settings",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  ProfileTextfield(
+                    prefixText: "Name",
+                    controller: usernameController,
+                    prefixIcon: Icons.person,
+                  ),
+                  ProfileTextfield(
+                    prefixText: "Email",
+                    controller: emailController,
+                    prefixIcon: Icons.mail,
+                  ),
+                  const ProfileButton(
+                      title: "Change Password",
+                      leadingIcon: Icon(
+                        Icons.password,
+                        color: Colors.white,
+                      )),
+                  ProfileTextfield(
+                    prefixText: "Payment Number",
+                    controller: cardNumberController,
+                    prefixIcon: Icons.payment,
+                    keyType: TextInputType.number,
+                  ),
+                  
+                ],
               ),
-              GestureDetector(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        width: 3.0, color: GlobalVariables.secondaryColor),
-                    borderRadius: BorderRadius.circular(25.0),
+              // const CardList(),
+              Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "Integrations",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                  child: const Text(
-                    "Add Card",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: GlobalVariables.secondaryColor),
+                  const ProfileButton(
+                      title: "Connected Cards", leadingIcon: Icon(Icons.sync))
+                ],
+              ),
+              Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "Subscription",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                ),
+                  const ProfileButton(
+                      title: "Freemium Mode",
+                      leadingIcon: Icon(
+                        Icons.workspace_premium,
+                        color: Colors.green,
+                      )),
+                  const ProfileButton(
+                      title: "Subscription",
+                      leadingIcon: Icon(
+                        Icons.star_rounded,
+                        color: Colors.amber,
+                      ))
+                ],
               )
             ],
           ),

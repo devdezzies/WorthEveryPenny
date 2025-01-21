@@ -4,27 +4,29 @@ import 'package:swappp/constants/global_variables.dart';
 class ProfileTextfield extends StatelessWidget {
   final TextEditingController controller;
   final IconData prefixIcon;
+  final String prefixText;
   final String? hintText;
   final TextInputType keyType;
   final String Function(String?)? validator;
-  const ProfileTextfield({super.key, required this.controller, required this.prefixIcon, this.hintText, this.keyType = TextInputType.text, this.validator});
+  const ProfileTextfield({super.key, required this.controller, required this.prefixIcon, this.hintText, this.keyType = TextInputType.text, this.validator, required this.prefixText});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
       decoration: BoxDecoration(color: GlobalVariables.greyBackgroundColor, borderRadius: BorderRadius.circular(15)),
       child: TextFormField(
         validator: validator,
         controller: controller,
         keyboardType: keyType,
         cursorColor: const Color.fromARGB(255, 73, 70, 70),
-        style: const TextStyle(fontWeight: FontWeight.w600),
+        style: const TextStyle(fontWeight: FontWeight.w600, color: Color.fromARGB(255, 73, 70, 70)),
+        textAlign: TextAlign.right,
         decoration: InputDecoration(
-          hintStyle: const TextStyle(color:Color.fromARGB(255, 73, 70, 70)),
+          prefixText: prefixText,
           hintText: hintText,
-          icon: Icon(prefixIcon, color: const Color.fromARGB(255, 73, 70, 70),),
+          icon: Icon(prefixIcon, color: Colors.white,),
           border: InputBorder.none,
         ),
       ),
