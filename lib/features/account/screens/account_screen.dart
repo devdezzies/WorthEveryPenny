@@ -11,6 +11,7 @@ import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/account/widgets/subscription/premium_subscription_field.dart';
 import 'package:swappp/models/user.dart';
 import 'package:swappp/providers/user_provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -24,6 +25,7 @@ class _AccountScreenState extends State<AccountScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController cardNumberController = TextEditingController();
+  late WebViewController webViewController;
   String pickedImagePath = "";
 
   @override
@@ -33,6 +35,26 @@ class _AccountScreenState extends State<AccountScreen> {
     usernameController.text = user.name;
     emailController.text = user.email;
     cardNumberController.text = "1330024432882";
+    // webview controller
+    webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(NavigationDelegate(
+        onProgress: (_) {
+          const CircularProgressIndicator();
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://www.youtube.com/')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ))
+      ..loadRequest(Uri.parse(
+          'https://webview.canny.io/?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&theme=lightssoToken=${user.id}'));
   }
 
   @override
@@ -41,6 +63,29 @@ class _AccountScreenState extends State<AccountScreen> {
     emailController.dispose();
     cardNumberController.dispose();
     super.dispose();
+  }
+
+  void _showFeatureWebView(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => SafeArea(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    color: GlobalVariables.backgroundColor,
+                    child: const Text(
+                      "Features, Bugs, Update",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                    ),
+                  ),
+                  Expanded(
+                    child: WebViewWidget(controller: webViewController),
+                  ),
+                ],
+              ),
+            ));
   }
 
   void _showImagePickerOptions(BuildContext context) {
@@ -266,9 +311,12 @@ class _AccountScreenState extends State<AccountScreen> {
                       color: Colors.redAccent,
                     ),
                   ),
-                  const ProfileButton(
+                  ProfileButton(
                     title: "Request & Vote on Features",
-                    leadingIcon: Icon(
+                    onTap: () {
+                      _showFeatureWebView(context);
+                    },
+                    leadingIcon: const Icon(
                       Icons.how_to_vote,
                       color: GlobalVariables.secondaryColor,
                     ),
@@ -279,7 +327,6 @@ class _AccountScreenState extends State<AccountScreen> {
                       Icons.people,
                       color: Colors.blue,
                     ),
-                    
                   ),
                 ],
               )
