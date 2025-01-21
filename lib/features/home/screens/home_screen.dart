@@ -6,7 +6,6 @@ import 'package:swappp/features/home/widgets/balance_card.dart';
 import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
 import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
 import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
-import 'package:swappp/features/settings/screens/setting_screen.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {

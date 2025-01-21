@@ -8,6 +8,8 @@ import 'package:swappp/features/account/widgets/profile_button.dart';
 import 'package:swappp/features/account/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/account/widgets/subscription/premium_subscription_field.dart';
+import 'package:swappp/models/user.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -18,7 +20,28 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  late User user;
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController cardNumberController = TextEditingController();
   String pickedImagePath = "";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    user = Provider.of<UserProvider>(context).user;
+    usernameController.text = user.name;
+    emailController.text = user.email;
+    cardNumberController.text = "1330024432882";
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    cardNumberController.dispose();
+    super.dispose();
+  }
 
   void _showImagePickerOptions(BuildContext context) {
     showModalBottomSheet(
@@ -56,14 +79,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
-    final TextEditingController usernameController =
-        TextEditingController(text: user.name);
-    final TextEditingController emailController =
-        TextEditingController(text: user.email);
-    final TextEditingController cardNumberController =
-        TextEditingController(text: "1330024432882");
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings",
@@ -148,20 +163,20 @@ class _AccountScreenState extends State<AccountScreen> {
                     prefixText: "Email",
                     controller: emailController,
                     prefixIcon: Icons.mail,
+                    enableEditing: false,
                   ),
-                  const ProfileButton(
-                      title: "Change Password",
-                      leadingIcon: Icon(
-                        Icons.password,
-                        color: Colors.white,
-                      )),
                   ProfileTextfield(
                     prefixText: "Payment Number",
                     controller: cardNumberController,
                     prefixIcon: Icons.payment,
                     keyType: TextInputType.number,
                   ),
-                  
+                  const ProfileButton(
+                      title: "Change Password",
+                      leadingIcon: Icon(
+                        Icons.lock,
+                        color: Colors.white,
+                      )),
                 ],
               ),
               // const CardList(),
@@ -178,7 +193,8 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                   ),
                   const ProfileButton(
-                      title: "Connected Cards", leadingIcon: Icon(Icons.sync))
+                      title: "Connect to Open Finance",
+                      leadingIcon: Icon(Icons.handshake))
                 ],
               ),
               Wrap(
@@ -193,18 +209,78 @@ class _AccountScreenState extends State<AccountScreen> {
                       textAlign: TextAlign.start,
                     ),
                   ),
+                  const PremiumSubscriptionField(),
                   const ProfileButton(
-                      title: "Freemium Mode",
-                      leadingIcon: Icon(
-                        Icons.workspace_premium,
-                        color: Colors.green,
-                      )),
+                    title: "Subscription",
+                    leadingIcon: Icon(
+                      Icons.star_rounded,
+                      color: Colors.amber,
+                    ),
+                  ),
+                ],
+              ),
+              Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "App Settings",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
                   const ProfileButton(
-                      title: "Subscription",
-                      leadingIcon: Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                      ))
+                    title: "Currency",
+                    leadingIcon: Icon(
+                      Icons.currency_exchange_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "Notifications",
+                    leadingIcon: Icon(
+                      Icons.notifications,
+                      color: Colors.amber,
+                    ),
+                  ),
+                ],
+              ),
+              Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "Help and Support",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "Contact Support",
+                    leadingIcon: Icon(
+                      Icons.support,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "Request & Vote on Features",
+                    leadingIcon: Icon(
+                      Icons.how_to_vote,
+                      color: GlobalVariables.secondaryColor,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "About the App",
+                    leadingIcon: Icon(
+                      Icons.people,
+                      color: Colors.blue,
+                    ),
+                    
+                  ),
                 ],
               )
             ],

@@ -77,12 +77,13 @@ class _BalanceCardState extends State<BalanceCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Today's Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
+                          Text("Monthly Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
                           SizedBox(height: 5,),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, ),
-                              Text("Rp 0,00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
+                              Text("Rp 2,3 juta", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),),
                             ],
                           )
                         ],
@@ -96,12 +97,12 @@ class _BalanceCardState extends State<BalanceCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("This Week", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),), 
+                          Text("Monthly Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),), 
                           SizedBox(height: 5,),
                           Row(
                             children: [
                               Icon(Icons.arrow_upward_rounded, color: Colors.red,),
-                              Text("Rp 0,00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
+                              Text("Rp 123.500", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),),
                             ],
                           )
                         ],
