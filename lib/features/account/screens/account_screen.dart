@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:swappp/features/account/services/settings_service.dart';
 import 'package:swappp/features/account/widgets/profile_button.dart';
 import 'package:swappp/features/account/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
@@ -22,39 +23,39 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   late User user;
+  late String token;
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController cardNumberController = TextEditingController();
+  final SettingsService settingsService = SettingsService();
   late WebViewController webViewController;
   String pickedImagePath = "";
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    user = Provider.of<UserProvider>(context).user;
+    user = Provider.of<UserProvider>(context, listen: false).user;
     usernameController.text = user.name;
     emailController.text = user.email;
     cardNumberController.text = "1330024432882";
-    // webview controller
-    webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (_) {
-          const CircularProgressIndicator();
-        },
-        onPageStarted: (String url) {},
-        onPageFinished: (String url) {},
-        onHttpError: (HttpResponseError error) {},
-        onWebResourceError: (WebResourceError error) {},
-        onNavigationRequest: (NavigationRequest request) {
-          if (request.url.startsWith('https://www.youtube.com/')) {
-            return NavigationDecision.prevent;
-          }
-          return NavigationDecision.navigate;
-        },
-      ))
-      ..loadRequest(Uri.parse(
-          'https://webview.canny.io/?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&theme=lightssoToken=${user.id}'));
+    settingsService
+        .createCannyToken(
+            context: context, id: user.id, name: user.name, email: user.email)
+        .then((token) {
+      webViewController = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(NavigationDelegate(
+          onProgress: (_) {
+            const CircularProgressIndicator();
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onHttpError: (HttpResponseError error) {},
+          onWebResourceError: (WebResourceError error) {},
+        ))
+        ..loadRequest(Uri.parse(
+            'https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=${token}'));
+    });
   }
 
   @override
@@ -66,6 +67,7 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _showFeatureWebView(BuildContext context) {
+    // Initialize the webview controller
     showModalBottomSheet(
         context: context,
         builder: (context) => SafeArea(
