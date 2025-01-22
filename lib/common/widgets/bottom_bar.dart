@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/features/account/screens/account_screen.dart';
+import 'package:swappp/features/settings/screens/settings_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -28,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
     const Center(
       child: Text("Home"),
     ),
-    const AccountScreen(),
+    const SettingsScreen(),
   ];
 
   // callback when icon tapped
@@ -100,10 +100,10 @@ class _BottomBarState extends State<BottomBar> {
             BottomNavigationBarItem(
                 icon: SizedBox(
                   width: bottomBarWidth,
-                  child: SvgPicture.asset("assets/icons/profile.svg", width: 30),
+                  child: const Icon(Icons.settings, size: 30,),
                 ),
-                activeIcon: SvgPicture.asset("assets/icons/profile-active.svg", width: 30),
-                label: "Profile"),
+                activeIcon: const Icon(Icons.settings, size: 30,),
+                label: "Settings"),
           ],
         ));
   }

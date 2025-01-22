@@ -4,24 +4,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:swappp/features/account/services/settings_service.dart';
-import 'package:swappp/features/account/widgets/profile_button.dart';
-import 'package:swappp/features/account/widgets/profile_textfield.dart';
+import 'package:swappp/features/settings/services/settings_service.dart';
+import 'package:swappp/features/settings/widgets/profile_button.dart';
+import 'package:swappp/features/settings/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
-import 'package:swappp/features/account/widgets/subscription/premium_subscription_field.dart';
+import 'package:swappp/features/settings/widgets/subscription/premium_subscription_field.dart';
 import 'package:swappp/models/user.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<AccountScreen> createState() => _AccountScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {
   late User user;
   late String token;
   final TextEditingController usernameController = TextEditingController();
@@ -74,16 +74,22 @@ class _AccountScreenState extends State<AccountScreen> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(15),
                     color: GlobalVariables.backgroundColor,
                     child: const Text(
-                      "Features, Bugs, Update",
+                      "Report or Request Features",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     ),
                   ),
                   Expanded(
-                    child: WebViewWidget(controller: webViewController),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: WebViewWidget(controller: webViewController),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -314,7 +320,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                   ),
                   ProfileButton(
-                    title: "Request & Vote on Features",
+                    title: "Request Features or Report Bugs",
                     onTap: () {
                       _showFeatureWebView(context);
                     },

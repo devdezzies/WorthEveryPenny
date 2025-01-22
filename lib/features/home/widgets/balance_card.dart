@@ -83,7 +83,7 @@ class _BalanceCardState extends State<BalanceCard> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, ),
-                              Text("Rp 2,3 juta", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),),
+                              Text("Rp 29.300.000", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: GlobalVariables.secondaryColor, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],
@@ -102,7 +102,7 @@ class _BalanceCardState extends State<BalanceCard> {
                           Row(
                             children: [
                               Icon(Icons.arrow_upward_rounded, color: Colors.red,),
-                              Text("Rp 123.500", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),),
+                              Text("Rp 11.230.500", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.red, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],
