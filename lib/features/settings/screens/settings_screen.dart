@@ -54,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onWebResourceError: (WebResourceError error) {},
         ))
         ..loadRequest(Uri.parse(
-            'https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=${token}'));
+            'https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$token'));
     });
   }
 
