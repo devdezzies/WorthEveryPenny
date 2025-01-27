@@ -9,7 +9,10 @@ void httpErrorHandle({required http.Response response, required BuildContext con
       onSuccess(); 
       break;
     case 400: 
-      showSnackBar(context,  jsonDecode(response.body)['msg']);
+      List errors = jsonDecode(response.body)['errors'];
+      for (var error in errors) {
+        showSnackBar(context, error['msg']);
+      }
       break; 
     case 500: 
       showSnackBar(context, jsonDecode(response.body)['error']);

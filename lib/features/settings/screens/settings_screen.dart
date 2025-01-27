@@ -15,7 +15,8 @@ import 'package:swappp/providers/user_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final Function(String, String, String) onLeave;
+  const SettingsScreen({super.key, required this.onLeave});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -35,12 +36,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     user = Provider.of<UserProvider>(context, listen: false).user;
-    usernameController.text = user.name;
+    usernameController.text = user.displayName;
     emailController.text = user.email;
-    cardNumberController.text = "1330024432882";
+    cardNumberController.text = user.paymentNumber;
     settingsService
         .createCannyToken(
-            context: context, id: user.id, name: user.name, email: user.email)
+            context: context, id: user.id, name: user.username, email: user.email)
         .then((token) {
       webViewController = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -60,6 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void dispose() {
+    widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
     usernameController.dispose();
     emailController.dispose();
     cardNumberController.dispose();
@@ -161,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               placeholder: (context, url) =>
                                   const CircularProgressIndicator(),
                               imageUrl:
-                                  "https://i.pinimg.com/736x/5e/3d/8c/5e3d8c6897f627e4a194d6cfbb8d8878.jpg",
+                                  user.profilePicture,
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
@@ -337,7 +339,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ],
-              )
+              ), 
+               Wrap(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Text(
+                      "Account Management",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "Logout",
+                    leadingIcon: Icon(
+                      Icons.logout,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const ProfileButton(
+                    title: "Delete Account Permanently",
+                    leadingIcon: Icon(
+                      Icons.delete_forever,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

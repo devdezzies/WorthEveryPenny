@@ -15,44 +15,54 @@ class _CustomPasswordTextfieldState extends State<CustomPasswordTextfield> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-        obscureText: isObscuredText,
-        controller: widget.controller,
-        decoration: InputDecoration(
-          suffixIcon: GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: isObscuredText ? const Icon(Icons.visibility, color: GlobalVariables.secondaryColor,) : const Icon(Icons.visibility_off),
+    return Container(
+      decoration: BoxDecoration(color: GlobalVariables.darkerGreyBackgroundColor, borderRadius: BorderRadius.circular(15)),
+      child: TextFormField(
+          obscureText: isObscuredText,
+          controller: widget.controller,
+          decoration: InputDecoration(
+            suffixIcon: GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: isObscuredText ? const Icon(Icons.visibility, color: GlobalVariables.secondaryColor,) : const Icon(Icons.visibility_off),
+              ),
+              onTap: () { 
+                setState(() {
+                  isObscuredText = !isObscuredText;
+                });
+              },
             ),
-            onTap: () { 
-              setState(() {
-                isObscuredText = !isObscuredText;
-              });
-            },
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-          hintText: widget.hintText,
-          hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15.0),
+              ),
+              borderSide:
+                  BorderSide(color: GlobalVariables.darkerGreyBackgroundColor, width: 1.5),
             ),
-            borderSide:
-                BorderSide(color: Colors.white, width: 1.5),
-          ),
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0),
+            disabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15.0),
+              ),
+              borderSide:
+                  BorderSide(color: GlobalVariables.darkerGreyBackgroundColor, width: 1.5),
             ),
-            borderSide:
-                BorderSide(color: Colors.white, width: 1.5),
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15.0),
+              ),
+              borderSide:
+                  BorderSide(color: GlobalVariables.darkerGreyBackgroundColor, width: 1.5),
+            ),
           ),
-        ),
-        validator: (val) {
-          if (val == null || val.isEmpty) {
-            return 'password can\'t be empty';
-          }
-          return null;
-        });
+          validator: (val) {
+            if (val == null || val.isEmpty) {
+              return 'password can\'t be empty';
+            }
+            return null;
+          }),
+    );
   }
 }

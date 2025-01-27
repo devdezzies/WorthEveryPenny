@@ -77,32 +77,60 @@ class _BalanceCardState extends State<BalanceCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Monthly Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.end,
+                                children: [
+                                  Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, size: 20,),
+                                  SizedBox(width: 3,),
+                                  Text("Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
+                                ],
+                              ),
+                              Text("25%", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: GlobalVariables.secondaryColor),)
+                            ],
+                          ),
                           SizedBox(height: 5,),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, ),
-                              Text("Rp 29.300.000", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: GlobalVariables.secondaryColor, overflow: TextOverflow.ellipsis),),
+                              SizedBox(width: 5,),
+                              Text("Rp 2,500,000.00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],
                       ),
                     ),
-                  ), 
+                  ),
+                  const SizedBox(width: 15),
                   Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 20),
+                    child: Container(  
+                      margin: const EdgeInsets.only(right: 20),
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Monthly Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),), 
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.end,
+                                children: [
+                                  Icon(Icons.arrow_upward_rounded, color: Colors.red, size: 20,),
+                                  SizedBox(width: 3,),
+                                  Text("Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
+                                ],
+                              ),
+                              Text("34%", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color.fromARGB(255, 247, 78, 66)),)
+                            ],
+                          ), 
                           SizedBox(height: 5,),
                           Row(
                             children: [
-                              Icon(Icons.arrow_upward_rounded, color: Colors.red,),
-                              Text("Rp 11.230.500", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.red, overflow: TextOverflow.ellipsis),),
+                              SizedBox(width: 5,),
+                              Text("Rp 682,500.00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],

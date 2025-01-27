@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
+    final user = Provider.of<UserProvider>(context, listen: true).user;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: GlobalVariables.backgroundColor,
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   placeholder: (context, url) =>
                       const CircularProgressIndicator(),
                   imageUrl:
-                      "https://i.pinimg.com/736x/5e/3d/8c/5e3d8c6897f627e4a194d6cfbb8d8878.jpg",
+                      user.profilePicture,
                   fit: BoxFit.cover,
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                   width: 35,
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "${user.name} 🤘",
+                      "${user.displayName} 🤘",
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     )
                   ],

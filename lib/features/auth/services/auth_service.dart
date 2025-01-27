@@ -21,12 +21,29 @@ class AuthService {
     try {
       User user = User(
           id: '',
-          name: name,
+          username: name,
+          email: email,
+          subscription: '',
           password: password,
-          address: '',
-          type: '',
-          token: '',
-          email: email);
+          transactions: [],
+          displayName: '',
+          bills: [],
+          profilePicture:
+              'https://i.pinimg.com/736x/ec/ca/4c/ecca4c13cf92b76eaceeadaea46454aa.jpg',
+          friends: [],
+          friendRequests: [],
+          bankAccount: [],
+          debts: 0,
+          cash: 0,
+          monthlyReport: [],
+          paymentNumber: '',
+          language: 'id',
+          currency: 'IDR',
+          savings: 0,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          token: ''
+      );
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
@@ -42,7 +59,7 @@ class AuthService {
             response: res,
             context: context,
             onSuccess: () {
-              showSnackBar(context, 'Hello 👋 ${user.name}');
+              showSnackBar(context, 'Hello 👋 ${user.username}');
             });
       }
     } catch (e) {

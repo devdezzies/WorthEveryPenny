@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swappp/constants/global_variables.dart';
 
 class CustomTextfield extends StatefulWidget {
   final TextEditingController controller;
@@ -14,32 +15,23 @@ class _CustomTextfieldState extends State<CustomTextfield> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-        controller: widget.controller,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-          hintText: widget.hintText,
-          hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0),
-            ),
-            borderSide:
-                BorderSide(color: Colors.white, width: 1.5),
+    return Container(
+      decoration: BoxDecoration(color: GlobalVariables.greyBackgroundColor, borderRadius: BorderRadius.circular(15)),
+      child: TextFormField(
+          controller: widget.controller,
+          cursorColor: const Color.fromARGB(255, 73, 70, 70),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
+            border: InputBorder.none,
           ),
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0),
-            ),
-            borderSide:
-                BorderSide(color: Colors.white, width: 1.5),
-          ),
-        ),
-        validator: (val) {
-          if (val == null || val.isEmpty) {
-            return 'email can\'t be empty!'; 
-          }
-          return null;
-        });
+          validator: (val) {
+            if (val == null || val.isEmpty) {
+              return 'email can\'t be empty!'; 
+            }
+            return null;
+          }),
+    );
   }
 }

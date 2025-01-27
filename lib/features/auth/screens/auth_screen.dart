@@ -85,13 +85,16 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(
                     height: 30,
                   ),
+                  // TODO: use LayoutBuilder to make responsive design
                   LayoutBuilder(
                       builder: (context, constraint) => ToggleButtons(
                             constraints: BoxConstraints.expand(
                                 width: (constraint.maxWidth - 18) / 2),
-                            borderWidth: 1.5,
-                            borderColor: Colors.white,
-                            selectedBorderColor: Colors.white,
+                            borderWidth: 1,
+                            borderColor: Colors.transparent,
+                            
+                            color: GlobalVariables.secondaryColor,
+                            selectedBorderColor: Colors.transparent,                      
                             isSelected: isSelected,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(25)),
@@ -139,7 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         children: [
                           CustomTextfield(
                             controller: _nameController,
-                            hintText: "Your Name",
+                            hintText: "Username",
                           ),
                           const SizedBox(
                             height: 18,
@@ -153,7 +156,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           CustomPasswordTextfield(
                               controller: _passwordController,
-                              hintText: "Your Password"),
+                              hintText: "Your password"),
                           const SizedBox(
                             height: 40,
                           ),

@@ -10,6 +10,7 @@ import 'package:swappp/router.dart';
 import 'common/widgets/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserProvider())
   ], child: const MyApp()));
@@ -34,7 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "swappp",
+      title: "WorthEveryPenny",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,

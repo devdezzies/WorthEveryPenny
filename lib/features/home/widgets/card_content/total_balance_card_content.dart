@@ -29,7 +29,7 @@ class TotalBalanceCardContent extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          Text("Rp 54.250.000,00", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),)
+          Text("Rp 5,250,000.00", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),)
         ],
       ),
     );
