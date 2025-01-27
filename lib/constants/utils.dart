@@ -39,3 +39,25 @@ Future<String?> pickImageFromGallery() async {
   }
   return null;
 }
+
+String rupiahFormatCurrency(int value) {
+  return "Rp ${value.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}.00";
+}
+
+String countTimeAgo(DateTime dateTime) {
+  final Duration diff = DateTime.now().difference(dateTime);
+  if (diff.inDays > 0) {
+    return "${diff.inDays} days ago";
+  } else if (diff.inHours > 0) {
+    return "${diff.inHours} hours ago";
+  } else if (diff.inMinutes > 0) {
+    return "${diff.inMinutes} minutes ago";
+  } else {
+    return "${diff.inSeconds} seconds ago";
+  }
+}
+
+String getGrowthPercentage(int totalBalance, int previousTotalBalance) {
+  final double growth = (totalBalance - previousTotalBalance) / previousTotalBalance * 100;
+  return "${growth.toStringAsFixed(2)}%";
+}

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 
 class TotalBalanceCardContent extends StatelessWidget {
-  const TotalBalanceCardContent({super.key});
+  final int totalBalance;
+  final DateTime lastUpdated;
+  const TotalBalanceCardContent({super.key, required this.totalBalance, required this.lastUpdated});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -16,20 +19,20 @@ class TotalBalanceCardContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Total Balance",
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
               Text(
-                "🌳 Updated 2 minutes ago",
+                "🌳 Updated ${countTimeAgo(lastUpdated)}",
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: GlobalVariables.secondaryColor),
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
-          Text("Rp 5,250,000.00", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),)
+          Text(rupiahFormatCurrency(totalBalance), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 25),)
         ],
       ),
     );

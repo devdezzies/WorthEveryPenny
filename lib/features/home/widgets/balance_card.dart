@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/home/widgets/card_content/bank_balance_card_content_empty.dart';
 import 'package:swappp/features/home/widgets/card_content/total_balance_card_content.dart';
 
 class BalanceCard extends StatefulWidget {
-  const BalanceCard({super.key});
+  final int income, expense, incomePercentage, expensePercentage, totalBalance;
+  final DateTime lastUpdated;
+  const BalanceCard({super.key, required this.income, required this.expense, required this.incomePercentage, required this.expensePercentage, required this.totalBalance, required this.lastUpdated});
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();
@@ -30,10 +33,10 @@ class _BalanceCardState extends State<BalanceCard> {
             child: PageView(
               physics: const BouncingScrollPhysics(),
               controller: _pageController,
-              children: const [
-                TotalBalanceCardContent(), 
-                BankBalanceCardContentEmpty(),
-                BankBalanceCardContentEmpty(),
+              children: [
+                TotalBalanceCardContent(totalBalance: widget.totalBalance, lastUpdated: widget.lastUpdated,), 
+                const BankBalanceCardContentEmpty(),
+                const BankBalanceCardContentEmpty(),
               ],
             ),
           ),
@@ -73,7 +76,7 @@ class _BalanceCardState extends State<BalanceCard> {
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.only(left: 20),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -81,7 +84,7 @@ class _BalanceCardState extends State<BalanceCard> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Wrap(
+                              const Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.end,
                                 children: [
                                   Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, size: 20,),
@@ -89,14 +92,14 @@ class _BalanceCardState extends State<BalanceCard> {
                                   Text("Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
                                 ],
                               ),
-                              Text("25%", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: GlobalVariables.secondaryColor),)
+                              Text("${widget.incomePercentage}%", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: GlobalVariables.secondaryColor),)
                             ],
                           ),
-                          SizedBox(height: 5,),
+                          const SizedBox(height: 5,),
                           Row(
                             children: [
-                              SizedBox(width: 5,),
-                              Text("Rp 2,500,000.00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
+                              const SizedBox(width: 5,),
+                                Text(rupiahFormatCurrency(widget.income), style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],
@@ -107,7 +110,7 @@ class _BalanceCardState extends State<BalanceCard> {
                   Expanded(
                     child: Container(  
                       margin: const EdgeInsets.only(right: 20),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -115,7 +118,7 @@ class _BalanceCardState extends State<BalanceCard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Wrap(
+                              const Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.end,
                                 children: [
                                   Icon(Icons.arrow_upward_rounded, color: Colors.red, size: 20,),
@@ -123,14 +126,14 @@ class _BalanceCardState extends State<BalanceCard> {
                                   Text("Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
                                 ],
                               ),
-                              Text("34%", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color.fromARGB(255, 247, 78, 66)),)
+                              Text("${widget.expensePercentage}%", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color.fromARGB(255, 247, 78, 66)),)
                             ],
                           ), 
-                          SizedBox(height: 5,),
+                          const SizedBox(height: 5,),
                           Row(
                             children: [
-                              SizedBox(width: 5,),
-                              Text("Rp 682,500.00", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
+                              const SizedBox(width: 5,),
+                              Text(rupiahFormatCurrency(widget.expense), style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
                             ],
                           )
                         ],
