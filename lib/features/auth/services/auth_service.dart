@@ -8,6 +8,7 @@ import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
 import 'package:swappp/models/user.dart';
+import 'package:swappp/models/subscription.dart'; // Import the Subscription class
 import 'package:http/http.dart' as http;
 import 'package:swappp/providers/user_provider.dart';
 
@@ -23,7 +24,14 @@ class AuthService {
           id: '',
           username: name,
           email: email,
-          subscription: '',
+          subscription: Subscription(
+              user: '',
+              plan: '',
+              startDate: DateTime.now(),
+              endDate: DateTime.now(),
+              createdAt: DateTime.now(),
+              updatedAt:
+                  DateTime.now()), // Replace with a valid Subscription object
           password: password,
           transactions: [],
           displayName: '',
@@ -42,8 +50,8 @@ class AuthService {
           savings: 0,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          token: ''
-      );
+          token: '');
+      debugPrint(user.toJson().toString());
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
@@ -64,7 +72,7 @@ class AuthService {
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      showSnackBar(context, '⚠️ $e.toString()');
+      showSnackBar(context, '🏃‍➡️ $e.toString()');
     }
   }
 
@@ -140,7 +148,7 @@ class AuthService {
       if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, '⚠️ $e.toString()');
+        debugPrint(e.toString());
       }
     }
   }

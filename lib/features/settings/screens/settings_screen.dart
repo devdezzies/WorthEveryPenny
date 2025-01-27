@@ -31,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final SettingsService settingsService = SettingsService();
   late WebViewController webViewController;
   String pickedImagePath = "";
+  String? cachedToken = "";
 
   @override
   void didChangeDependencies() {
@@ -39,6 +40,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     usernameController.text = user.displayName;
     emailController.text = user.email;
     cardNumberController.text = user.paymentNumber;
+    _initializeWebView();
+  }
+
+  @override
+  void dispose() {
+    widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
+    usernameController.dispose();
+    emailController.dispose();
+    cardNumberController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializeWebView() async {
     settingsService
         .createCannyToken(
             context: context, id: user.id, name: user.username, email: user.email)
@@ -57,15 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ..loadRequest(Uri.parse(
             'https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$token'));
     });
-  }
 
-  @override
-  void dispose() {
-    widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
-    usernameController.dispose();
-    emailController.dispose();
-    cardNumberController.dispose();
-    super.dispose();
   }
 
   void _showFeatureWebView(BuildContext context) {

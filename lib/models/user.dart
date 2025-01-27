@@ -1,21 +1,26 @@
 import 'dart:convert';
-
+import 'transaction.dart';
+import 'monthly_report.dart';
+import 'subscription.dart';
+import 'bank_account.dart';
+import 'bill.dart';
+import 'friend.dart';
 class User {
   final String id;
   final String username;
   final String email;
-  final String subscription;
+  final Subscription subscription;
   final String password;
-  final List<String> transactions;
+  final List<Transaction> transactions;
   final String displayName;
-  final List<String> bills;
+  final List<Bill> bills;
   final String profilePicture;
-  final List<String> friends;
-  final List<String> friendRequests;
-  final List<String> bankAccount;
+  final List<Friend> friends;
+  final List<FriendRequest> friendRequests;
+  final List<BankAccount> bankAccount;
   final int debts;
   final int cash;
-  final List<String> monthlyReport;
+  final List<MonthlyReport> monthlyReport;
   final String language;
   final String currency;
   final String paymentNumber;
@@ -55,15 +60,15 @@ class User {
       '_id': id,
       'username': username,
       'email': email,
-      'subscription': subscription,
+      'subscription': subscription.toMap(),
       'password': password,
       'transactions': transactions,
       'displayName': displayName,
-      'bills': bills,
+      'bills': bills.map((x) => x.toMap()).toList(),
       'profilePicture': profilePicture,
-      'friends': friends,
-      'friendRequests': friendRequests,
-      'bankAccount': bankAccount,
+      'friends': friends.map((x) => x.toMap()).toList(),
+      'friendRequests': friendRequests.map((x) => x.toMap()).toList(),
+      'bankAccount': bankAccount.map((x) => x.toMap()).toList(),
       'debts': debts,
       'monthlyReport': monthlyReport,
       'language': language,
@@ -82,18 +87,25 @@ class User {
       id: map['_id'] ?? '',
       username: map['username'] ?? '',
       email: map['email'] ?? '',
-      subscription: map['subscription'] ?? '',
+      subscription: map['subscription'] != null ? Subscription.fromMap(map['subscription']) : Subscription(
+        user: '', 
+        plan: '',  
+        startDate: DateTime.now(), 
+        endDate: DateTime.now(), 
+        createdAt: DateTime.now(), 
+        updatedAt: DateTime.now()
+      ),
       password: map['password'] ?? '',
-      transactions: List<String>.from(map['transactions'] ?? []),
+      transactions: List<Transaction>.from(map['transactions']?.map((x) => Transaction.fromMap(x)) ?? []),
       displayName: map['displayName'] ?? '',
-      bills: List<String>.from(map['bills'] ?? []),
+      bills: List<Bill>.from(map['bills']?.map((x) => Bill.fromMap(x)) ?? []),
       profilePicture: map['profilePicture'] ?? 'https://i.pinimg.com/736x/73/cd/09/73cd09f43b4ca5b2d56c152a79ac5c60.jpg',
-      friends: List<String>.from(map['friends'] ?? []),
-      friendRequests: List<String>.from(map['friendRequests'] ?? []),
-      bankAccount: List<String>.from(map['bankAccount'] ?? []),
+      friends: List<Friend>.from(map['friends']?.map((x) => Friend.fromMap(x)) ?? []),
+      friendRequests: List<FriendRequest>.from(map['friendRequests']?.map((x) => FriendRequest.fromMap(x)) ?? []),
+      bankAccount: List<BankAccount>.from(map['bankAccount']?.map((x) => BankAccount.fromMap(x)) ?? []),
       debts: map['debts'] ?? 0,
       cash: map['cash'] ?? 0,
-      monthlyReport: List<String>.from(map['monthlyReport'] ?? []),
+      monthlyReport: List<MonthlyReport>.from(map['monthlyReport']?.map((x) => MonthlyReport.fromMap(x)) ?? []),
       paymentNumber: map['paymentNumber'] ?? '',
       language: map['language'] ?? 'id',
       currency: map['currency'] ?? 'IDR',

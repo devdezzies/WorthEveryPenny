@@ -3,7 +3,6 @@ import 'dart:convert';
 class Subscription {
   String user;
   String plan;
-  String subscriptionStatus;
   DateTime startDate;
   DateTime endDate;
   DateTime createdAt;
@@ -12,7 +11,6 @@ class Subscription {
   Subscription({
     required this.user,
     required this.plan,
-    required this.subscriptionStatus,
     required this.startDate,
     required this.endDate,
     required this.createdAt,
@@ -24,7 +22,6 @@ class Subscription {
     return {
       'user': user,
       'plan': plan,
-      'subscriptionStatus': subscriptionStatus,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -37,7 +34,6 @@ class Subscription {
     return Subscription(
       user: map['user'] ?? '',
       plan: map['plan'] ?? 'Basic',
-      subscriptionStatus: map['subscriptionStatus'] ?? 'Active',
       startDate: DateTime.parse(map['startDate']),
       endDate: DateTime.parse(map['endDate']),
       createdAt: DateTime.parse(map['createdAt']),

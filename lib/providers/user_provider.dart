@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:swappp/models/bank_account.dart';
+import 'package:swappp/models/bill.dart';
+import 'package:swappp/models/friend.dart';
+import 'package:swappp/models/monthly_report.dart';
+import 'package:swappp/models/subscription.dart';
+import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -6,18 +12,25 @@ class UserProvider extends ChangeNotifier {
     id: '',
     username: '',
     email: '',
-    subscription: '',
+    subscription: Subscription(
+      user: '', 
+      plan: '', 
+      startDate: DateTime.now(), 
+      endDate: DateTime.now(), 
+      createdAt: DateTime.now(), 
+      updatedAt: DateTime.now()
+    ), // Provide a default Subscription object
     password: '',
-    transactions: [],
+    transactions: <Transaction>[],
     displayName: '',
-    bills: [],
+    bills: <Bill>[],
     profilePicture: '',
-    friends: [],
-    friendRequests: [],
-    bankAccount: [],
+    friends: <Friend>[],
+    friendRequests: <FriendRequest>[],
+    bankAccount: <BankAccount>[],
     debts: 0,
     cash: 0,
-    monthlyReport: [],
+    monthlyReport: <MonthlyReport>[],
     language: 'id',
     currency: 'IDR',
     paymentNumber: '',
@@ -45,19 +58,19 @@ class UserProvider extends ChangeNotifier {
   void updateUser({
     String? username,
     String? email,
-    String? subscription,
+    Subscription? subscription,
     String? password,
-    List<String>? transactions,
+    List<Transaction>? transactions,
     String? displayName,
-    List<String>? bills,
+    List<Bill>? bills,
     String? profilePicture,
-    List<String>? friends,
-    List<String>? friendRequests,
-    List<String>? bankAccount,
+    List<Friend>? friends,
+    List<FriendRequest>? friendRequests,
+    List<BankAccount>? bankAccount,
     int? debts,
     int? cash,
     String? paymentNumber,
-    List<String>? monthlyReport,
+    List<MonthlyReport>? monthlyReport,
     String? language,
     String? currency,
     int? savings,
