@@ -18,11 +18,11 @@ class BasicSubscriptionField extends StatelessWidget {
             height: 50,
             margin: const EdgeInsets.only(right: 15),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: const Color.fromARGB(82, 81, 81, 81)),
-            child: Center(
+            child: const Center(
               child: Text("🦆", style: TextStyle(fontSize: 25),),
             ),
           ), 
-          Column(
+          const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -25,27 +25,33 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late User user;
   late String token;
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController cardNumberController = TextEditingController();
+  late TextEditingController usernameController;
+  late TextEditingController emailController;
+  late TextEditingController cardNumberController;
   final SettingsService settingsService = SettingsService();
   late WebViewController webViewController;
   String pickedImagePath = "";
-  String? cachedToken = "";
+  late UserProvider userProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    user = Provider.of<UserProvider>(context, listen: false).user;
-    usernameController.text = user.displayName;
-    emailController.text = user.email;
-    cardNumberController.text = user.paymentNumber;
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    user = userProvider.user;
+    usernameController = TextEditingController(text: user.displayName);
+    emailController = TextEditingController(text: user.email);
+    cardNumberController = TextEditingController(text: user.paymentNumber);
     _initializeWebView();
   }
 
   @override
   void dispose() {
-    widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
+    // TODO: remove unstable code
+    try {
+      widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
+    } catch (e) {
+      debugPrint("FIX THIS");
+    }
     usernameController.dispose();
     emailController.dispose();
     cardNumberController.dispose();
@@ -358,9 +364,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  const ProfileButton(
+                  ProfileButton(
+                    onTap: () async {
+                      bool isConfirmed = await showConfirmationDialog(context, "Are you sure you want to logout?", "Logout");
+                      if (isConfirmed) {
+                        if (context.mounted) {
+                          settingsService.logout(context);
+                        }
+                      } 
+                    },
                     title: "Logout",
-                    leadingIcon: Icon(
+                    leadingIcon: const Icon(
                       Icons.logout,
                       color: Colors.red,
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
+import 'package:swappp/features/transaction/screens/transaction_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
@@ -13,6 +14,9 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
 
     case BottomBar.routeName: 
       return MaterialPageRoute(settings: routeSettings, builder: (_) => const BottomBar());
+    
+    case TransactionScreen.routeName: 
+      return MaterialPageRoute(settings: routeSettings, builder: (_) => const TransactionScreen());
 
     default:
       return MaterialPageRoute(

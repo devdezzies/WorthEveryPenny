@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:swappp/common/widgets/custom_button.dart';
 import 'package:swappp/common/widgets/custom_password_textfield.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
@@ -31,7 +32,8 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signup;
 
   @override
-  void dispose() { // to avoid memory leaks
+  void dispose() {
+    // to avoid memory leaks
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -39,11 +41,18 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void signUpUser() {
-    authService.signUpUser(context: context, email: _emailController.text, password: _passwordController.text, name: _nameController.text);
+    authService.signUpUser(
+        context: context,
+        email: _emailController.text,
+        password: _passwordController.text,
+        name: _nameController.text);
   }
 
   void signInUser() {
-    authService.signInUser(context: context, email: _emailController.text, password: _passwordController.text);
+    authService.signInUser(
+        context: context,
+        email: _emailController.text,
+        password: _passwordController.text);
   }
 
   @override
@@ -92,9 +101,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                 width: (constraint.maxWidth - 18) / 2),
                             borderWidth: 1,
                             borderColor: Colors.transparent,
-                            
                             color: GlobalVariables.secondaryColor,
-                            selectedBorderColor: Colors.transparent,                      
+                            selectedBorderColor: Colors.transparent,
                             isSelected: isSelected,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(25)),
@@ -160,11 +168,13 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          CustomButton(textTitle: "Sign Up", onTap: () {
-                            if (_signUpFormKey.currentState!.validate()) {
-                              signUpUser();
-                            }
-                          }),
+                          CustomButton(
+                              textTitle: "Sign Up",
+                              onTap: () {
+                                if (_signUpFormKey.currentState!.validate()) {
+                                  signUpUser();
+                                }
+                              }),
                         ],
                       ),
                     ),
@@ -186,14 +196,65 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          CustomButton(textTitle: "Login", onTap: () {
-                            if (_signInFormKey.currentState!.validate()) {
-                              signInUser();
-                            }
-                          }),
+                          CustomButton(
+                              textTitle: "Login",
+                              onTap: () {
+                                if (_signInFormKey.currentState!.validate()) {
+                                  signInUser();
+                                }
+                              }),
                         ],
                       ),
-                    )
+                    ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      const Text("By signing up, you agree to our "),
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Text(
+                          "Terms of Service",
+                          style: TextStyle(
+                              color: GlobalVariables.secondaryColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const Text(" and "),
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Text(
+                          "Privacy Policy",
+                          style: TextStyle(
+                              color: GlobalVariables.secondaryColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  // create a divider line 
+                  Divider(
+                    color: Colors.grey[800],
+                    thickness: 1,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Secured with Advanced Encryption",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SvgPicture.asset('assets/icons/jwt.svg', width: 80,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
             ),

@@ -18,7 +18,8 @@ void showSnackBar(BuildContext context, String text) {
 
 Future<String?> pickImageFromCamera() async {
   try {
-    final XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
+    final XFile? image =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
       return image.path;
     }
@@ -30,7 +31,8 @@ Future<String?> pickImageFromCamera() async {
 
 Future<String?> pickImageFromGallery() async {
   try {
-    final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? image =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       return image.path;
     }
@@ -58,6 +60,35 @@ String countTimeAgo(DateTime dateTime) {
 }
 
 String getGrowthPercentage(int totalBalance, int previousTotalBalance) {
-  final double growth = (totalBalance - previousTotalBalance) / previousTotalBalance * 100;
+  final double growth =
+      (totalBalance - previousTotalBalance) / previousTotalBalance * 100;
   return "${growth.toStringAsFixed(2)}%";
+}
+
+Future<bool> showConfirmationDialog(
+    BuildContext context, String title, String content) async {
+  return await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Yes'),
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
 }

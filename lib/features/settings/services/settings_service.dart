@@ -4,6 +4,8 @@ import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
 import 'package:swappp/providers/user_provider.dart';
@@ -82,6 +84,28 @@ class SettingsService {
       }
     } catch (e) {
       debugPrint(e.toString()); //showSnackBar(context, '$e.toString()');
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('x-auth-token') ?? '';
+    try {
+      http.Response res = await http.post(Uri.parse('$uri/logout'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token
+          });
+
+      if (context.mounted) {
+        httpErrorHandle(response: res, context: context, onSuccess: () {
+          prefs.remove('x-auth-token');
+          Navigator.pushReplacementNamed(context, "/auth-screen");
+          debugPrint('Successfully Logged out');
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }
