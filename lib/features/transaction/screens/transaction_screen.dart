@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
-import 'package:swappp/features/transaction/screens/amount_input_screen.dart';
-import 'package:swappp/features/transaction/screens/category_selection.dart';
+import 'package:swappp/features/transaction/screens/sub/amount_input_screen.dart';
+import 'package:swappp/features/transaction/screens/sub/initiate_transaction_screen.dart';
+import 'package:swappp/providers/transaction_provider.dart';
 
 class TransactionScreen extends StatefulWidget {
   static const String routeName = '/transaction';
@@ -44,6 +46,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final TransactionProvider transactionProvider = Provider.of<TransactionProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -57,18 +60,22 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   icon: const Icon(
                     Icons.arrow_back_ios_rounded,
                     size: 30,
+                    color: Colors.white,
                   ),
                   color: GlobalVariables.secondaryColor,
                 )
               : null,
         ),
-        title: _currentPage > 0 ? Text(rupiahFormatCurrency(_amount), style: const TextStyle(fontWeight: FontWeight.w700),) : const Text("New Transaction"),
+        title: _currentPage > 0 ? Text('${transactionProvider.transaction.type == 'income' ? '+' : '-'} ${rupiahFormatCurrency(_amount)}', style: TextStyle(fontWeight: FontWeight.w700, color: transactionProvider.transaction.type == 'income' ? GlobalVariables.secondaryColor : Colors.redAccent),) : const Text("New Transaction"),
         centerTitle: true,
         backgroundColor: GlobalVariables.backgroundColor,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, size: 40),
-            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close, size: 40, color: Colors.white,),
+            onPressed: () {
+              Navigator.pop(context);
+              transactionProvider.setCurrentNumber('');
+            },
             color: GlobalVariables
                 .secondaryColor, // Set the button color to transparent
             iconSize: 40,
@@ -77,6 +84,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ],
       ),
       body: PageView(
+        // disable swipe
+        physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
@@ -88,7 +97,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             _amount = int.parse(amount);
             _nextPage();
           }),
-          const CategorySelection()
+          const InitiateTransactionScreen()
         ],
       ),
     );
@@ -115,5 +124,4 @@ Route createRoute() {
   );
 }
 
-// Usage example:
 // Navigator.of(context).push(createRoute());

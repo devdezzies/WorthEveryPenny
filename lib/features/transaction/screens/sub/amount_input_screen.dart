@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/providers/transaction_provider.dart';
 
 class NumberKeyboard extends StatefulWidget {
   final void Function(String) onInput;
@@ -14,9 +16,19 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
   String _input = '';
   int _tappedIndex = -1;
 
+  @override  
+  void didChangeDependencies() {
+    _input = Provider.of<TransactionProvider>(context).currentNumber;
+    super.didChangeDependencies();
+  }
+
   void _onKeyTap(String value, int index) {
     setState(() {
+      if (_input == '0') {
+      _input = value;
+      } else {
       _input += value;
+      }
       _tappedIndex = index;
     });
     Future.delayed(const Duration(milliseconds: 200), () {
@@ -93,6 +105,7 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
               if (_input.isEmpty) {
                 _input = "0";
               }
+              Provider.of<TransactionProvider>(context, listen: false).setCurrentNumber(_input);
               widget.onInput(_input);
             },
             child: Container(

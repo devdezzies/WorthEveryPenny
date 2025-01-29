@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 class Transaction {
+  String user;
   DateTime date;
   String name;
-  double amount;
+  int amount;
   List<String> tags;
   String type;
   String? description;
@@ -14,6 +15,7 @@ class Transaction {
   DateTime createdAt;
 
   Transaction({
+    this.user = '',
     required this.date,
     required this.name,
     required this.amount,
@@ -30,6 +32,7 @@ class Transaction {
   // Convert a Transaction object into a Map object
   Map<String, dynamic> toMap() {
     return {
+      'user': user,
       'date': date.toIso8601String(),
       'name': name,
       'amount': amount,
@@ -47,9 +50,10 @@ class Transaction {
   // Convert a Map object into a Transaction object
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
+      user: map['user'] ?? '',
       date: DateTime.parse(map['date']),
       name: map['name'] ?? '',
-      amount: map['amount']?.toDouble() ?? 0.0,
+      amount: map['amount'] ?? 0,
       tags: List<String>.from(map['tags'] ?? []),
       type: map['type'] ?? '',
       description: map['description'],

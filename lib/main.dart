@@ -4,6 +4,7 @@ import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
+import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
 
@@ -12,7 +13,8 @@ import 'common/widgets/splash_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => UserProvider())
+    ChangeNotifierProvider(create: (context) => UserProvider()), 
+    ChangeNotifierProvider(create: (context) => TransactionProvider())
   ], child: const MyApp()));
 }
 
