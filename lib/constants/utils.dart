@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
 
 void showSnackBar(BuildContext context, String text) {
@@ -173,171 +174,18 @@ String formatDateTime(DateTime dateTime) {
   }
 }
 
-int growthPercentageIncome(User user) {
-  const analysisWindow = 21;
-  const maxPercentage = 100;
-  final now = DateTime.now();
-  
-  // 1. Safe temporal segmentation
-  final dailyIncome = <DateTime, double>{};
-  final cutoff = now.subtract(const Duration(days: analysisWindow * 2));
-  final todayDate = DateTime(now.year, now.month, now.day);
-
-  // 2. Null-safe transaction processing
-  final validTransactions = (user.transactions)
-      .where((t) => t.type == 'income')
-      .where((t) => t.date.isAfter(cutoff))
-      .toList();
-
-  // 3. Safe date population with fallbacks
-  for (var i = 0; i < analysisWindow * 2; i++) {
-    final date = todayDate.subtract(Duration(days: i));
-    dailyIncome[date] = 0.0;
-  }
-
-  // 4. Null-protected aggregation
-  for (final t in validTransactions) {
-    final date = DateTime(t.date.year, t.date.month, t.date.day);
-    final amount = t.amount;
-    dailyIncome[date] = (dailyIncome[date] ?? 0) + amount;
-  }
-
-  // 5. Safe statistical calculations
-  final recentValues = dailyIncome.values
-      .take(analysisWindow)
-      .where((v) => v > 0)
-      .toList();
-
-  if (recentValues.isEmpty) return 0;
-
-  final historicalMean = recentValues.average;
-  final historicalStdDev = recentValues.standardDeviation;
-  final currentIncome = dailyIncome[todayDate] ?? 0;
-
-  // 6. Adaptive normalization with fallbacks
-  final safeUpperBand = historicalMean + (2 * historicalStdDev);
-  final safeLowerBand = max(0, historicalMean - (2 * historicalStdDev));
-  final bandRange = safeUpperBand - safeLowerBand;
-
-  // 7. Null-safe difference calculation
-  final rawDifference = currentIncome - historicalMean;
-  final normalizedGrowth = bandRange > 0 
-      ? rawDifference / bandRange 
-      : 0;
-
-  // 8. Protected sigmoid transform
-  final sigmoidGrowth = 1 / (1 + exp(-normalizedGrowth * 3));
-
-  // 9. Confidence factors with defaults
-  final completenessFactor = min(1, validTransactions.length / 14);
-  final volatilityFactor = historicalMean > 0 
-      ? 1 - min(1, historicalStdDev / historicalMean)
-      : 1;
-
-  // 10. Final safeguarded calculation
-  final finalScore = sigmoidGrowth *
-                     completenessFactor *
-                     volatilityFactor *
-                     maxPercentage;
-
-  return finalScore.clamp(0, maxPercentage).round();
-}
-
-// Enhanced null-safe extensions
-extension StatList on List<double> {
-  double get average {
-    if (isEmpty) return 0;
-    return reduce((a, b) => a + b) / length;
-  }
-  
-  double get standardDeviation {
-    if (length < 2) return 0;
-    final mean = average;
-    final variance = fold<double>(0, (sum, x) => sum + pow(x - mean, 2)) / length;
-    return sqrt(variance);
-  }
-}
-
-int growthPercentageExpense(User user) {
-  const analysisWindow = 21;
-  const maxPercentage = 100;
-  final now = DateTime.now();
-  
-  // 1. Safe temporal segmentation
-  final dailyExpense = <DateTime, double>{};
-  final cutoff = now.subtract(const Duration(days: analysisWindow * 2));
-  final todayDate = DateTime(now.year, now.month, now.day);
-
-  // 2. Null-safe transaction processing
-  final validTransactions = (user.transactions)
-      .where((t) => t.type == 'expense')
-      .where((t) => t.date.isAfter(cutoff))
-      .toList();
-
-  // 3. Safe date population with fallbacks
-  for (var i = 0; i < analysisWindow * 2; i++) {
-    final date = todayDate.subtract(Duration(days: i));
-    dailyExpense[date] = 0.0;
-  }
-
-  // 4. Null-protected aggregation
-  for (final t in validTransactions) {
-    final date = DateTime(t.date.year, t.date.month, t.date.day);
-    final amount = t.amount;
-    dailyExpense[date] = (dailyExpense[date] ?? 0) + amount;
-  }
-
-  // 5. Safe statistical calculations
-  final recentValues = dailyExpense.values
-      .take(analysisWindow)
-      .where((v) => v > 0)
-      .toList();
-
-  if (recentValues.isEmpty) return 0;
-
-  final historicalMean = recentValues.average;
-  final historicalStdDev = recentValues.standardDeviation;
-  final currentExpense = dailyExpense[todayDate] ?? 0;
-
-  // 6. Adaptive normalization with fallbacks
-  final safeUpperBand = historicalMean + (2 * historicalStdDev);
-  final safeLowerBand = max(0, historicalMean - (2 * historicalStdDev));
-  final bandRange = safeUpperBand - safeLowerBand;
-
-  // 7. Null-safe difference calculation
-  final rawDifference = currentExpense - historicalMean;
-  final normalizedGrowth = bandRange > 0 
-      ? rawDifference / bandRange 
-      : 0;
-
-  // 8. Protected sigmoid transform
-  final sigmoidGrowth = 1 / (1 + exp(-normalizedGrowth * 3));
-
-  // 9. Confidence factors with defaults
-  final completenessFactor = min(1, validTransactions.length / 14); 
-  final volatilityFactor = historicalMean > 0 
-      ? 1 - min(1, historicalStdDev / historicalMean)
-      : 1;
-
-  // 10. Final safeguarded calculation
-  final finalScore = sigmoidGrowth *
-                     completenessFactor *
-                     volatilityFactor *
-                     maxPercentage;
-
-  return finalScore.clamp(0, maxPercentage).round();
-}
-
 class GradientIntensityMeter extends StatelessWidget {
   final double value; // Value between 0 and 100
   final double width;
   final double height;
+  final bool isIncome;
 
   const GradientIntensityMeter({
     super.key,
     required this.value,
     this.width = 60,
-    this.height = 8,
+    this.height = 8, 
+    this.isIncome = false,
   });
 
   @override
@@ -347,13 +195,17 @@ class GradientIntensityMeter extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(height / 2),
-        gradient: const LinearGradient(
-          colors: [
+        gradient: LinearGradient(
+          colors: !isIncome ? const [
             Color(0xFF00FFBB),
             Color(0xFFFFFF00),
             Color(0xFFFF3434),
+          ] : const [
+            Color(0xFFFF3434),
+            Color(0xFFFFFF00),
+            Color(0xFF00FFBB),
           ],
-          stops: [0.0, 0.5, 1.0],
+          stops: const [0.0, 0.5, 1.0],
         ),
       ),
       child: Stack(
@@ -379,7 +231,6 @@ class GradientIntensityMeter extends StatelessWidget {
     );
   }
 }
-
 
 double calculateFinancialHealth(User user) {
   // 1. Data preprocessing
@@ -489,4 +340,405 @@ double _calculateTrendMomentum(User user, DateTime today) {
 
   final slope = (7 * sumXY - sumX * sumY) / (7 * sumXX - sumX * sumX);
   return 1 / (1 + exp(-slope * 3)); // Sigmoid normalization
+}
+
+double calculateIncomeGrowth(List<Transaction> transactions) {
+  final now = DateTime.now();
+  final cutoff = now.subtract(const Duration(days: 90)); // 3-month analysis
+
+  // 1. Data preparation
+  final incomes = transactions
+      .where((t) => t.type == 'income' && t.date.isAfter(cutoff))
+      .toList();
+      
+  final expenses = transactions
+      .where((t) => t.type == 'expense' && t.date.isAfter(cutoff))
+      .toList();
+
+  // 2. Edge case handling
+  if (incomes.isEmpty) return 0.0;
+  if (incomes.length == 1) return 50.0; // Neutral score for single income
+
+  // 3. Core calculations
+  final dailyIncome = _groupByDay(incomes, now);
+  final dailyExpenses = _groupByDay(expenses, now);
+  
+  final stability = _calculateIncomeStability(dailyIncome);
+  final growth = _calculateGrowthRate(dailyIncome);
+  final coverage = _calculateCoverageRatio(dailyIncome, dailyExpenses);
+  final momentum = _calculateIncomeMomentum(dailyIncome);
+
+  // 4. Composite score
+  final score = (stability * 0.4) + 
+               (growth * 0.3) + 
+               (coverage * 0.2) + 
+               (momentum * 0.1);
+
+  return score.clamp(0, 100).toDouble();
+}
+
+// Helper functions
+Map<DateTime, double> _groupByDay(List<Transaction> transactions, DateTime now) {
+  final dailyTotals = <DateTime, double>{};
+  for (final t in transactions) {
+    final day = DateTime(t.date.year, t.date.month, t.date.day);
+    dailyTotals[day] = (dailyTotals[day] ?? 0.0) + t.amount;
+  }
+  return dailyTotals;
+}
+
+double _calculateIncomeStability(Map<DateTime, double> dailyIncome) {
+  final amounts = dailyIncome.values.toList();
+  final mean = amounts.average;
+  final stdDev = _standardDeviation(amounts, mean);
+  return (1 - (stdDev / (mean + 1e-10))).clamp(0, 1) * 100;
+}
+
+double _calculateGrowthRate(Map<DateTime, double> dailyIncome) {
+  final sortedDays = dailyIncome.keys.toList()..sort();
+  final firstMonth = _monthValue(sortedDays.first);
+  final lastMonth = _monthValue(sortedDays.last);
+  
+  final monthlyGrowth = (lastMonth.total / firstMonth.total - 1) * 100;
+  return monthlyGrowth.clamp(-50, 100); // Cap at 100% growth
+}
+
+double _calculateCoverageRatio(
+  Map<DateTime, double> income, 
+  Map<DateTime, double> expenses
+) {
+  double totalIncome = income.values.fold(0.0, (s, v) => s + v);
+  double totalExpenses = expenses.values.fold(0.0, (s, v) => s + v);
+  final ratio = totalIncome / (totalExpenses + 1e-10);
+  return (min(ratio, 2.0) * 50).clamp(0, 100); // 2x coverage = 100
+}
+
+double _calculateIncomeMomentum(Map<DateTime, double> dailyIncome) {
+  final sorted = dailyIncome.keys.toList()..sort();
+  final last14Days = sorted.sublist(max(0, sorted.length - 14));
+  final amounts = last14Days.map((d) => dailyIncome[d] ?? 0.0).toList();
+  
+  double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumXX = 0.0;
+  for (int i = 0; i < amounts.length; i++) {
+    sumX += i.toDouble();
+    sumY += amounts[i];
+    sumXY += i * amounts[i];
+    sumXX += i * i;
+  }
+  
+  final slope = (amounts.length * sumXY - sumX * sumY) / 
+               (amounts.length * sumXX - sumX * sumX);
+  return (slope * 100).clamp(-100, 100);
+}
+
+// Utility extensions
+extension on List<double> {
+  double get average => isEmpty ? 0 : reduce((a, b) => a + b) / length;
+}
+
+double _standardDeviation(List<double> values, double mean) {
+  if (values.length < 2) return 0.0;
+  final variance = values.fold(0.0, (sum, v) => sum + pow(v - mean, 2)) / values.length;
+  return sqrt(variance);
+}
+
+class _MonthSummary {
+  final int year;
+  final int month;
+  double total = 0.0;
+
+  _MonthSummary(this.year, this.month);
+}
+
+_MonthSummary _monthValue(DateTime date) {
+  return _MonthSummary(date.year, date.month);
+}
+
+// HELPER MAPPING FUNCTIONS 
+
+class FinancialInsight {
+  final String insight;
+  final String recommendation;
+  final String emoji;
+
+  const FinancialInsight({
+    required this.insight,
+    required this.recommendation,
+    required this.emoji,
+  });
+}
+
+FinancialInsight getFinancialInsight(double score, String type) {
+  assert(type == 'income' || type == 'expense', 'Type must be "income" or "expense"');
+
+  if (type == 'income') {
+    if (score >= 80) {
+      return const FinancialInsight(
+        insight: 'Strong income growth & high stability',
+        recommendation: 'Invest surplus, plan long-term',
+        emoji: '🌟',
+      );
+    } else if (score >= 60) {
+      return const FinancialInsight(
+        insight: 'Reliable income with moderate growth',
+        recommendation: 'Maintain & optimize income streams',
+        emoji: '💰',
+      );
+    } else if (score >= 40) {
+      return const FinancialInsight(
+        insight: 'Stable but stagnant income',
+        recommendation: 'Seek growth opportunities',
+        emoji: '🌼',
+      );
+    } else if (score >= 20) {
+      return const FinancialInsight(
+        insight: 'Volatile income with low coverage',
+        recommendation: 'Diversify income sources',
+        emoji: '⚡️',
+      );
+    } else {
+      return const FinancialInsight(
+        insight: 'Highly unstable income',
+        recommendation: 'Create an emergency fund',
+        emoji: '🚨',
+      );
+    }
+  } else { // type == 'expense'
+    if (score >= 80) {
+      return const FinancialInsight(
+        insight: 'Significantly over your usual spending',
+        recommendation: 'Pause and check finances',
+        emoji: '😱',
+      );
+    } else if (score >= 60) {
+      return const FinancialInsight(
+        insight: 'Spending more than usual',
+        recommendation: 'Review budget before buying more',
+        emoji: '😟',
+      );
+    } else if (score >= 40) {
+      return const FinancialInsight(
+        insight: 'Normal spending range',
+        recommendation: 'Maintain current habits',
+        emoji: '😉',
+      );
+    } else if (score >= 20) {
+      return const FinancialInsight(
+        insight: 'Spending less than usual',
+        recommendation: 'Good time to save',
+        emoji: '😌',
+      );
+    } else {
+      return const FinancialInsight(
+        insight: 'Exceptional saving day',
+        recommendation: 'Proceed with purchases (within reason)',
+        emoji: '😊',
+      );
+    }
+  }
+}
+
+// SHOW MODAL BOTTOM SHEET 
+
+void showFinancialMetricsGuide(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.grey[900],
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+    ),
+    builder: (context) {
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: GlobalVariables.backgroundColor
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 60,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildMetricSection(
+                icon: '💰',
+                title: "Income Flow Meter",
+                description: "See how steady and growing your money sources are",
+                color: Colors.tealAccent,
+                examples: [
+                  "🏦 If you get paid every Friday, this shows how reliable that is",
+                  "🎯 Helps spot if freelance work is becoming more consistent",
+                  "📈 Shows if your side hustle is actually growing over time",
+                ],
+              ),
+              const Divider(color: Colors.white24, height: 40),
+              _buildMetricSection(
+                icon: '🛍️',
+                title: "Spending Pulse",
+                description: "Understand your daily shopping habits instantly",
+                color: Colors.pinkAccent,
+                examples: [
+                  "☕ Shows if your coffee runs are becoming too regular",
+                  "🛒 Helps catch 'small' purchases adding up quickly",
+                  "🎉 Warns when weekend spending is higher than usual",
+                ],
+              ),
+              const SizedBox(height: 24),
+              _buildTipSection(),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: GlobalVariables.secondaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Got it! Let me try',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildMetricSection({
+  required String icon,
+  required String title,
+  required String description,
+  required Color color,
+  required List<String> examples,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              icon,
+              style: const TextStyle(fontSize: 24),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      ...examples.map((example) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                example,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      )),
+    ],
+  );
+}
+
+Widget _buildTipSection() {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: GlobalVariables.greyBackgroundColor,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Pro Tips ✨',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _buildTipItem("🕒 Check before big purchases"),
+        _buildTipItem("📅 Review weekly every Sunday"),
+        _buildTipItem("🎯 Focus on improving one metric at a time"),
+        _buildTipItem("💡 Tap numbers to see detailed breakdowns"),
+      ],
+    ),
+  );
+}
+
+Widget _buildTipItem(String text) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        const Icon(Icons.arrow_forward, color: Colors.white54, size: 16),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }

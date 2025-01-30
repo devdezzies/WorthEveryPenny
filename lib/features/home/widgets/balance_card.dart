@@ -6,8 +6,8 @@ import 'package:swappp/features/home/widgets/card_content/bank_balance_card_cont
 import 'package:swappp/features/home/widgets/card_content/total_balance_card_content.dart';
 
 class BalanceCard extends StatefulWidget {
-  final int income, expense, incomePercentage, totalBalance;
-  final double expensePercentage;
+  final int income, expense, totalBalance;
+  final double expensePercentage, incomePercentage;
   final DateTime lastUpdated;
   const BalanceCard(
       {super.key,
@@ -28,6 +28,8 @@ class _BalanceCardState extends State<BalanceCard> {
 
   @override
   Widget build(BuildContext context) {
+    final FinancialInsight incomeInsight = getFinancialInsight(widget.incomePercentage, 'income');
+    final FinancialInsight expenseInsight = getFinancialInsight(widget.expensePercentage, 'expense');
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 210,
@@ -87,6 +89,56 @@ class _BalanceCardState extends State<BalanceCard> {
                       bottomRight: Radius.circular(25))),
               child: Row(
                 children: [
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                "${expenseInsight.emoji} Expense",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Color.fromARGB(255, 175, 175, 175)),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 3),
+                                  child: GradientIntensityMeter(
+                                      value: widget.expensePercentage)),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                rupiahFormatCurrency(widget.expense),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                    overflow: TextOverflow.ellipsis),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.only(left: 20),
@@ -95,37 +147,25 @@ class _BalanceCardState extends State<BalanceCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.end,
-                                children: [
-                                  Icon(
-                                    Icons.arrow_downward,
-                                    color: GlobalVariables.secondaryColor,
-                                    size: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 3,
-                                  ),
-                                  Text(
-                                    "Income",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color:
-                                            Color.fromARGB(255, 175, 175, 175)),
-                                  ),
-                                ],
+                              
+                              const SizedBox(
+                                width: 3,
                               ),
                               Text(
-                                "${widget.incomePercentage}%",
+                                "${incomeInsight.emoji} Income",
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
-                                    color: GlobalVariables.secondaryColor),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color:
+                                        Color.fromARGB(255, 175, 175, 175)),
                               ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              
                             ],
                           ),
                           const SizedBox(
@@ -149,61 +189,6 @@ class _BalanceCardState extends State<BalanceCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.arrow_upward_rounded,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              const SizedBox(
-                                width: 3,
-                              ),
-                              const Text(
-                                "Expense",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: Color.fromARGB(255, 175, 175, 175)),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                  child: GradientIntensityMeter(
-                                      value: widget.expensePercentage)),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                rupiahFormatCurrency(widget.expense),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                    overflow: TextOverflow.ellipsis),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),

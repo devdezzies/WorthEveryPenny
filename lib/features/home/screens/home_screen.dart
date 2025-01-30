@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         children: [
           const SizedBox(height: 16,),
-            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: calculateFinancialHealth(user), incomePercentage: growthPercentageIncome(user), lastUpdated: user.transactions.isNotEmpty ? user.transactions[0].createdAt : user.updatedAt,), 
+            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: calculateFinancialHealth(user), incomePercentage: calculateIncomeGrowth(user.transactions), lastUpdated: user.transactions.isNotEmpty ? user.transactions[0].createdAt : user.updatedAt,), 
             const SizedBox(height: 20,),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
