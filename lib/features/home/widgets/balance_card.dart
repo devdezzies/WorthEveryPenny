@@ -6,9 +6,17 @@ import 'package:swappp/features/home/widgets/card_content/bank_balance_card_cont
 import 'package:swappp/features/home/widgets/card_content/total_balance_card_content.dart';
 
 class BalanceCard extends StatefulWidget {
-  final int income, expense, incomePercentage, expensePercentage, totalBalance;
+  final int income, expense, incomePercentage, totalBalance;
+  final double expensePercentage;
   final DateTime lastUpdated;
-  const BalanceCard({super.key, required this.income, required this.expense, required this.incomePercentage, required this.expensePercentage, required this.totalBalance, required this.lastUpdated});
+  const BalanceCard(
+      {super.key,
+      required this.income,
+      required this.expense,
+      required this.incomePercentage,
+      required this.expensePercentage,
+      required this.totalBalance,
+      required this.lastUpdated});
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();
@@ -34,7 +42,10 @@ class _BalanceCardState extends State<BalanceCard> {
               physics: const BouncingScrollPhysics(),
               controller: _pageController,
               children: [
-                TotalBalanceCardContent(totalBalance: widget.totalBalance, lastUpdated: widget.lastUpdated,), 
+                TotalBalanceCardContent(
+                  totalBalance: widget.totalBalance,
+                  lastUpdated: widget.lastUpdated,
+                ),
                 const BankBalanceCardContentEmpty(),
                 const BankBalanceCardContentEmpty(),
               ],
@@ -46,31 +57,34 @@ class _BalanceCardState extends State<BalanceCard> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             width: double.infinity,
             child: SmoothPageIndicator(
-                controller: _pageController,
-                count: 3,
-                effect: CustomizableEffect(
-                  activeDotDecoration: DotDecoration(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: 8,
-                    color: GlobalVariables.secondaryColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  dotDecoration: DotDecoration(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: 8,
-                    color: _overlayColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  spacing: 5.0, // No spacing between the bars
-                  inActiveColorOverride: (i) => _overlayColor, // Override inactive color
+              controller: _pageController,
+              count: 3,
+              effect: CustomizableEffect(
+                activeDotDecoration: DotDecoration(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: 8,
+                  color: GlobalVariables.secondaryColor,
+                  borderRadius: BorderRadius.circular(5),
                 ),
+                dotDecoration: DotDecoration(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  height: 8,
+                  color: _overlayColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                spacing: 5.0, // No spacing between the bars
+                inActiveColorOverride: (i) =>
+                    _overlayColor, // Override inactive color
               ),
+            ),
           ),
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                  color: GlobalVariables.darkerGreyBackgroundColor, 
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25))),
+                  color: GlobalVariables.darkerGreyBackgroundColor,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25))),
               child: Row(
                 children: [
                   Expanded(
@@ -87,19 +101,48 @@ class _BalanceCardState extends State<BalanceCard> {
                               const Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.end,
                                 children: [
-                                  Icon(Icons.arrow_downward, color: GlobalVariables.secondaryColor, size: 20,),
-                                  SizedBox(width: 3,),
-                                  Text("Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
+                                  Icon(
+                                    Icons.arrow_downward,
+                                    color: GlobalVariables.secondaryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text(
+                                    "Income",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color:
+                                            Color.fromARGB(255, 175, 175, 175)),
+                                  ),
                                 ],
                               ),
-                              Text("${widget.incomePercentage}%", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: GlobalVariables.secondaryColor),)
+                              Text(
+                                "${widget.incomePercentage}%",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    color: GlobalVariables.secondaryColor),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 5,),
+                          const SizedBox(
+                            height: 5,
+                          ),
                           Row(
                             children: [
-                              const SizedBox(width: 5,),
-                                Text(rupiahFormatCurrency(widget.income), style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                rupiahFormatCurrency(widget.income),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                    overflow: TextOverflow.ellipsis),
+                              ),
                             ],
                           )
                         ],
@@ -108,32 +151,53 @@ class _BalanceCardState extends State<BalanceCard> {
                   ),
                   const SizedBox(width: 15),
                   Expanded(
-                    child: Container(  
+                    child: Container(
                       margin: const EdgeInsets.only(right: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.end,
-                                children: [
-                                  Icon(Icons.arrow_upward_rounded, color: Colors.red, size: 20,),
-                                  SizedBox(width: 3,),
-                                  Text("Expense", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color.fromARGB(255, 175, 175, 175)),),
-                                ],
+                              const Icon(
+                                Icons.arrow_upward_rounded,
+                                color: Colors.red,
+                                size: 20,
                               ),
-                              Text("${widget.expensePercentage}%", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color.fromARGB(255, 247, 78, 66)),)
+                              const SizedBox(
+                                width: 3,
+                              ),
+                              const Text(
+                                "Expense",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Color.fromARGB(255, 175, 175, 175)),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 5),
+                                  child: GradientIntensityMeter(
+                                      value: widget.expensePercentage)),
                             ],
-                          ), 
-                          const SizedBox(height: 5,),
+                          ),
+                          const SizedBox(height: 5),
                           Row(
                             children: [
-                              const SizedBox(width: 5,),
-                              Text(rupiahFormatCurrency(widget.expense), style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                rupiahFormatCurrency(widget.expense),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                    overflow: TextOverflow.ellipsis),
+                              ),
                             ],
                           )
                         ],

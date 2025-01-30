@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/settings/screens/settings_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,10 +41,10 @@ class _BottomBarState extends State<BottomBar> {
         child: Text("Home"),
       ),
       const Center(
-        child: Text("Home"),
+        child: GradientIntensityMeter(value: 75),
       ),
       const Center(
-        child: Text("Home"),
+        child: GradientIntensityMeter(value: 50),
       ),
       _buildSettingsScreen(context)
     ];
