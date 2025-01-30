@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 
 class TransactionNameField extends StatefulWidget {
@@ -13,19 +14,18 @@ class TransactionNameField extends StatefulWidget {
 
 class _TransactionNameFieldState extends State<TransactionNameField> {
   final List<Map<String, String>> categories = [
-    {"title": "😋 Food and Beverages", "emoji": "😋"},
-    {"title": "🚗 Transportation", "emoji": "🚗"},
-    {"title": "🛍️ Shopping", "emoji": "🛍️"},
-    {"title": "🎬 Entertainment", "emoji": "🎬"},
-    {"title": "🏋️ Health and Fitness", "emoji": "🏋️"},
-    {"title": "✈️ Travel", "emoji": "✈️"},
-    {"title": "📚 Education", "emoji": "📚"},
-    {"title": "💡 Utilities", "emoji": "💡"},
-    {"title": "🏠 Housing", "emoji": "🏠"},
-    {"title": "🛡️ Insurance", "emoji": "🛡️"},
-    {"title": "💰 Savings", "emoji": "💰"},
+    {"title": "Food and Beverages", "emoji": "😋"},
+    {"title": "Transportation", "emoji": "🚗"},
+    {"title": "Shopping", "emoji": "🛍️"},
+    {"title": "Entertainment", "emoji": "🎬"},
+    {"title": "Health and Fitness", "emoji": "🏋️"},
+    {"title": "Travel", "emoji": "✈️"},
+    {"title": "Education", "emoji": "📚"},
+    {"title": "Utilities", "emoji": "📦"},
+    {"title": "Housing", "emoji": "🏠"},
+    {"title": "Insurance", "emoji": "🛡️"},
   ];
-  String chosenEmoji = "🛍️";
+  String chosenEmoji = "Utilities";
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +63,9 @@ class _TransactionNameFieldState extends State<TransactionNameField> {
                             ),
                             ...categories.map((category) {
                               return ListTile(
-                                title: Text(category["title"]!),
+                                title: Text('${category["emoji"]} ${category["title"]}'),
                                 onTap: () =>
-                                    Navigator.pop(context, category["emoji"]),
+                                    Navigator.pop(context, category["title"]),
                               );
                             }),
                           ],
@@ -79,6 +79,8 @@ class _TransactionNameFieldState extends State<TransactionNameField> {
                 setState(() {
                   chosenEmoji = emoji;
                 });
+                transactionProvider.transaction.category = categories.firstWhere(
+                    (element) => element["title"] == emoji)["title"];
               }
             },
             child: Container(
@@ -89,7 +91,7 @@ class _TransactionNameFieldState extends State<TransactionNameField> {
                 color: GlobalVariables.backgroundColor,
                 shape: BoxShape.circle,
               ),
-              child: Text(isIncome ? '💸' : chosenEmoji,
+              child: Text(isIncome ? '💸' : getCategoryEmoji(chosenEmoji),
                   style: const TextStyle(fontSize: 20)),
             ),
           ),

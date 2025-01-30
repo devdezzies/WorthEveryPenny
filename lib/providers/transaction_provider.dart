@@ -12,7 +12,7 @@ class TransactionProvider extends ChangeNotifier {
     paymentMethod: 'cash',
     tags: [],
     date: DateTime.now(),
-    category: '',
+    category: 'Utilities',
     recurring: false,
     description: '',
     type: 'expense',
@@ -44,7 +44,7 @@ class TransactionProvider extends ChangeNotifier {
     _transaction.paymentMethod = 'cash';
     _transaction.tags = [];
     _transaction.date = DateTime.now();
-    _transaction.category = '';
+    _transaction.category = 'Utilities';
     _transaction.recurring = false;
     _transaction.description = '';
     _transaction.type = 'expense';

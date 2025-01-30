@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/home/widgets/balance_card.dart';
 import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
+import 'package:swappp/features/home/widgets/filled_transaction_list.dart';
 import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
 import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
 import 'package:swappp/providers/user_provider.dart';
@@ -89,11 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: ListView(
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         children: [
           const SizedBox(height: 16,),
-            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: 20, incomePercentage: 10, lastUpdated: user.updatedAt,), 
+            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: growthPercentageExpenseByPreviousDay(user), incomePercentage: growthPercentageIncomeByPreviousDay(user), lastUpdated: user.transactions.isEmpty ? user.updatedAt : user.transactions.first.createdAt,), 
             const SizedBox(height: 20,),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
@@ -111,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ), 
             const SizedBox(height: 10,),
-            const EmptyTransactionList()
+            user.transactions.isEmpty ? const EmptyTransactionList() : const FilledTransactionList()
         ],
       )
     );

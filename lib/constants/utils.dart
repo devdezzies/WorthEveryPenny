@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/models/user.dart';
 
 void showSnackBar(BuildContext context, String text) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -59,10 +60,10 @@ String countTimeAgo(DateTime dateTime) {
   }
 }
 
-String getGrowthPercentage(int totalBalance, int previousTotalBalance) {
+int getGrowthPercentage(int totalBalance, int previousTotalBalance) {
   final double growth =
       (totalBalance - previousTotalBalance) / previousTotalBalance * 100;
-  return "${growth.toStringAsFixed(2)}%";
+  return growth.toInt();
 }
 
 Future<bool> showConfirmationDialog(
@@ -122,4 +123,128 @@ String monthName(int month) {
     default:
       return "";
   }
+}
+
+final List<Map<String, String>> categories = [
+  {"title": "Food and Beverages", "emoji": "😋"},
+  {"title": "Transportation", "emoji": "🚗"},
+  {"title": "Shopping", "emoji": "🛍️"},
+  {"title": "Entertainment", "emoji": "🎬"},
+  {"title": "Health and Fitness", "emoji": "🏋️"},
+  {"title": "Travel", "emoji": "✈️"},
+  {"title": "Education", "emoji": "📚"},
+  {"title": "Utilities", "emoji": "📦"},
+  {"title": "Housing", "emoji": "🏠"},
+  {"title": "Insurance", "emoji": "🛡️"},
+];
+
+String getCategoryEmoji(String category) {
+  for (var item in categories) {
+    if (item["title"] == category) {
+      return item["emoji"] ?? "🛒";
+    }
+  }
+  return "🛒";
+}
+
+String formatDateTime(DateTime dateTime) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final inputDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  // Format time in 12-hour with AM/PM
+  final hour = dateTime.hour;
+  final period = hour >= 12 ? 'PM' : 'AM';
+  int twelveHour = hour % 12;
+  twelveHour = twelveHour == 0 ? 12 : twelveHour; // Handle 0 (midnight) as 12 AM
+  final formattedHour = twelveHour.toString().padLeft(2, '0');
+  final formattedMinute = dateTime.minute.toString().padLeft(2, '0');
+  final time = '$formattedHour:$formattedMinute $period';
+
+  if (inputDate == today) {
+    return 'Today, $time';
+  } else if (inputDate == yesterday) {
+    return 'Yesterday, $time';
+  } else {
+    return '${dateTime.day} ${monthName(dateTime.month)}, $time';
+  }
+}
+
+int growthPercentageIncomeByPreviousDay(User user) {
+  if (user.transactions.isEmpty) return 0;
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+
+  // 1. Null-check transactions
+  final transactions = user.transactions;
+  if (transactions.isEmpty) return 0;
+
+  // 2. Safe date comparison helper
+  bool isSameDate(DateTime? a, DateTime b) {
+    if (a == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  // 3. Safely filter valid transactions
+  final validTransactions = transactions.where((t) => 
+    t.type == 'income'
+  ).toList();
+
+  // 4. Get daily totals safely
+  final todayTotal = validTransactions
+    .where((t) => isSameDate(t.date, today))
+    .fold<int>(0, (sum, t) => sum + (t.amount));
+
+  final yesterdayTotal = validTransactions
+    .where((t) => isSameDate(t.date, yesterday))
+    .fold<int>(0, (sum, t) => sum + (t.amount));
+
+  // 5. Handle edge cases
+  if (todayTotal == 0 && yesterdayTotal == 0) return 0;
+  if (yesterdayTotal == 0) return todayTotal > 0 ? 100 : 0;
+
+  // 6. Calculate percentage safely
+  final percentage = ((todayTotal - yesterdayTotal) / yesterdayTotal * 100).round();
+  return percentage.clamp(-100, double.infinity).toInt();
+}
+
+int growthPercentageExpenseByPreviousDay(User user) {
+  if (user.transactions.isEmpty) return 0;
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+
+  // 1. Null-check transactions
+  final transactions = user.transactions;
+  if (transactions.isEmpty) return 0;
+
+  // 2. Safe date comparison helper
+  bool isSameDate(DateTime? a, DateTime b) {
+    if (a == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  // 3. Safely filter valid transactions
+  final validTransactions = transactions.where((t) => 
+    t.type == 'expense'
+  ).toList();
+
+  // 4. Get daily totals safely
+  final todayTotal = validTransactions
+    .where((t) => isSameDate(t.date, today))
+    .fold<int>(0, (sum, t) => sum + (t.amount));
+
+  final yesterdayTotal = validTransactions
+    .where((t) => isSameDate(t.date, yesterday))
+    .fold<int>(0, (sum, t) => sum + (t.amount));
+
+  // 5. Handle edge cases
+  if (todayTotal == 0 && yesterdayTotal == 0) return 0;
+  if (yesterdayTotal == 0) return todayTotal > 0 ? 100 : 0;
+
+  // 6. Calculate percentage safely
+  final percentage = ((todayTotal - yesterdayTotal) / yesterdayTotal * 100).round();
+  return percentage.clamp(-100, double.infinity).toInt();
 }
