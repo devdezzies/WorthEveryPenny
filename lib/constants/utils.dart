@@ -172,79 +172,31 @@ String formatDateTime(DateTime dateTime) {
 }
 
 int growthPercentageIncomeByPreviousDay(User user) {
-  if (user.transactions.isEmpty) return 0;
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(const Duration(days: 1));
-
-  // 1. Null-check transactions
-  final transactions = user.transactions;
-  if (transactions.isEmpty) return 0;
-
-  // 2. Safe date comparison helper
-  bool isSameDate(DateTime? a, DateTime b) {
-    if (a == null) return false;
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+  if (user.transactions.isEmpty) {
+    return 0;
   }
-
-  // 3. Safely filter valid transactions
-  final validTransactions = transactions.where((t) => 
-    t.type == 'income'
-  ).toList();
-
-  // 4. Get daily totals safely
-  final todayTotal = validTransactions
-    .where((t) => isSameDate(t.date, today))
-    .fold<int>(0, (sum, t) => sum + (t.amount));
-
-  final yesterdayTotal = validTransactions
-    .where((t) => isSameDate(t.date, yesterday))
-    .fold<int>(0, (sum, t) => sum + (t.amount));
-
-  // 5. Handle edge cases
-  if (todayTotal == 0 && yesterdayTotal == 0) return 0;
-  if (yesterdayTotal == 0) return todayTotal > 0 ? 100 : 0;
-
-  // 6. Calculate percentage safely
-  final percentage = ((todayTotal - yesterdayTotal) / yesterdayTotal * 100).round();
-  return percentage.clamp(-100, double.infinity).toInt();
+  final int totalIncome = user.transactions
+      .where((transaction) => transaction.type == 'income')
+      .fold(0, (prev, transaction) => prev + transaction.amount);
+  final int previousTotalIncome = user.transactions
+      .where((transaction) =>
+          transaction.type == 'income' &&
+          transaction.date.isBefore(DateTime.now()))
+      .fold(0, (prev, transaction) => prev + transaction.amount);
+  return getGrowthPercentage(totalIncome, previousTotalIncome);
 }
 
 int growthPercentageExpenseByPreviousDay(User user) {
-  if (user.transactions.isEmpty) return 0;
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(const Duration(days: 1));
-
-  // 1. Null-check transactions
-  final transactions = user.transactions;
-  if (transactions.isEmpty) return 0;
-
-  // 2. Safe date comparison helper
-  bool isSameDate(DateTime? a, DateTime b) {
-    if (a == null) return false;
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+  if (user.transactions.isEmpty) {
+    return 0;
   }
-
-  // 3. Safely filter valid transactions
-  final validTransactions = transactions.where((t) => 
-    t.type == 'expense'
-  ).toList();
-
-  // 4. Get daily totals safely
-  final todayTotal = validTransactions
-    .where((t) => isSameDate(t.date, today))
-    .fold<int>(0, (sum, t) => sum + (t.amount));
-
-  final yesterdayTotal = validTransactions
-    .where((t) => isSameDate(t.date, yesterday))
-    .fold<int>(0, (sum, t) => sum + (t.amount));
-
-  // 5. Handle edge cases
-  if (todayTotal == 0 && yesterdayTotal == 0) return 0;
-  if (yesterdayTotal == 0) return todayTotal > 0 ? 100 : 0;
-
-  // 6. Calculate percentage safely
-  final percentage = ((todayTotal - yesterdayTotal) / yesterdayTotal * 100).round();
-  return percentage.clamp(-100, double.infinity).toInt();
+  final int totalExpense = user.transactions
+      .where((transaction) => transaction.type == 'expense')
+      .fold(0, (prev, transaction) => prev + transaction.amount);
+  final int previousTotalExpense = user.transactions
+      .where((transaction) =>
+          transaction.type == 'expense' &&
+          transaction.date.isBefore(DateTime.now()))
+      .fold(0, (prev, transaction) => prev + transaction.amount);
+  return getGrowthPercentage(totalExpense, previousTotalExpense);
 }
