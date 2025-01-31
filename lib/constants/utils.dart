@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void showSnackBar(BuildContext context, String text) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -760,4 +761,66 @@ String getFullDate(String date) {
   final int month = int.parse(dateParts[1]);
   final int year = int.parse(dateParts[0]);
   return "$day ${monthName(month)} $year";
+}
+
+// show modal bottom sheet with WebView
+void showWebViewModalBottomSheet({
+  required BuildContext context,
+  required String url,
+  String? title,
+  bool isScrollControlled = true,
+}) {
+  // Initialize WebView controller for better performance
+  final WebViewController webViewController = WebViewController();
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: isScrollControlled,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.9, // 90% of screen height
+        decoration: const BoxDecoration(
+          color: GlobalVariables.backgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+        ),
+        child: Column(
+          children: [
+            // Header with title and close button
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                title ?? 'WebView',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            // WebView
+            Expanded(
+              child: WebViewWidget(
+                controller: webViewController
+                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                  ..loadRequest(Uri.parse(url))
+                  ..setNavigationDelegate(
+                    NavigationDelegate(
+                      onPageStarted: (url) {
+                        // Optional: Show loading indicator
+                      },
+                      onPageFinished: (url) {
+                        // Optional: Hide loading indicator
+                      },
+                      onWebResourceError: (error) {
+                        // Optional: Handle errors
+                      },
+                    ),
+                  ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

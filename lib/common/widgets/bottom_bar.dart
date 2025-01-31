@@ -124,10 +124,10 @@ class _BottomBarState extends State<BottomBar> {
             BottomNavigationBarItem(
                 icon: SizedBox(
                   width: bottomBarWidth,
-                  child: const Icon(Icons.people),
+                  child: const Icon(Icons.signal_cellular_alt_rounded),
                 ),
-                activeIcon: const Icon(Icons.people),
-                label: "Friends"),
+                activeIcon: const Icon(Icons.signal_cellular_alt_rounded),
+                label: "Analytics"),
             BottomNavigationBarItem(
                 icon: SizedBox(
                   width: bottomBarWidth,

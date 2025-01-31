@@ -24,7 +24,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late User user;
-  late String token;
+  late String cannyToken;
   late TextEditingController usernameController;
   late TextEditingController emailController;
   late TextEditingController cardNumberController;
@@ -41,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     usernameController = TextEditingController(text: user.displayName);
     emailController = TextEditingController(text: user.email);
     cardNumberController = TextEditingController(text: user.paymentNumber);
-    _initializeWebView();
+    _initializeToken();
   }
 
   @override
@@ -58,56 +58,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
-  Future<void> _initializeWebView() async {
+  Future<void> _initializeToken() async {
     settingsService
         .createCannyToken(
             context: context, id: user.id, name: user.username, email: user.email)
         .then((token) {
-      webViewController = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setNavigationDelegate(NavigationDelegate(
-          onProgress: (_) {
-            const CircularProgressIndicator();
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onHttpError: (HttpResponseError error) {},
-          onWebResourceError: (WebResourceError error) {},
-        ))
-        ..loadRequest(Uri.parse(
-            'https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$token'));
+        cannyToken = token;
     });
-
-  }
-
-  void _showFeatureWebView(BuildContext context) {
-    // Initialize the webview controller
-    showModalBottomSheet(
-        context: context,
-        builder: (context) => SafeArea(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    color: GlobalVariables.backgroundColor,
-                    child: const Text(
-                      "Report or Request Features",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: WebViewWidget(controller: webViewController),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ));
   }
 
   void _showImagePickerOptions(BuildContext context) {
@@ -326,17 +283,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  const ProfileButton(
+                  ProfileButton(
+                    onTap: () {
+                      showWebViewModalBottomSheet(context: context, url: "https://wortheverypenny.vercel.app/help-center");
+                    },
                     title: "Contact Support",
-                    leadingIcon: Icon(
+                    leadingIcon: const Icon(
                       Icons.support,
                       color: Colors.redAccent,
                     ),
                   ),
                   ProfileButton(
-                    title: "Request Features or Report Bugs",
+                    title: "Request Features or Reports Bugs",
                     onTap: () {
-                      _showFeatureWebView(context);
+                      //_showFeatureWebView(context);
+                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken");
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,
