@@ -124,6 +124,7 @@ class AuthService {
       if (token == null) {
         prefs.setString('x-auth-token', '');
       }
+      debugPrint(token.toString());
 
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
           headers: <String, String>{

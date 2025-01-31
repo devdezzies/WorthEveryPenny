@@ -742,3 +742,22 @@ Widget _buildTipItem(String text) {
     ),
   );
 }
+
+// DATE UTILS
+
+// function that returns String from a date format "2025-02" return February 2025
+String getMonthYear(String date) {
+  final List<String> dateParts = date.split("-");
+  final int month = int.parse(dateParts[1]);
+  final int year = int.parse(dateParts[0]);
+  return "${monthName(month)} $year";
+}
+
+// function that returns String from a date format "2025-02-05" return 5 February 2025
+String getFullDate(String date) {
+  final List<String> dateParts = date.split("-");
+  final int day = int.parse(dateParts[2]);
+  final int month = int.parse(dateParts[1]);
+  final int year = int.parse(dateParts[0]);
+  return "$day ${monthName(month)} $year";
+}

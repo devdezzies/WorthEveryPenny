@@ -20,6 +20,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   int _amount = 0;
 
+  @override 
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void _nextPage() {
     if (_currentPage < 2) {
       _pageController.nextPage(
@@ -57,12 +63,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   onPressed: () {
                     _previousPage();
                   },
-                  icon: const Icon(
-                    Icons.arrow_back_ios_rounded,
-                    size: 30,
-                    color: Colors.white,
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.grey[500],
                   ),
-                  color: GlobalVariables.secondaryColor,
                 )
               : null,
         ),
@@ -71,14 +75,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
         backgroundColor: GlobalVariables.backgroundColor,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, size: 40, color: Colors.white,),
+            icon: Icon(Icons.close, color: Colors.grey[500],),
             onPressed: () {
               Navigator.pop(context);
               transactionProvider.setCurrentNumber('');
-            },
-            color: GlobalVariables
-                .secondaryColor, // Set the button color to transparent
-            iconSize: 40,
+            }, // Set the button color to transparent
           ),
           const SizedBox(width: 16),
         ],
@@ -103,25 +104,3 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 }
-
-Route createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        const TransactionScreen(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.0, 1.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      var offsetAnimation = animation.drive(tween);
-
-      return SlideTransition(
-        position: offsetAnimation,
-        child: child,
-      );
-    },
-  );
-}
-
-// Navigator.of(context).push(createRoute());

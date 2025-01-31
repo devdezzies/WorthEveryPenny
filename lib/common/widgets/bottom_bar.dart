@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/route_animations.dart';
 import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/settings/screens/settings_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
@@ -66,7 +67,7 @@ class _BottomBarState extends State<BottomBar> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              Navigator.of(context).push(createRoute());
+              Navigator.of(context).push(createRouteCustom(const TransactionScreen(), const Offset(0.0, 1.0), Offset.zero, Curves.ease));
             });
           },
           shape: const CircleBorder(),

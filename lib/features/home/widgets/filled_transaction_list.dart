@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/constants/utils.dart';
+import 'package:swappp/constants/route_animations.dart';
 import 'package:swappp/features/home/widgets/transaction_bar.dart';
+import 'package:swappp/features/transaction/screens/transaction_history.dart';
+import 'package:swappp/features/transaction/services/transaction_service.dart';
 import 'package:swappp/models/user.dart';
 import 'package:swappp/providers/user_provider.dart';
 
@@ -12,6 +14,7 @@ class FilledTransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User userProvider = Provider.of<UserProvider>(context).user;
+    final TransactionService transactionService = TransactionService();
     return Column(
       children: [
         const SizedBox(
@@ -27,7 +30,8 @@ class FilledTransactionList extends StatelessWidget {
             const Spacer(),
             GestureDetector(
               onTap: () {
-                showFinancialMetricsGuide(context);
+                transactionService.getCategorizedTransactions(context);
+                Navigator.of(context).push(createRouteCustom(const TransactionHistory(), const Offset(1.0, 0.0), Offset.zero, Curves.ease));
               },
                 child: const Text('See all',
                     style: TextStyle(

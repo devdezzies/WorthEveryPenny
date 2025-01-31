@@ -19,7 +19,10 @@ class TransactionProvider extends ChangeNotifier {
     createdAt: DateTime.now(),
   );
 
+  final List<dynamic> _fetchedCategorizedTransactions = [];
+
   Transaction get transaction => _transaction;
+  List<dynamic> get fetchedCategorizedTransactions => _fetchedCategorizedTransactions;
 
   void setTransactionType(String type) {
     _transaction.type = type;
@@ -49,6 +52,12 @@ class TransactionProvider extends ChangeNotifier {
     _transaction.description = '';
     _transaction.type = 'expense';
     _transaction.createdAt = DateTime.now();
+    notifyListeners();
+  }
+
+  void setCategorizedTransactions(List<dynamic> transactions) {
+    _fetchedCategorizedTransactions.clear();
+    _fetchedCategorizedTransactions.addAll(transactions);
     notifyListeners();
   }
 }
