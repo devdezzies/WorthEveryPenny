@@ -17,8 +17,8 @@ class UserDataForm extends StatelessWidget {
         ),
         Text(
           content,
-          style: const TextStyle(
-              fontWeight: FontWeight.w500, fontSize: 18, color: Colors.grey),
+          style: TextStyle(
+              fontWeight: FontWeight.w500, fontSize: 18, color: Colors.grey[500]),
         )
       ],
     );

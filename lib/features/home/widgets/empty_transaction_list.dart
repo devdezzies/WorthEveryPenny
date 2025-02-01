@@ -18,8 +18,8 @@ class EmptyTransactionList extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            const Text('Recent Transactions',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('Recent Transactions',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[500])),
             const Spacer(),
             GestureDetector(
               onTap: () {

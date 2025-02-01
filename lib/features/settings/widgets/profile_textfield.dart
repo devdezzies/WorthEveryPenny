@@ -22,7 +22,7 @@ class ProfileTextfield extends StatelessWidget {
         validator: validator,
         controller: controller,
         keyboardType: keyType,
-        cursorColor: const Color.fromARGB(255, 73, 70, 70),
+        cursorColor: Colors.grey[500],
         style: const TextStyle(fontWeight: FontWeight.w600, color: Color.fromARGB(255, 73, 70, 70)),
         textAlign: TextAlign.right,
         decoration: InputDecoration(

@@ -171,10 +171,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "Account Settings",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -209,10 +209,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "Integrations",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -226,10 +226,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "Subscription",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -248,10 +248,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "App Settings",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -276,16 +276,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "Help and Support",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
                   ProfileButton(
                     onTap: () {
-                      showWebViewModalBottomSheet(context: context, url: "https://wortheverypenny.vercel.app/help-center");
+                      showWebViewModalBottomSheet(context: context, url: "https://wortheverypenny.vercel.app/help-center", title: "Hi ${user.displayName} 👋");
                     },
                     title: "Contact Support",
                     leadingIcon: const Icon(
@@ -297,7 +297,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: "Request Features or Reports Bugs",
                     onTap: () {
                       //_showFeatureWebView(context);
-                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken");
+                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken", title: "Hi ${user.displayName} 👋", subtitle: "Have anything to share with us?");
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,
@@ -318,10 +318,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: const Text(
+                    child: Text(
                       "Account Management",
                       style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),

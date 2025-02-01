@@ -13,18 +13,6 @@ class TransactionNameField extends StatefulWidget {
 }
 
 class _TransactionNameFieldState extends State<TransactionNameField> {
-  final List<Map<String, String>> categories = [
-    {"title": "Food and Beverages", "emoji": "😋"},
-    {"title": "Transportation", "emoji": "🚗"},
-    {"title": "Shopping", "emoji": "🛍️"},
-    {"title": "Entertainment", "emoji": "🎬"},
-    {"title": "Health and Fitness", "emoji": "🏋️"},
-    {"title": "Travel", "emoji": "✈️"},
-    {"title": "Education", "emoji": "📚"},
-    {"title": "Utilities", "emoji": "📦"},
-    {"title": "Housing", "emoji": "🏠"},
-    {"title": "Insurance", "emoji": "🛡️"},
-  ];
   String chosenEmoji = "Utilities";
 
   @override

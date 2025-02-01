@@ -39,6 +39,7 @@ class TransactionService {
             context: context,
             onSuccess: () {
               transactionProvider.resetTransaction();
+              // TODO: THERE MIGHT BE A BETTER WAY TO DO THIS
               authService.getUserData(context);
             });
       }

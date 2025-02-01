@@ -8,6 +8,7 @@ import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
 import 'package:swappp/features/home/widgets/filled_transaction_list.dart';
 import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
 import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
+import 'package:swappp/features/home/widgets/spending_pulse.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -61,13 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       getGreeting(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 15,
+                        color: Colors.grey[500]
                       ),
                     ),
                     Text(
-                      "${user.displayName} 🤘",
+                      "${user.displayName} 👋",
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     )
                   ],
@@ -94,9 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         children: [
-          const SizedBox(height: 16,),
-            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: calculateFinancialHealth(user), incomePercentage: calculateIncomeGrowth(user.transactions), lastUpdated: user.transactions.isNotEmpty ? user.transactions[0].createdAt : user.updatedAt,), 
-            const SizedBox(height: 20,),
+            const SizedBox(height: 5),
+            SpendingPulse(value: calculateFinancialHealth(user)),
+            const SizedBox(height: 16),
+            // TODO: resolve the issue with last updated
+            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: calculateFinancialHealth(user), lastUpdated: user.transactions.isNotEmpty ? user.transactions[0].createdAt : user.updatedAt,), 
+            const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
               width: double.infinity,
