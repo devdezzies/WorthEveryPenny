@@ -9,7 +9,8 @@ class DatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TransactionProvider transactionProvider = Provider.of<TransactionProvider>(context);
+    final TransactionProvider transactionProvider =
+        Provider.of<TransactionProvider>(context);
     DateTime selectedDate = transactionProvider.transaction.date;
 
     return Row(
@@ -23,6 +24,7 @@ class DatePicker extends StatelessWidget {
                 firstDate: DateTime(2000),
                 lastDate: DateTime(2101),
               );
+
               if (pickedDate != null) {
                 transactionProvider.setTransactionDate(pickedDate);
               }
@@ -35,12 +37,23 @@ class DatePicker extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const SizedBox(width: 70, child: Text("Date", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),),),
+                  const SizedBox(
+                    width: 70,
+                    child: Text(
+                      "Date",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                    ),
+                  ),
                   const Icon(Icons.calendar_today, size: 16),
                   const SizedBox(width: 5),
-                  Text(selectedDate.day == DateTime.now().day
-                      ? 'Today'
-                      : '${monthName(selectedDate.month)} ${selectedDate.day}, ${selectedDate.year}', style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
+                  Text(
+                    selectedDate.day == DateTime.now().day
+                        ? 'Today'
+                        : '${monthName(selectedDate.month)} ${selectedDate.day}, ${selectedDate.year}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, fontSize: 16),
+                  ),
                 ],
               ),
             ),

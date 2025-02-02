@@ -10,7 +10,7 @@ class BankAccount {
   DateTime createdAt;
 
   BankAccount({
-    required this.user,
+    this.user = '',
     required this.bankName,
     required this.accountNumber,
     required this.accountType,
@@ -28,7 +28,7 @@ class BankAccount {
       'accountType': accountType,
       'balance': balance,
       'transactions': transactions,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String()
     };
   }
 

@@ -9,7 +9,7 @@ class TransactionProvider extends ChangeNotifier {
   final Transaction _transaction = Transaction(
     amount: 0,
     name: 'Transaction',
-    paymentMethod: 'cash',
+    source: 'cash',
     tags: [],
     date: DateTime.now(),
     category: 'Utilities',
@@ -44,7 +44,7 @@ class TransactionProvider extends ChangeNotifier {
     _currentNumber = '';
     _transaction.amount = 0;
     _transaction.name = 'Transaction';
-    _transaction.paymentMethod = 'cash';
+    _transaction.source = 'cash';
     _transaction.tags = [];
     _transaction.date = DateTime.now();
     _transaction.category = 'Utilities';

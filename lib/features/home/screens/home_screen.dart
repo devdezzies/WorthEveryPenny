@@ -35,72 +35,78 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: true).user;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: GlobalVariables.backgroundColor,
-        leadingWidth: MediaQuery.of(context).size.width * 0.7,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 16),
-          child: Row(
-            children: [
-              ClipOval(
-                child: CachedNetworkImage(
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  imageUrl:
-                      user.profilePicture,
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  width: 35,
-                  height: 35,
+        appBar: AppBar(
+          backgroundColor: GlobalVariables.backgroundColor,
+          leadingWidth: MediaQuery.of(context).size.width * 0.7,
+          leading: Container(
+            margin: const EdgeInsets.only(left: 16),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    imageUrl: user.profilePicture,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    width: 35,
+                    height: 35,
+                  ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      getGreeting(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        color: Colors.grey[500]
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        getGreeting(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                            color: Colors.grey[500]),
                       ),
-                    ),
-                    Text(
-                      "${user.displayName} 👋",
-                      style: const TextStyle(fontWeight: FontWeight.w900),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            child: Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              child: const Icon(
-                Icons.notifications_outlined,
-                color: GlobalVariables.secondaryColor,
-                size: 30,
-              ),
+                      Text(
+                        "${user.displayName} 👋",
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      )
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-          
-        ],
-      ),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        children: [
+          actions: [
+            GestureDetector(
+              child: Container(
+                margin: const EdgeInsets.only(right: 16.0),
+                child: const Icon(
+                  Icons.notifications_outlined,
+                  color: GlobalVariables.secondaryColor,
+                  size: 30,
+                ),
+              ),
+            ),
+          ],
+        ),
+        body: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          children: [
             const SizedBox(height: 5),
             SpendingPulse(value: calculateFinancialHealth(user)),
             const SizedBox(height: 16),
             // TODO: resolve the issue with last updated
-            BalanceCard(expense: user.monthlyReport[0].totalExpense.toInt(), totalBalance: user.cash, income: user.monthlyReport[0].totalIncome.toInt(), expensePercentage: calculateFinancialHealth(user), lastUpdated: user.transactions.isNotEmpty ? user.transactions[0].createdAt : user.updatedAt,), 
+            BalanceCard(
+              expense: user.monthlyReport[0].totalExpense.toInt(),
+              totalBalance: user.cash + (user.bankAccount.isEmpty ? 0 :  user.bankAccount.map((e) => e.balance.toInt()).reduce((a, b) => a + b)),
+              income: user.monthlyReport[0].totalIncome.toInt(),
+              expensePercentage: calculateFinancialHealth(user),
+              lastUpdated: user.transactions.isNotEmpty
+                  ? user.transactions[0].createdAt
+                  : user.updatedAt,
+            ),
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
@@ -116,11 +122,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-            ), 
-            const SizedBox(height: 10,),
-            user.transactions.isEmpty ? const EmptyTransactionList() : const FilledTransactionList()
-        ],
-      )
-    );
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            user.transactions.isEmpty
+                ? const EmptyTransactionList()
+                : const FilledTransactionList()
+          ],
+        ));
   }
 }

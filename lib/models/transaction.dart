@@ -11,7 +11,7 @@ class Transaction {
   String? category;
   bool recurring;
   String currency;
-  String? paymentMethod;
+  String? source;
   DateTime createdAt;
 
   Transaction({
@@ -25,7 +25,7 @@ class Transaction {
     this.category,
     this.recurring = false,
     this.currency = 'Rp',
-    this.paymentMethod,
+    this.source,
     required this.createdAt,
   });
 
@@ -42,7 +42,7 @@ class Transaction {
       'category': category,
       'recurring': recurring,
       'currency': currency,
-      'paymentMethod': paymentMethod,
+      'source': source,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -60,7 +60,7 @@ class Transaction {
       category: map['category'],
       recurring: map['recurring'] ?? false,
       currency: map['currency'] ?? 'Rp',
-      paymentMethod: map['paymentMethod'],
+      source: map['source'],
       createdAt: DateTime.parse(map['createdAt']),
     );
   }

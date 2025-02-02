@@ -120,10 +120,6 @@ class AuthService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
-
-      if (token == null) {
-        prefs.setString('x-auth-token', '');
-      }
       debugPrint(token.toString());
 
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
@@ -146,6 +142,7 @@ class AuthService {
               .setUser(userResponse.body);
         }
       }
+      // TODO: MIGHT BE A BUG HERE
       if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {
