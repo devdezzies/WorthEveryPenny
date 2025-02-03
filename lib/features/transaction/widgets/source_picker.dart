@@ -34,11 +34,13 @@ class _SourcePickerState extends State<SourcePicker> {
 
     return Row(
       children: [
-        const SizedBox(
+        SizedBox(
           width: 70,
           child: Text(
-            "Source",
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+            transactionProvider.transaction.type != "income"
+                ? "From"
+                : "To",
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
           ),
         ),
         Expanded(
@@ -50,12 +52,14 @@ class _SourcePickerState extends State<SourcePicker> {
                   return SafeArea(
                     child: Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           height: 70,
                           child: Center(
                             child: Text(
-                              "Pick a Source",
-                              style: TextStyle(
+                              transactionProvider.transaction.type != "income"
+                                  ? "Select Source"
+                                  : "Select Destination",
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w700, fontSize: 20),
                             ),
                           ),
@@ -71,23 +75,22 @@ class _SourcePickerState extends State<SourcePicker> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
                                   child: ChoiceChip(
+                                    side: BorderSide.none,
                                     showCheckmark: false,
                                     backgroundColor:
                                         GlobalVariables.greyBackgroundColor,
                                     selectedColor:
                                         GlobalVariables.secondaryColor,
                                     disabledColor: Colors.grey[500],
-                                    shape: selectedChoice == index
-                                        ? null
-                                        : RoundedRectangleBorder(
+                                    shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(8.0),
+                                                BorderRadius.circular(15.0),
                                             side: BorderSide(
                                                 color: Colors.grey[500]!),
                                           ),
                                     label: Container(
                                       margin: const EdgeInsets.symmetric(
-                                          vertical: 10),
+                                          vertical: 5),
                                       width: double.infinity,
                                       child: Column(
                                         crossAxisAlignment:
@@ -118,7 +121,7 @@ class _SourcePickerState extends State<SourcePicker> {
                                           Text(
                                             'Balance: ${rupiahFormatCurrency(sourceOptions[index]["balance"] as int)}',
                                             style: TextStyle(
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.w600,
                                               color: selectedChoice == index
                                                   ? Colors.black
                                                   : Colors.white,

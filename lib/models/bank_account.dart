@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class BankAccount {
   String user;
   String bankName;
@@ -28,7 +30,7 @@ class BankAccount {
       'accountType': accountType,
       'balance': balance,
       'transactions': transactions,
-      'createdAt': createdAt.toIso8601String()
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String()
     };
   }
 

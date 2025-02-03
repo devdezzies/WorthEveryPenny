@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class GoalWallet {
   String user;
   String goalName;
@@ -26,9 +28,9 @@ class GoalWallet {
       'goalName': goalName,
       'targetAmount': targetAmount,
       'currentAmount': currentAmount,
-      'targetDate': targetDate?.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'targetDate': convertUtcToDateTime(targetDate ?? DateTime.now()).toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
+      'updatedAt': convertUtcToDateTime(updatedAt).toIso8601String(),
     };
   }
 

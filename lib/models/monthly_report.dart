@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class SpendingCategory {
   String category;
   double amount;
@@ -63,7 +65,7 @@ class MonthlyReport {
       'year': year,
       'spendingCategories': spendingCategories.map((x) => x.toMap()).toList(),
       'recommendations': recommendations,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
     };
   }
 

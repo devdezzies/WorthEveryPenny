@@ -39,8 +39,20 @@ class RecurrentPicker extends StatelessWidget {
                               onTap: () => Navigator.pop(context, "never"),
                             ),
                             ListTile(
+                              title: const Text("Daily"),
+                              onTap: () => Navigator.pop(context, "daily"),
+                            ),
+                            ListTile(
                               title: const Text("Weekly"),
                               onTap: () => Navigator.pop(context, "weekly"),
+                            ),
+                            ListTile(
+                              title: const Text("Monthly"),
+                              onTap: () => Navigator.pop(context, "monthly"),
+                            ),
+                            ListTile(
+                              title: const Text("Yearly"),
+                              onTap: () => Navigator.pop(context, "yearly"),
                             ),
                           ],
                         ),
@@ -50,14 +62,18 @@ class RecurrentPicker extends StatelessWidget {
                 },
               );
               if (result != null) {
-                debugPrint(result);
+                if (result == "never") {
+                  transactionProvider.setRecurring(false);
+                } else {
+                  transactionProvider.setRecurring(true, result);
+                }
               }
             },
             child: Row(
               children: [
                 const Icon(Icons.event_repeat_rounded, size: 16,),
                 const SizedBox(width: 5),
-                Text(isRecurrent ? "Weekly" : "Never", style: const TextStyle(fontSize: 16),),
+                Text(transactionProvider.transaction.recurring ? transactionProvider.transaction.recurrenceInterval ?? '' : "Never", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
               ],
             ),
           ),),

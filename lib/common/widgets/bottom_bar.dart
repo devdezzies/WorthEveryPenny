@@ -39,10 +39,10 @@ class _BottomBarState extends State<BottomBar> {
     pages = [
       const HomeScreen(),
       const Center(
-        child: Text("Home"),
+        child: Text("page 1"),
       ),
       const Center(
-        child: GradientIntensityMeter(value: 75),
+        child: Text("page 2"),
       ),
       const Center(
         child: GradientIntensityMeter(value: 50),
@@ -55,7 +55,12 @@ class _BottomBarState extends State<BottomBar> {
   Widget _buildSettingsScreen(BuildContext context) {
     return SettingsScreen(onLeave: (username, paymentNumber, profilePicture) {
       // Pass the context and other parameters to the updateSettings function
-      settingsService.updateSettings(context: context, name: username, profilePicture: profilePicture, id: Provider.of<UserProvider>(context, listen: false).user.id, paymentNumber: paymentNumber);
+      settingsService.updateSettings(
+          context: context,
+          name: username,
+          profilePicture: profilePicture,
+          id: Provider.of<UserProvider>(context, listen: false).user.id,
+          paymentNumber: paymentNumber);
     });
   }
 
@@ -67,7 +72,11 @@ class _BottomBarState extends State<BottomBar> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              Navigator.of(context).push(createRouteCustom(const TransactionScreen(), const Offset(0.0, 1.0), Offset.zero, Curves.ease));
+              Navigator.of(context).push(createRouteCustom(
+                  const TransactionScreen(),
+                  const Offset(0.0, 1.0),
+                  Offset.zero,
+                  Curves.ease));
             });
           },
           shape: const CircleBorder(),
@@ -145,5 +154,3 @@ class _BottomBarState extends State<BottomBar> {
         ));
   }
 }
-
-

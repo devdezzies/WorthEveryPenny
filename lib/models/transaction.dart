@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class Transaction {
   String user;
   DateTime date;
@@ -10,6 +12,8 @@ class Transaction {
   String? description;
   String? category;
   bool recurring;
+  String? recurrenceInterval;
+  DateTime? nextOccurrence;
   String currency;
   String? source;
   DateTime createdAt;
@@ -24,6 +28,8 @@ class Transaction {
     this.description,
     this.category,
     this.recurring = false,
+    this.recurrenceInterval,
+    this.nextOccurrence,
     this.currency = 'Rp',
     this.source,
     required this.createdAt,
@@ -33,7 +39,7 @@ class Transaction {
   Map<String, dynamic> toMap() {
     return {
       'user': user,
-      'date': date.toIso8601String(),
+      'date': convertUtcToDateTime(date).toIso8601String(),
       'name': name,
       'amount': amount,
       'tags': tags,
@@ -41,9 +47,11 @@ class Transaction {
       'description': description,
       'category': category,
       'recurring': recurring,
+      'recurrenceInterval': recurrenceInterval,
+      'nextOccurrence': nextOccurrence,
       'currency': currency,
       'source': source,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
     };
   }
 
@@ -51,7 +59,7 @@ class Transaction {
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
       user: map['user'] ?? '',
-      date: DateTime.parse(map['date']),
+      date: convertUtcToDateTime(DateTime.parse(map['date'])),
       name: map['name'] ?? '',
       amount: map['amount'] ?? 0,
       tags: List<String>.from(map['tags'] ?? []),
@@ -59,9 +67,11 @@ class Transaction {
       description: map['description'],
       category: map['category'],
       recurring: map['recurring'] ?? false,
+      recurrenceInterval: map['recurrenceInterval'],
+      nextOccurrence: map['nextOccurrence'] != null ? convertUtcToDateTime(DateTime.parse(map['nextOccurrence'])) : null,
       currency: map['currency'] ?? 'Rp',
       source: map['source'],
-      createdAt: DateTime.parse(map['createdAt']),
+      createdAt: convertUtcToDateTime(DateTime.parse(map['createdAt'])),
     );
   }
 

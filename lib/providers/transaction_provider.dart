@@ -14,6 +14,8 @@ class TransactionProvider extends ChangeNotifier {
     date: DateTime.now(),
     category: 'Utilities',
     recurring: false,
+    recurrenceInterval: '',
+    nextOccurrence: null,
     description: '',
     type: 'expense',
     createdAt: DateTime.now(),
@@ -44,6 +46,12 @@ class TransactionProvider extends ChangeNotifier {
     _transaction.source = source;
     notifyListeners();
   }
+
+  void setRecurring(bool recurring, [String? interval]) {
+    _transaction.recurring = recurring;
+    _transaction.recurrenceInterval = interval;
+    notifyListeners();
+  }
   
   void resetTransaction() {
     _currentNumber = '';
@@ -54,6 +62,8 @@ class TransactionProvider extends ChangeNotifier {
     _transaction.date = DateTime.now();
     _transaction.category = 'Utilities';
     _transaction.recurring = false;
+    _transaction.recurrenceInterval = '';
+    _transaction.nextOccurrence = null;
     _transaction.description = '';
     _transaction.type = 'expense';
     _transaction.createdAt = DateTime.now();

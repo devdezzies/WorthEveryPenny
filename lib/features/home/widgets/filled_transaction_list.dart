@@ -57,6 +57,7 @@ class FilledTransactionList extends StatelessWidget {
               transactionName: userProvider.transactions[index].name,
               transactionAmount: userProvider.transactions[index].amount,
               transactionDate: userProvider.transactions[index].date,
+              isRecurring: userProvider.transactions[index].recurring,
               transactionCategory:
                   userProvider.transactions[index].category ?? 'Utilities',
               transactionType: userProvider.transactions[index].type,

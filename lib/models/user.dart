@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:swappp/constants/utils.dart';
+
 import 'transaction.dart';
 import 'monthly_report.dart';
 import 'subscription.dart';
@@ -110,8 +112,8 @@ class User {
       language: map['language'] ?? 'id',
       currency: map['currency'] ?? 'IDR',
       savings: map['savings'] ?? 0,
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
+      createdAt: convertUtcToDateTime(DateTime.parse(map['createdAt'])),
+      updatedAt: convertUtcToDateTime(DateTime.parse(map['updatedAt'])),
       token: map['token'] ?? '',
     );
   }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class Subscription {
   String user;
   String plan;
@@ -22,10 +24,10 @@ class Subscription {
     return {
       'user': user,
       'plan': plan,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'startDate': convertUtcToDateTime(startDate).toIso8601String(),
+      'endDate': convertUtcToDateTime(endDate).toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
+      'updatedAt': convertUtcToDateTime(updatedAt).toIso8601String(),
     };
   }
 

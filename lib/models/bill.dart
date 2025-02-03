@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class SplitDetail {
   String user;
   double amount;
@@ -57,7 +59,7 @@ class Bill {
       'description': description,
       'proofOfBillPayment': proofOfBillPayment,
       'paidPercentage': paidPercentage,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
     };
   }
 

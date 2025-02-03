@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:swappp/constants/utils.dart';
+
 class Notification {
   final String user;
   final String title;
@@ -23,7 +25,7 @@ class Notification {
       'message': message,
       'isRead': isRead,
       'link': link,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': convertUtcToDateTime(createdAt).toIso8601String(),
     };
   }
 
