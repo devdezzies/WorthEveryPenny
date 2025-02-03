@@ -40,6 +40,11 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
   
+  void setSource(String source) {
+    _transaction.source = source;
+    notifyListeners();
+  }
+  
   void resetTransaction() {
     _currentNumber = '';
     _transaction.amount = 0;
