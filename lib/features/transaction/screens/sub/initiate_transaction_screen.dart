@@ -70,12 +70,12 @@ class InitiateTransactionScreen extends StatelessWidget {
             ],
           ),
           FinishButton(
-            onTap: () {
+            onTap: () async {
               if (transactionNameController.text.isNotEmpty) {
                 transactionProvider.transaction.name = transactionNameController.text;
               }
-              transactionService.addTransaction(context);
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              await transactionService.addTransaction(context);
+              if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
             },
           ),
         ],

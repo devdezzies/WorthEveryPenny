@@ -821,7 +821,6 @@ void showWebViewModalBottomSheet({
 
 // CONVERTER
 DateTime convertUtcToDateTime(DateTime utc) {
-  debugPrint(utc.toIso8601String());  
   final now = utc.toIso8601String();
   return DateTime.parse(now).toLocal();
 }

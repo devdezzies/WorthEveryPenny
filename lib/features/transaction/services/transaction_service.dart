@@ -11,7 +11,7 @@ import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 
 class TransactionService {
-  void addTransaction(BuildContext context) async {
+  Future<void> addTransaction(BuildContext context) async {
     final TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context, listen: false);
 
@@ -37,10 +37,10 @@ class TransactionService {
         httpErrorHandle(
             response: res,
             context: context,
-            onSuccess: () {
+            onSuccess: () async {
               transactionProvider.resetTransaction();
               // TODO: THERE MIGHT BE A BETTER WAY TO DO THIS
-              authService.getUserData(context);
+                await authService.getUserData(context);
             });
       }
     } catch (e) {
