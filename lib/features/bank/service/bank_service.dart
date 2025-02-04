@@ -10,6 +10,7 @@ import 'package:swappp/providers/bank_provider.dart';
 class BankService {
   Future<void> addNewBankAccount(BuildContext context) async {
     final BankProvider bankProvider = Provider.of<BankProvider>(context, listen: false);
+    final AuthService authService = AuthService();
     debugPrint(bankProvider.bankAccount.toJson().toString());
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,9 +39,9 @@ class BankService {
       httpErrorHandle(
           response: res,
           context: context,
-          onSuccess: () {
+          onSuccess: () async {
             bankProvider.resetBankAccount();
-            AuthService().getUserData(context);
+            await authService.getUserData(context);
           });
 
     } catch (e) {

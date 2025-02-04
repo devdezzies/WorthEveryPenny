@@ -41,9 +41,16 @@ class UserProvider extends ChangeNotifier {
   );
 
   bool _isLoading = true;
+  bool _isLoadingData = true;
 
   User get user => _user;
   bool get isLoading => _isLoading;
+  bool get isLoadingData => _isLoadingData;
+
+  void setLoadingData(bool loading) {
+    _isLoadingData = loading;
+    notifyListeners();
+  }
 
   void setUser(String user) {
     _user = User.fromJson(user); 

@@ -73,7 +73,7 @@ class RecurrentPicker extends StatelessWidget {
               children: [
                 const Icon(Icons.event_repeat_rounded, size: 16,),
                 const SizedBox(width: 5),
-                Text(transactionProvider.transaction.recurring ? transactionProvider.transaction.recurrenceInterval ?? '' : "Never", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
+                Text(isRecurrent ? transactionProvider.transaction.recurrenceInterval ?? '' : "Never", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
               ],
             ),
           ),),

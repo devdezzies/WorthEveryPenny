@@ -40,7 +40,7 @@ class TransactionService {
             onSuccess: () async {
               transactionProvider.resetTransaction();
               // TODO: THERE MIGHT BE A BETTER WAY TO DO THIS
-                await authService.getUserData(context);
+              await authService.getUserData(context);
             });
       }
     } catch (e) {
@@ -50,7 +50,7 @@ class TransactionService {
     }
   }
 
-  void getCategorizedTransactions(BuildContext context) async {
+  Future<void> getCategorizedTransactions(BuildContext context) async {
     final TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context, listen: false);
     try {
