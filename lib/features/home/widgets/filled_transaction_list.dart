@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/route_animations.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/home/widgets/transaction_bar.dart';
 import 'package:swappp/features/transaction/screens/transaction_history.dart';
 import 'package:swappp/features/transaction/services/transaction_service.dart';
@@ -57,7 +58,7 @@ class FilledTransactionList extends StatelessWidget {
               key: ValueKey(userProvider.transactions[index].hashCode),
               transactionName: userProvider.transactions[index].name,
               transactionAmount: userProvider.transactions[index].amount,
-              transactionDate: userProvider.transactions[index].date,
+              transactionDate: convertUtcToDateTime(userProvider.transactions[index].date),
               isRecurring: userProvider.transactions[index].recurring,
               transactionCategory:
                   userProvider.transactions[index].category ?? 'Utilities',
