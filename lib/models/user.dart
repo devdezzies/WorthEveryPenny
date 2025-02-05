@@ -101,7 +101,7 @@ class User {
       transactions: List<Transaction>.from(map['transactions']?.map((x) => Transaction.fromMap(x)) ?? []),
       displayName: map['displayName'] ?? '',
       bills: List<Bill>.from(map['bills']?.map((x) => Bill.fromMap(x)) ?? []),
-      profilePicture: map['profilePicture'] ?? 'https://i.pinimg.com/736x/73/cd/09/73cd09f43b4ca5b2d56c152a79ac5c60.jpg',
+      profilePicture: map['profilePicture'] ?? '',
       friends: List<Friend>.from(map['friends']?.map((x) => Friend.fromMap(x)) ?? []),
       friendRequests: List<FriendRequest>.from(map['friendRequests']?.map((x) => FriendRequest.fromMap(x)) ?? []),
       bankAccount: List<BankAccount>.from(map['bankAccount']?.map((x) => BankAccount.fromMap(x)) ?? []),

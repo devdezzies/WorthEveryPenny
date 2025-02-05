@@ -50,6 +50,7 @@ dependencies:
   image_picker: ^1.1.2
   webview_flutter: ^4.10.0
   cloudinary_public: ^0.23.1
+  flutter_web_frame: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
     - assets/icons/bill-active.svg
     - assets/images/splash-logo.png
     - assets/icons/jwt.svg
+    - assets/images/profile.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

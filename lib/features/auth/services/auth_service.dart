@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,7 +52,6 @@ class AuthService {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           token: '');
-      debugPrint(user.toJson().toString());
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
@@ -68,7 +68,7 @@ class AuthService {
             context: context,
             onSuccess: () {
               showSnackBar(context, 'Hello 👋 ${user.username}');
-            }, 
+            },
             onFailure: () {
               showSnackBar(context, '🚫 Email already exists');
             });
@@ -111,7 +111,7 @@ class AuthService {
               Navigator.pushNamedAndRemoveUntil(
                   context, BottomBar.routeName, (route) => false);
             }
-          }, 
+          },
           onFailure: () {
             // ignore: use_build_context_synchronously
             showSnackBar(context, '🚫 Invalid email or password');
@@ -125,18 +125,20 @@ class AuthService {
   // get user data from local
   Future<void> getUserData(BuildContext context) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('x-auth-token');
-      debugPrint(token.toString());
+      String? token;
 
+      // Use SharedPreferences for mobile
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('x-auth-token');
       if (token == null) {
         prefs.setString('x-auth-token', '');
+        token = '';
       }
 
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
-            'x-auth-token': token!
+            'x-auth-token': token
           });
 
       var response = jsonDecode(tokenRes.body);
@@ -154,7 +156,8 @@ class AuthService {
         }
       }
 
-      if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
+      if (context.mounted)
+        Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {
         debugPrint(e.toString());

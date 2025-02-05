@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/bottom_bar.dart';
@@ -8,6 +9,7 @@ import 'package:swappp/providers/bank_provider.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
+import 'package:flutter_web_frame/flutter_web_frame.dart';
 
 import 'common/widgets/splash_screen.dart';
 
@@ -38,21 +40,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "WorthEveryPenny",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          scaffoldBackgroundColor: GlobalVariables.backgroundColor,
-          splashColor: Colors.transparent,
-          fontFamily: 'Satoshi',
-          colorScheme:
-              const ColorScheme.dark(primary: GlobalVariables.secondaryColor),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-              color: Colors.green,
-              iconTheme: IconThemeData(color: Colors.black))),
-      onGenerateRoute: (settings) => generateRoute(settings),
-      home: Provider.of<UserProvider>(context).isLoading ? const SplashScreen() : Provider.of<UserProvider>(context).user.token.isNotEmpty ? const BottomBar() : const AuthScreen(),
+    return FlutterWebFrame(
+      builder: (context) {
+        return MaterialApp(
+          title: "WorthEveryPenny",
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              scaffoldBackgroundColor: GlobalVariables.backgroundColor,
+              splashColor: Colors.transparent,
+              fontFamily: 'Satoshi',
+              colorScheme:
+                  const ColorScheme.dark(primary: GlobalVariables.secondaryColor),
+              useMaterial3: true,
+              appBarTheme: const AppBarTheme(
+                  color: Colors.green,
+                  iconTheme: IconThemeData(color: Colors.black))),
+          onGenerateRoute: (settings) => generateRoute(settings),
+          home: Provider.of<UserProvider>(context).isLoading ? const SplashScreen() : Provider.of<UserProvider>(context).user.token.isNotEmpty ? const BottomBar() : const AuthScreen(),
+        );
+      }, 
+      maximumSize: const Size(393, 852), // Maximum size
+      enabled: kIsWeb, // default is enable, when disable content is full size
+      backgroundColor: GlobalVariables.darkerGreyBackgroundColor,
     );
   }
 }

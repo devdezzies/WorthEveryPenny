@@ -1,11 +1,11 @@
 {
-    "name": "swappp",
-    "short_name": "swappp",
+    "name": "WorthEveryPenny",
+    "short_name": "WEP",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "WorhtEveryPenny is a simple budgeting app that helps you track your expenses and income.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

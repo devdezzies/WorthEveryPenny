@@ -79,8 +79,6 @@ class TransactionService {
             onSuccess: () {
               transactionProvider.setCategorizedTransactions(
                   jsonDecode(res.body)['data']);
-              debugPrint(transactionProvider.fetchedCategorizedTransactions
-                  .toString());   
             }, 
             onFailure: () {
               showSnackBar(context, 'Failed to get transactions');

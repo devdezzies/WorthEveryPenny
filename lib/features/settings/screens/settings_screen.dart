@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Settings",
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30)),
         flexibleSpace: Container(
@@ -128,23 +130,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     ClipOval(
                       child: pickedImagePath == ""
-                          ? CachedNetworkImage(
-                              placeholder: (context, url) =>
+                            ? (user.profilePicture.isEmpty
+                              ? Container(
+                                width: 150,
+                                height: 150,
+                                color: Colors.grey[300],
+                                child: const Center(
+                                child: Text(
+                                  "👋",
+                                  style: TextStyle(fontSize: 50),
+                                ),
+                                ),
+                              )
+                              : CachedNetworkImage(
+                                placeholder: (context, url) =>
                                   const CircularProgressIndicator(),
-                              imageUrl:
-                                  user.profilePicture,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) =>
+                                imageUrl: user.profilePicture,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
-                              width: 150.0,
-                              height: 150.0,
-                            )
-                          : Image.file(
-                              File(pickedImagePath),
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.cover,
-                            ),
+                                width: 150.0,
+                                height: 150.0,
+                              ))
+                          : kIsWeb
+                              ? Image.network(
+                                  pickedImagePath,
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  File(pickedImagePath),
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                     Positioned(
                       bottom: 0,

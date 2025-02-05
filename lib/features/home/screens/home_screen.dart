@@ -43,16 +43,31 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 ClipOval(
-                  child: CachedNetworkImage(
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    imageUrl: user.profilePicture,
-                    fit: BoxFit.cover,
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    width: 35,
-                    height: 35,
-                  ),
+                    child: user.profilePicture.isNotEmpty
+                      ? CachedNetworkImage(
+                        placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                        imageUrl: user.profilePicture,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                        width: 35,
+                        height: 35,
+                      )
+                      : Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey[300],
+                        ),
+                        child: const Center(
+                        child: Text(
+                          '👋',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        ),
+                      ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 10),

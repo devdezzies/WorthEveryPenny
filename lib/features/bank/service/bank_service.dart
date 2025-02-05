@@ -11,7 +11,6 @@ class BankService {
   Future<void> addNewBankAccount(BuildContext context) async {
     final BankProvider bankProvider = Provider.of<BankProvider>(context, listen: false);
     final AuthService authService = AuthService();
-    debugPrint(bankProvider.bankAccount.toJson().toString());
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('x-auth-token');

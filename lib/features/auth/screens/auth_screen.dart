@@ -72,7 +72,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     strutStyle: const StrutStyle(fontFamily: 'Satoshi'),
                     text: const TextSpan(
                         text: 'Know Your ',
-                        style: TextStyle(fontSize: 30, fontFamily: 'Satoshi'),
+                        style: TextStyle(fontSize: 30, fontFamily: 'Satoshi', color: Colors.white),
                         children: [
                           TextSpan(
                               text: 'Money ',
@@ -94,7 +94,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(
                     height: 30,
                   ),
-                  // TODO: use LayoutBuilder to make responsive design
                   LayoutBuilder(
                       builder: (context, constraint) => ToggleButtons(
                             constraints: BoxConstraints.expand(
