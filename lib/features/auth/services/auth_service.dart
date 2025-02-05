@@ -68,6 +68,9 @@ class AuthService {
             context: context,
             onSuccess: () {
               showSnackBar(context, 'Hello 👋 ${user.username}');
+            }, 
+            onFailure: () {
+              showSnackBar(context, '🚫 Email already exists');
             });
       }
     } catch (e) {
@@ -108,6 +111,10 @@ class AuthService {
               Navigator.pushNamedAndRemoveUntil(
                   context, BottomBar.routeName, (route) => false);
             }
+          }, 
+          onFailure: () {
+            // ignore: use_build_context_synchronously
+            showSnackBar(context, '🚫 Invalid email or password');
           });
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -146,7 +153,7 @@ class AuthService {
               .setUser(userResponse.body);
         }
       }
-      // TODO: MIGHT BE A BUG HERE
+
       if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {

@@ -13,7 +13,7 @@ class FilledTransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User userProvider = Provider.of<UserProvider>(context).user;
+    final User userProvider = Provider.of<UserProvider>(context, listen: true).user;
     final TransactionService transactionService = TransactionService();
     return Column(
       children: [
@@ -54,6 +54,7 @@ class FilledTransactionList extends StatelessWidget {
               : userProvider.transactions.length,
           itemBuilder: (context, index) {
             return TransactionBar(
+              key: ValueKey(userProvider.transactions[index].hashCode),
               transactionName: userProvider.transactions[index].name,
               transactionAmount: userProvider.transactions[index].amount,
               transactionDate: userProvider.transactions[index].date,

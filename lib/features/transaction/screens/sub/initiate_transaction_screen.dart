@@ -74,7 +74,7 @@ class InitiateTransactionScreen extends StatelessWidget {
               if (transactionNameController.text.isNotEmpty) {
                 transactionProvider.transaction.name = transactionNameController.text;
               }
-              await transactionService.addTransaction(context);
+              transactionService.addTransaction(context);
               if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
             },
           ),

@@ -48,4 +48,36 @@ class Subscription {
 
   // Convert a JSON object into a Subscription object
   factory Subscription.fromJson(String source) => Subscription.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Subscription(user: $user, plan: $plan, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  Subscription copyWith({
+    String? user,
+    String? plan,
+    DateTime? startDate,
+    DateTime? endDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Subscription(
+      user: user ?? this.user,
+      plan: plan ?? this.plan,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  static Subscription empty() => Subscription(
+    user: '',
+    plan: 'Basic',
+    startDate: DateTime.now(),
+    endDate: DateTime.now(),
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
 }

@@ -90,4 +90,31 @@ class MonthlyReport {
 
   // Convert a JSON object into a MonthlyReport object
   factory MonthlyReport.fromJson(String source) => MonthlyReport.fromMap(json.decode(source));
+
+  MonthlyReport copyWith({
+    String? user,
+    double? totalIncome,
+    double? totalExpense,
+    int? month,
+    int? year,
+    List<SpendingCategory>? spendingCategories,
+    List<String>? recommendations,
+    DateTime? createdAt,
+  }) {
+    return MonthlyReport(
+      user: user ?? this.user,
+      totalIncome: totalIncome ?? this.totalIncome,
+      totalExpense: totalExpense ?? this.totalExpense,
+      month: month ?? this.month,
+      year: year ?? this.year,
+      spendingCategories: spendingCategories ?? this.spendingCategories,
+      recommendations: recommendations ?? this.recommendations,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'MonthlyReport(user: $user, totalIncome: $totalIncome, totalExpense: $totalExpense, month: $month, year: $year, spendingCategories: $spendingCategories, recommendations: $recommendations, createdAt: $createdAt)';
+  }
 }

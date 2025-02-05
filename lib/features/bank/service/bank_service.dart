@@ -36,13 +36,25 @@ class BankService {
         },
       );
 
-      httpErrorHandle(
+      if (context.mounted) {
+        httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () async {
             bankProvider.resetBankAccount();
             await authService.getUserData(context);
-          });
+          }, 
+          onFailure: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Failed to add bank account'),
+              ),
+            );
+          },);
+      } else { 
+        debugPrint('Context is not mounted');
+      }
+
 
     } catch (e) {
       // Handle error

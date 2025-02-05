@@ -145,7 +145,7 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
   }
 
   Widget _addNewCardView() {
-    final BankProvider _bankProvider =
+    final BankProvider bankProvider =
         Provider.of<BankProvider>(context, listen: false);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -206,8 +206,8 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
             children: [
               CustomButton(
                   textTitle: "Finish",
-                  onTap: () {
-                    _bankProvider.setBankAccountDetails(
+                  onTap: () async {
+                    bankProvider.setBankAccountDetails(
                         accountNumber: _cardNumberController.text,
                         bankName: _bankNameController.text,
                         balance: _balanceController.text.isNotEmpty

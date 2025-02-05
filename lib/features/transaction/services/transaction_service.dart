@@ -7,15 +7,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
-import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/transaction_provider.dart';
+import 'package:swappp/providers/user_provider.dart';
 
 class TransactionService {
   Future<void> addTransaction(BuildContext context) async {
     final TransactionProvider transactionProvider =
-        Provider.of<TransactionProvider>(context, listen: false);
+        context.read<TransactionProvider>();    
 
-    final AuthService authService = AuthService();
+    final UserProvider userProvider =
+        context.read<UserProvider>();
+
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
@@ -38,9 +40,10 @@ class TransactionService {
             response: res,
             context: context,
             onSuccess: () async {
-              transactionProvider.resetTransaction();
-              // TODO: THERE MIGHT BE A BETTER WAY TO DO THIS
-              await authService.getUserData(context);
+              userProvider.updateTransaction(res.body);
+            }, 
+            onFailure: () {
+              showSnackBar(context, 'Failed to add transaction');
             });
       }
     } catch (e) {
@@ -78,6 +81,9 @@ class TransactionService {
                   jsonDecode(res.body)['data']);
               debugPrint(transactionProvider.fetchedCategorizedTransactions
                   .toString());   
+            }, 
+            onFailure: () {
+              showSnackBar(context, 'Failed to get transactions');
             });
       }
     } catch (e) {

@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context, listen: true).user;
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: GlobalVariables.backgroundColor,

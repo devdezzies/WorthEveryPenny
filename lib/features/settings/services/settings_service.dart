@@ -102,6 +102,9 @@ class SettingsService {
           prefs.remove('x-auth-token');
           Navigator.pushReplacementNamed(context, "/auth-screen");
           debugPrint('Successfully Logged out');
+        }, 
+        onFailure: () {
+          debugPrint('Failed to logout');
         });
       }
     } catch (e) {

@@ -52,4 +52,25 @@ class BankAccount {
 
   // Convert a JSON object into a BankAccount object
   factory BankAccount.fromJson(String source) => BankAccount.fromMap(json.decode(source));
+
+  // Copy a BankAccount object with new values
+  BankAccount copyWith({
+    String? user,
+    String? bankName,
+    String? accountNumber,
+    String? accountType,
+    double? balance,
+    List<String>? transactions,
+    DateTime? createdAt,
+  }) {
+    return BankAccount(
+      user: user ?? this.user,
+      bankName: bankName ?? this.bankName,
+      accountNumber: accountNumber ?? this.accountNumber,
+      accountType: accountType ?? this.accountType,
+      balance: balance ?? this.balance,
+      transactions: transactions ?? this.transactions,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

@@ -31,7 +31,7 @@ class User {
   final DateTime updatedAt;
   final String token;
 
-  User({
+  const User({
     required this.id,
     required this.username,
     required this.email,
@@ -123,4 +123,80 @@ class User {
 
   // Convert a JSON object into a User object
   factory User.fromJson(String source) => User.fromMap(json.decode(source));
+
+  // Copy a User object with new values
+  User copyWith({
+    String? id,
+    String? username,
+    String? email,
+    Subscription? subscription,
+    String? password,
+    List<Transaction>? transactions,
+    String? displayName,
+    List<Bill>? bills,
+    String? profilePicture,
+    List<Friend>? friends,
+    List<FriendRequest>? friendRequests,
+    List<BankAccount>? bankAccount,
+    int? debts,
+    int? cash,
+    List<MonthlyReport>? monthlyReport,
+    String? language,
+    String? currency,
+    String? paymentNumber,
+    int? savings,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? token,
+  }) {
+    return User(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      subscription: subscription ?? this.subscription,
+      password: password ?? this.password,
+      transactions: transactions ?? this.transactions,
+      displayName: displayName ?? this.displayName,
+      bills: bills ?? this.bills,
+      profilePicture: profilePicture ?? this.profilePicture,
+      friends: friends ?? this.friends,
+      currency: currency ?? this.currency,
+      paymentNumber: paymentNumber ?? this.paymentNumber,
+      savings: savings ?? this.savings,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      token: token ?? this.token,
+      language: language ?? this.language,
+      friendRequests: friendRequests ?? this.friendRequests,
+      bankAccount: bankAccount ?? this.bankAccount,
+      debts: debts ?? this.debts,
+      cash: cash ?? this.cash,
+      monthlyReport: monthlyReport ?? this.monthlyReport
+    );
+  }
+  
+  static User empty() => User(
+    id: '',
+    username: '',
+    email: '',
+    subscription: Subscription.empty(),
+    password: '',
+    transactions: [],
+    displayName: '',
+    bills: [],
+    profilePicture: '',
+    friends: [],
+    friendRequests: [],
+    bankAccount: [],
+    debts: 0,
+    cash: 0,
+    monthlyReport: [],
+    language: 'id',
+    currency: 'IDR',
+    paymentNumber: '',
+    savings: 0,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    token: '',
+  );
 }

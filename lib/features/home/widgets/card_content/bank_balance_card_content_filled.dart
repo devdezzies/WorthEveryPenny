@@ -43,7 +43,7 @@ class BankBalanceCardContentFilled extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      "${numberOfAccounts} accounts connected",
+                      "$numberOfAccounts accounts connected",
                       style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
