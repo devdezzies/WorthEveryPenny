@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
@@ -250,7 +252,8 @@ double calculateFinancialHealth(User user) {
 
   // 2. Edge case handling
   if (expenses.isEmpty) return 0.0; // Perfect score for no expenses
-  if (expenses.every((e) => e.date.isAtSameMomentAs(today))) return 100.0; // First day
+  if (expenses.every((e) => e.date.isAtSameMomentAs(today)))
+    return 100.0; // First day
 
   // 3. Time-weighted statistics
   final (double mean, double stdDev) = _calculateWeightedStats(user, today);
@@ -558,7 +561,9 @@ void showFinancialMetricsGuide(BuildContext context) {
     builder: (context) {
       return Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(color: GlobalVariables.backgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+        decoration: const BoxDecoration(
+            color: GlobalVariables.backgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -768,48 +773,57 @@ void showWebViewModalBottomSheet({
   final WebViewController webViewController = WebViewController();
 
   showModalBottomSheet(
+    useSafeArea: true,
     context: context,
-    isScrollControlled: isScrollControlled,
-    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
     builder: (context) {
-      return Container(
-        height:
-            MediaQuery.of(context).size.height * 0.9, // 90% of screen height
-        decoration: const BoxDecoration(
-          color: GlobalVariables.backgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-        ),
+      return FractionallySizedBox(
+        heightFactor: 0.8,
         child: Column(
           children: [
-            // Header with title and close button
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
                     title ?? 'WebView',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Text(subtitle ?? "What can we help you with today?"),
-                ],
-              ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                const SizedBox(height: 16),
+              ],
             ),
             // WebView
             Expanded(
               child: WebViewWidget(
                 controller: webViewController
                   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                  ..loadRequest(Uri.parse(url))
-                  ..setNavigationDelegate(
-                    NavigationDelegate(
-                      onPageFinished: (url) {
-                        
-                      }
-                    ),
+                  ..setNavigationDelegate(NavigationDelegate(
+                    onProgress: (_) {
+                      const CircularProgressIndicator();
+                    },
+                    onPageStarted: (String url) {},
+                    onPageFinished: (String url) {},
+                    onHttpError: (HttpResponseError error) {},
+                    onWebResourceError: (WebResourceError error) {},
+                  ))
+                  ..loadRequest(Uri.parse(url)),
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
                   ),
+                },
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/transaction/services/transaction_service.dart';
@@ -74,8 +75,25 @@ class InitiateTransactionScreen extends StatelessWidget {
               if (transactionNameController.text.isNotEmpty) {
                 transactionProvider.transaction.name = transactionNameController.text;
               }
-              transactionService.addTransaction(context);
-              if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return Center(
+                    child: Lottie.asset('assets/lottie/dollar_refresh.json'),
+                  );
+                },
+              );
+              await transactionService.addTransaction(context);
+              await Future.delayed(const Duration(seconds: 1));
+          
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                await Future.delayed(const Duration(milliseconds: 300));
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
+              
+              transactionProvider.resetTransaction();
             },
           ),
         ],

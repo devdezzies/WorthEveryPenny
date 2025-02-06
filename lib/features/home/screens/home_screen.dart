@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/features/home/widgets/balance_card.dart';
 import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
 import 'package:swappp/features/home/widgets/filled_transaction_list.dart';
@@ -43,31 +46,31 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 ClipOval(
-                    child: user.profilePicture.isNotEmpty
+                  child: user.profilePicture.isNotEmpty
                       ? CachedNetworkImage(
-                        placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                        imageUrl: user.profilePicture,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                        width: 35,
-                        height: 35,
-                      )
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          imageUrl: user.profilePicture,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          width: 35,
+                          height: 35,
+                        )
                       : Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey[300],
+                          width: 35,
+                          height: 35,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: GlobalVariables.darkerGreyBackgroundColor,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '😎',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
                         ),
-                        child: const Center(
-                        child: Text(
-                          '👋',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        ),
-                      ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 10),
@@ -105,46 +108,79 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          children: [
-            const SizedBox(height: 5),
-            SpendingPulse(value: calculateFinancialHealth(user)),
-            const SizedBox(height: 16),
-            // TODO: resolve the issue with last updated
-            BalanceCard(
-              expense: user.monthlyReport[0].totalExpense.toInt(),
-              totalBalance: user.cash + (user.bankAccount.isEmpty ? 0 :  user.bankAccount.map((e) => e.balance.toInt()).reduce((a, b) => a + b)),
-              income: user.monthlyReport[0].totalIncome.toInt(),
-              expensePercentage: calculateFinancialHealth(user),
-              lastUpdated: user.transactions.isNotEmpty
-                  ? user.transactions[0].createdAt
-                  : user.updatedAt,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              width: double.infinity,
-              child: const SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    PersonalizedInsightEmpty(),
-                    GoalWalletEmpty(),
-                  ],
+        body: CustomRefreshIndicator(
+          onRefresh: () {
+            return Future.delayed(const Duration(seconds: 1), () {
+              // Refresh the user data
+              AuthService().getUserData(context);
+            });
+          },
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            children: [
+              const SizedBox(height: 5),
+              SpendingPulse(value: calculateFinancialHealth(user)),
+              const SizedBox(height: 16),
+              BalanceCard(
+                expense: user.monthlyReport[0].totalExpense.toInt(),
+                totalBalance: user.cash +
+                    (user.bankAccount.isEmpty
+                        ? 0
+                        : user.bankAccount
+                            .map((e) => e.balance.toInt())
+                            .reduce((a, b) => a + b)),
+                income: user.monthlyReport[0].totalIncome.toInt(),
+                expensePercentage: calculateFinancialHealth(user),
+                lastUpdated: user.transactions.isNotEmpty
+                    ? user.transactions[0].createdAt
+                    : user.updatedAt,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                width: double.infinity,
+                child: const SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      PersonalizedInsightEmpty(),
+                      GoalWalletEmpty(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            user.transactions.isEmpty
-                ? const EmptyTransactionList()
-                : const FilledTransactionList()
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              user.transactions.isEmpty
+                  ? const EmptyTransactionList()
+                  : const FilledTransactionList()
+            ],
+          ),
+          builder: (context, child, controller) {
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                        height: controller.value *
+                            60), // Adjust the height as needed
+                    Expanded(child: child),
+                  ],
+                ),
+                if (controller.isLoading)
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    color: GlobalVariables.backgroundColor,
+                    child: Lottie.asset('assets/lottie/dollar_refresh.json'),
+                  ),
+              ],
+            );
+          },
         ));
   }
 }

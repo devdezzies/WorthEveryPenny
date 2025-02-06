@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +36,7 @@ class AuthService {
           displayName: '',
           bills: [],
           profilePicture:
-              'https://i.pinimg.com/736x/ec/ca/4c/ecca4c13cf92b76eaceeadaea46454aa.jpg',
+              '',
           friends: [],
           friendRequests: [],
           bankAccount: [],
@@ -156,8 +154,7 @@ class AuthService {
         }
       }
 
-      if (context.mounted)
-        Provider.of<UserProvider>(context, listen: false).setLoading(false);
+      if (context.mounted) Provider.of<UserProvider>(context, listen: false).setLoading(false);
     } catch (e) {
       if (context.mounted) {
         debugPrint(e.toString());

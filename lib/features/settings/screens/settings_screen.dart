@@ -134,10 +134,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ? Container(
                                 width: 150,
                                 height: 150,
-                                color: Colors.grey[300],
+                                color: GlobalVariables.darkerGreyBackgroundColor,
                                 child: const Center(
                                 child: Text(
-                                  "👋",
+                                  "😎",
                                   style: TextStyle(fontSize: 50),
                                 ),
                                 ),
@@ -314,10 +314,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   ProfileButton(
-                    title: "Request Features or Reports Bugs",
+                    title: "Request Features or Report Bugs",
                     onTap: () {
                       //_showFeatureWebView(context);
-                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken", title: "Hi ${user.displayName} 👋", subtitle: "Have anything to share with us?");
+                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken", title: "Hi ${user.displayName} 👋", subtitle: "Got anything to share with us?");
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,

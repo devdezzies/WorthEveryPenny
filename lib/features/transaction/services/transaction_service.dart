@@ -2,21 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/transaction_provider.dart';
-import 'package:swappp/providers/user_provider.dart';
 
 class TransactionService {
+  final AuthService authService = AuthService();
+
   Future<void> addTransaction(BuildContext context) async {
     final TransactionProvider transactionProvider =
-        context.read<TransactionProvider>();    
-
-    final UserProvider userProvider =
-        context.read<UserProvider>();
+        context.read<TransactionProvider>();
 
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,9 +39,11 @@ class TransactionService {
         httpErrorHandle(
             response: res,
             context: context,
-            onSuccess: () async {
-              userProvider.updateTransaction(res.body);
-            }, 
+            onSuccess: () {
+              authService.getUserData(context);
+              Future.delayed(
+                  const Duration(seconds: 2)); // Add 2-second delay
+            },
             onFailure: () {
               showSnackBar(context, 'Failed to add transaction');
             });
@@ -77,9 +79,9 @@ class TransactionService {
             response: res,
             context: context,
             onSuccess: () {
-              transactionProvider.setCategorizedTransactions(
-                  jsonDecode(res.body)['data']);
-            }, 
+              transactionProvider
+                  .setCategorizedTransactions(jsonDecode(res.body)['data']);
+            },
             onFailure: () {
               showSnackBar(context, 'Failed to get transactions');
             });

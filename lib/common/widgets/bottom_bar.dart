@@ -73,8 +73,6 @@ class _BottomBarState extends State<BottomBar> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              Provider.of<TransactionProvider>(context, listen: false)
-                  .resetTransaction();
               Navigator.of(context).push(createRouteCustom(
                   const TransactionScreen(),
                   const Offset(0.0, 1.0),
