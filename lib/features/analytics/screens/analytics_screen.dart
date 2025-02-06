@@ -6,27 +6,34 @@ import 'package:swappp/common/widgets/custom_switch.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/analytics/widgets/chart_plot.dart';
 
-class AnalyticsScreen extends StatelessWidget {
+class AnalyticsScreen extends StatefulWidget {
   static const String routeName = '/analytics';
-  AnalyticsScreen({super.key});
+  const AnalyticsScreen({super.key});
 
-  // Sample data for weekly chart
-  final List<ChartPoint> weeklyData = List.generate(
-    7,
-    (index) => ChartPoint(
-      DateTime.now().subtract(Duration(days: 6 - index)),
-      20 + Random().nextDouble() * 30,
-    ),
-  );
+  @override
+  State<AnalyticsScreen> createState() => _AnalyticsScreenState();
+}
 
-  // Sample data for monthly chart
-  final List<ChartPoint> monthlyData = List.generate(
-    30,
+class _AnalyticsScreenState extends State<AnalyticsScreen> {
+  bool isIncome = true;
+
+  final List<ChartPoint> incomeData = List.generate(
+    12,
     (index) => ChartPoint(
       DateTime.now().subtract(Duration(days: 29 - index)),
       20 + index * 0.5 + Random().nextDouble() * 5,
     ),
   );
+
+  final List<ChartPoint> expenseData = List.generate(
+    12,
+    (index) => ChartPoint(
+      DateTime.now().subtract(Duration(days: 29 - index)),
+      20 + index * 0.5 + Random().nextDouble() * 5,
+    ),
+  );
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +66,13 @@ class AnalyticsScreen extends StatelessWidget {
                       ],
                     ),
                     // add a picker for daily, weekly, monthly, yearly
-                    const Wrap(
+                    Wrap(
                       children: [
-                        CustomToggleSwitch(),
+                        CustomToggleSwitch(onToggle: (choice) {
+                          setState(() {
+                            isIncome = choice;
+                          });
+                        },),
                         SizedBox(width: 16),
                       ],
                     ),
@@ -85,8 +96,8 @@ class AnalyticsScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 300,
                   child: ChartPlot(
-                    dataPoints: monthlyData,
-                    chartColor: ChartColor.green,
+                    dataPoints: isIncome ? incomeData : expenseData,
+                    chartColor: isIncome ? ChartColor.green : ChartColor.red,
                     valuePrefix: 'Rp',
                     height: 300,
                   ),

@@ -53,6 +53,7 @@ dependencies:
   flutter_web_frame: ^1.0.0
   custom_refresh_indicator: ^4.0.1
   lottie: ^3.3.1
+  intl: ^0.20.2 
 
 dev_dependencies:
   flutter_test:

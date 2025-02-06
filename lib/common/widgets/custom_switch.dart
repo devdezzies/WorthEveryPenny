@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:swappp/constants/global_variables.dart';
 
 class CustomToggleSwitch extends StatefulWidget {
-  const CustomToggleSwitch({Key? key}) : super(key: key);
+  final void Function(bool) onToggle;
+  const CustomToggleSwitch({super.key, required this.onToggle});
 
   @override
   CustomToggleSwitchState createState() => CustomToggleSwitchState();
@@ -26,12 +27,18 @@ class CustomToggleSwitchState extends State<CustomToggleSwitch> {
             _buildToggleButton(
               text: 'Income',
               isSelected: isIncome,
-              onTap: () => setState(() => isIncome = true),
+              onTap: () => setState(() {
+                isIncome = true;
+                widget.onToggle(true);
+              }),
             ),
             _buildToggleButton(
               text: 'Expense',
               isSelected: !isIncome,
-              onTap: () => setState(() => isIncome = false),
+              onTap: () => setState(() {
+                isIncome = false;
+                widget.onToggle(false);
+              }),
             ),
           ],
         ),
