@@ -8,7 +8,6 @@ import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:swappp/features/settings/services/settings_service.dart';
 import 'package:swappp/features/transaction/screens/transaction_screen.dart';
-import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class BottomBar extends StatefulWidget {
