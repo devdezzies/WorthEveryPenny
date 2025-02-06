@@ -57,7 +57,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                 return TransactionBar(
                     transactionName: monthlyTransaction[index]["transactions"][i]["name"],
                     transactionAmount: monthlyTransaction[index]["transactions"][i]["amount"],
-                    isRecurring: monthlyTransaction[index]["transactions"][i]["recurring"],
+                    recurring: monthlyTransaction[index]["transactions"][i]["recurrenceInterval"] ?? 'never',
                     transactionDate: convertUtcToDateTime( DateTime.parse(monthlyTransaction[index]["transactions"][i]["date"])),
                     transactionCategory: monthlyTransaction[index]["transactions"][i]["category"],
                     transactionType: monthlyTransaction[index]["transactions"][i]["type"],

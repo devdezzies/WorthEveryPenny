@@ -5,9 +5,9 @@ import 'package:swappp/constants/utils.dart';
 class TransactionBar extends StatelessWidget {
   final String transactionName, transactionType, transactionCategory;
   final DateTime transactionDate;
-  final bool isRecurring;
+  final String recurring;
   final int transactionAmount;
-  const TransactionBar({super.key, required this.transactionName, required this.transactionType, required this.transactionDate, required this.transactionCategory, required this.transactionAmount, required this.isRecurring});
+  const TransactionBar({super.key, required this.transactionName, required this.transactionType, required this.transactionDate, required this.transactionCategory, required this.transactionAmount, required this.recurring});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class TransactionBar extends StatelessWidget {
         ],
         ),
       ),
-      if (isRecurring)
+      if (recurring != 'never')
         Positioned(
         top: 0,
         right: 0,
@@ -93,9 +93,9 @@ class TransactionBar extends StatelessWidget {
           color: GlobalVariables.secondaryColor,
           borderRadius: BorderRadius.circular(10),
           ),
-          child: const Text(
-          'Recurring',
-          style: TextStyle(
+          child: Text(
+          recurring[0].toUpperCase() + recurring.substring(1),
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 10,
             fontWeight: FontWeight.bold,

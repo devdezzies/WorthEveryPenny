@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/route_animations.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/analytics/screens/analytics_screen.dart';
 import 'package:swappp/features/settings/screens/settings_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,9 +45,7 @@ class _BottomBarState extends State<BottomBar> {
       const Center(
         child: Text("page 2"),
       ),
-      const Center(
-        child: GradientIntensityMeter(value: 50),
-      ),
+      AnalyticsScreen(),
       _buildSettingsScreen(context)
     ];
   }
