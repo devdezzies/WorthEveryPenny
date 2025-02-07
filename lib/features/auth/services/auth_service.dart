@@ -6,6 +6,7 @@ import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/analytics/services/analytics_services.dart';
 import 'package:swappp/models/user.dart';
 import 'package:swappp/models/subscription.dart'; // Import the Subscription class
 import 'package:http/http.dart' as http;
@@ -122,6 +123,7 @@ class AuthService {
 
   // get user data from local
   Future<void> getUserData(BuildContext context) async {
+    final AnalyticsServices analyticsServices = AnalyticsServices();
     try {
       String? token;
 
@@ -132,6 +134,7 @@ class AuthService {
         prefs.setString('x-auth-token', '');
         token = '';
       }
+      debugPrint('Token: $token');
 
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
           headers: <String, String>{
@@ -151,6 +154,7 @@ class AuthService {
         if (context.mounted) {
           Provider.of<UserProvider>(context, listen: false)
               .setUser(userResponse.body);
+          analyticsServices.getAnalyticsData(context);
         }
       }
 

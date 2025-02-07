@@ -5,6 +5,7 @@ import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
+import 'package:swappp/providers/analytics_provider.dart';
 import 'package:swappp/providers/bank_provider.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
@@ -19,6 +20,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => UserProvider()), 
     ChangeNotifierProvider(create: (context) => TransactionProvider()),
     ChangeNotifierProvider(create: (context) => BankProvider()),
+    ChangeNotifierProvider(create: (context) => AnalyticsProvider())
   ], child: const MyApp()));
 }
 

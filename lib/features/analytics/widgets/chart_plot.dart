@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:swappp/constants/global_variables.dart';
@@ -18,7 +19,8 @@ class ChartPlot extends StatefulWidget {
   final String valuePrefix;
   final double height;
 
-  ChartPlot({
+  const ChartPlot({
+    super.key,
     required this.dataPoints,
     this.chartColor = ChartColor.red,
     this.valuePrefix = '',
@@ -29,15 +31,32 @@ class ChartPlot extends StatefulWidget {
   ChartPlotState createState() => ChartPlotState();
 }
 
-class ChartPlotState extends State<ChartPlot> {
+class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixin {
   late int _currentStartIndex;
   ChartPoint? selectedPoint;
   Offset? tooltipPosition;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _currentStartIndex = max(0, widget.dataPoints.length - 7);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Color get chartColor {
@@ -51,6 +70,10 @@ class ChartPlotState extends State<ChartPlot> {
     return widget.dataPoints.sublist(_currentStartIndex, endIndex);
   }
 
+  double get intervalTotal {
+    return visiblePoints.fold(0, (sum, point) => sum + point.value);
+  }
+
   bool get canGoBack => _currentStartIndex > 0;
   bool get canGoForward => _currentStartIndex + 7 < widget.dataPoints.length;
 
@@ -59,6 +82,7 @@ class ChartPlotState extends State<ChartPlot> {
       setState(() {
         _currentStartIndex = max(0, _currentStartIndex - 7);
       });
+      _animationController.forward(from: 0);
     }
   }
 
@@ -67,28 +91,44 @@ class ChartPlotState extends State<ChartPlot> {
       setState(() {
         _currentStartIndex = min(widget.dataPoints.length - 7, _currentStartIndex + 7);
       });
+      _animationController.forward(from: 0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.height,
       child: Column(
         children: [
           Expanded(
             child: Stack(
               children: [
-                GestureDetector(
-                  onPanDown: (details) => _updateTooltip(details.localPosition),
-                  onPanUpdate: (details) => _updateTooltip(details.localPosition),
-                  onPanEnd: (_) => _hideTooltip(),
-                  child: CustomPaint(
-                    size: Size.infinite,
-                    painter: LineChartPainter(
-                      dataPoints: visiblePoints,
-                      color: chartColor,
-                      selectedPoint: selectedPoint,
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: _buildIntervalTotal(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: GestureDetector(
+                    onPanDown: (details) => _updateTooltip(details.localPosition),
+                    onPanUpdate: (details) => _updateTooltip(details.localPosition),
+                    onPanEnd: (_) => _hideTooltip(),
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return CustomPaint(
+                          size: Size.infinite,
+                          painter: LineChartPainter(
+                            dataPoints: visiblePoints,
+                            color: chartColor,
+                            selectedPoint: selectedPoint,
+                            animation: _animation,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -106,6 +146,30 @@ class ChartPlotState extends State<ChartPlot> {
           const SizedBox(height: 10),
           _buildNavigationButtons(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildIntervalTotal() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0, end: intervalTotal),
+        duration: const Duration(milliseconds: 300),
+        builder: (context, value, child) {
+          return Text(
+            '${widget.valuePrefix}${NumberFormat('#,##0').format(value)}',
+            style: TextStyle(
+              color: widget.chartColor == ChartColor.green 
+                ? GlobalVariables.secondaryColor
+                : const Color(0xFFE53935),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          );
+        },
       ),
     );
   }
@@ -219,12 +283,14 @@ class LineChartPainter extends CustomPainter {
   final List<ChartPoint> dataPoints;
   final Color color;
   final ChartPoint? selectedPoint;
+  final Animation<double> animation;
 
   LineChartPainter({
     required this.dataPoints,
     required this.color,
     this.selectedPoint,
-  });
+    required this.animation,
+  }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -247,7 +313,8 @@ class LineChartPainter extends CustomPainter {
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     final points = _getPoints(size);
-    final path = _createPath(points);
+    final animatedPoints = _getAnimatedPoints(points, size);
+    final path = _createPath(animatedPoints);
     final fillPath = _createFillPath(path, size);
 
     // Draw gradient fill
@@ -269,10 +336,16 @@ class LineChartPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3;
 
-        canvas.drawCircle(points[selectedIndex], 6, borderPaint);
-        canvas.drawCircle(points[selectedIndex], 4, dotPaint);
+        canvas.drawCircle(animatedPoints[selectedIndex], 6, borderPaint);
+        canvas.drawCircle(animatedPoints[selectedIndex], 4, dotPaint);
       }
     }
+  }
+
+  List<Offset> _getAnimatedPoints(List<Offset> points, Size size) {
+    return points.map((point) {
+      return Offset(point.dx, lerpDouble(size.height, point.dy, animation.value)!);
+    }).toList();
   }
 
   Path _createPath(List<Offset> points) {
@@ -336,6 +409,7 @@ class LineChartPainter extends CustomPainter {
   bool shouldRepaint(LineChartPainter oldDelegate) {
     return oldDelegate.dataPoints != dataPoints ||
         oldDelegate.color != color ||
-        oldDelegate.selectedPoint != selectedPoint;
+        oldDelegate.selectedPoint != selectedPoint ||
+        oldDelegate.animation != animation;
   }
 }

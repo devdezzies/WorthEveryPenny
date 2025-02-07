@@ -1,10 +1,9 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/custom_switch.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/analytics/widgets/chart_plot.dart';
+import 'package:swappp/providers/analytics_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   static const String routeName = '/analytics';
@@ -17,26 +16,10 @@ class AnalyticsScreen extends StatefulWidget {
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
   bool isIncome = true;
 
-  final List<ChartPoint> incomeData = List.generate(
-    12,
-    (index) => ChartPoint(
-      DateTime.now().subtract(Duration(days: 29 - index)),
-      20 + index * 0.5 + Random().nextDouble() * 5,
-    ),
-  );
-
-  final List<ChartPoint> expenseData = List.generate(
-    12,
-    (index) => ChartPoint(
-      DateTime.now().subtract(Duration(days: 29 - index)),
-      20 + index * 0.5 + Random().nextDouble() * 5,
-    ),
-  );
-
-
-
   @override
   Widget build(BuildContext context) {
+    final AnalyticsProvider analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: GlobalVariables.backgroundColor,
@@ -73,33 +56,20 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             isIncome = choice;
                           });
                         },),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                       ],
                     ),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                
+                SizedBox(
                   width: double.infinity,
-                  child: Text(
-                    'Rp 2,500,000',
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 25,
-                      color: GlobalVariables.secondaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Container(
-                  width: double.infinity,
-                  height: 300,
+                  height: 350,
                   child: ChartPlot(
-                    dataPoints: isIncome ? incomeData : expenseData,
+                    dataPoints: isIncome ? analyticsProvider.incomeData : analyticsProvider.expenseData,
                     chartColor: isIncome ? ChartColor.green : ChartColor.red,
                     valuePrefix: 'Rp',
-                    height: 300,
+                    height: 350,
                   ),
                 ),
               ],
