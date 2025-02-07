@@ -44,7 +44,7 @@ class _BottomBarState extends State<BottomBar> {
       const Center(
         child: Text("page 2"),
       ),
-      AnalyticsScreen(),
+      const AnalyticsScreen(),
       _buildSettingsScreen(context)
     ];
   }

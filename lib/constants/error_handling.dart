@@ -40,7 +40,7 @@ void httpErrorHandle({
     }
   } catch (e) {
     // Handle any errors that occur during JSON decoding or other operations.
-    print('Error handling HTTP response: $e');
+    debugPrint('Error handling HTTP response: $e');
     showSnackBar(context, 'An unexpected error occurred.');
     // Call failure callback
     onFailure();

@@ -3,35 +3,33 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/analytics/data/chart_point.dart';
 
-class ChartPoint {
-  final DateTime date;
-  final double value;
-
-  ChartPoint(this.date, this.value);
-}
-
-enum ChartColor { red, green }
-
-class ChartPlot extends StatefulWidget {
-  final List<ChartPoint> dataPoints;
-  final ChartColor chartColor;
+class DoubleChartPlot extends StatefulWidget {
+  final List<ChartPoint> incomeData;
+  final List<ChartPoint> expenseData;
   final String valuePrefix;
   final double height;
+  final bool isIncomeOnTop;
+  final Function(bool) onLayerChanged;
 
-  const ChartPlot({
+  const DoubleChartPlot({
     super.key,
-    required this.dataPoints,
-    this.chartColor = ChartColor.red,
+    required this.incomeData,
+    required this.expenseData,
     this.valuePrefix = '',
     this.height = 300,
+    this.isIncomeOnTop = true,
+    required this.onLayerChanged,
   });
 
   @override
-  ChartPlotState createState() => ChartPlotState();
+  DoubleChartPlotState createState() => DoubleChartPlotState();
 }
 
-class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixin {
+class DoubleChartPlotState extends State<DoubleChartPlot>
+    with SingleTickerProviderStateMixin {
   late int _currentStartIndex;
   ChartPoint? selectedPoint;
   Offset? tooltipPosition;
@@ -41,7 +39,7 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
   @override
   void initState() {
     super.initState();
-    _currentStartIndex = max(0, widget.dataPoints.length - 7);
+    _currentStartIndex = max(0, widget.incomeData.length - 7);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -59,15 +57,11 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
     super.dispose();
   }
 
-  Color get chartColor {
-    return widget.chartColor == ChartColor.red
-        ? const Color(0xFFE53935)
-        : GlobalVariables.secondaryColor;
-  }
-
   List<ChartPoint> get visiblePoints {
-    int endIndex = min(_currentStartIndex + 7, widget.dataPoints.length);
-    return widget.dataPoints.sublist(_currentStartIndex, endIndex);
+    int endIndex = min(_currentStartIndex + 7, widget.incomeData.length);
+    return widget.isIncomeOnTop
+        ? widget.incomeData.sublist(_currentStartIndex, endIndex)
+        : widget.expenseData.sublist(_currentStartIndex, endIndex);
   }
 
   double get intervalTotal {
@@ -75,7 +69,7 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
   }
 
   bool get canGoBack => _currentStartIndex > 0;
-  bool get canGoForward => _currentStartIndex + 7 < widget.dataPoints.length;
+  bool get canGoForward => _currentStartIndex + 7 < widget.incomeData.length;
 
   void _goBack() {
     if (canGoBack) {
@@ -89,7 +83,8 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
   void _goForward() {
     if (canGoForward) {
       setState(() {
-        _currentStartIndex = min(widget.dataPoints.length - 7, _currentStartIndex + 7);
+        _currentStartIndex =
+            min(widget.incomeData.length - 7, _currentStartIndex + 7);
       });
       _animationController.forward(from: 0);
     }
@@ -113,19 +108,26 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
                 Padding(
                   padding: const EdgeInsets.only(top: 50),
                   child: GestureDetector(
-                    onPanDown: (details) => _updateTooltip(details.localPosition),
-                    onPanUpdate: (details) => _updateTooltip(details.localPosition),
+                    onPanDown: (details) =>
+                        _updateTooltip(details.localPosition),
+                    onPanUpdate: (details) =>
+                        _updateTooltip(details.localPosition),
                     onPanEnd: (_) => _hideTooltip(),
                     child: AnimatedBuilder(
                       animation: _animation,
                       builder: (context, child) {
                         return CustomPaint(
                           size: Size.infinite,
-                          painter: LineChartPainter(
-                            dataPoints: visiblePoints,
-                            color: chartColor,
+                          painter: OverlappingLineChartPainter(
+                            incomeData: widget.incomeData.sublist(
+                                _currentStartIndex, _currentStartIndex + 7),
+                            expenseData: widget.expenseData.sublist(
+                                _currentStartIndex, _currentStartIndex + 7),
+                            incomeColor: GlobalVariables.secondaryColor,
+                            expenseColor: const Color(0xFFE53935),
                             selectedPoint: selectedPoint,
                             animation: _animation,
+                            isIncomeOnTop: widget.isIncomeOnTop,
                           ),
                         );
                       },
@@ -158,16 +160,21 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
         tween: Tween<double>(begin: 0, end: intervalTotal),
         duration: const Duration(milliseconds: 300),
         builder: (context, value, child) {
-          return Text(
-            '${widget.valuePrefix}${NumberFormat('#,##0').format(value)}',
-            style: TextStyle(
-              color: widget.chartColor == ChartColor.green 
-                ? GlobalVariables.secondaryColor
-                : const Color(0xFFE53935),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${widget.valuePrefix}${NumberFormat('#,##0').format(value)}',
+                style: TextStyle(
+                  color: widget.isIncomeOnTop
+                      ? GlobalVariables.secondaryColor
+                      : const Color(0xFFE53935),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -178,7 +185,7 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: visiblePoints.map((point) {
-        return Container(
+        return SizedBox(
           width: 50,
           child: Column(
             children: [
@@ -224,7 +231,7 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black.withOpacity(0.7),
         borderRadius: BorderRadius.circular(6),
         boxShadow: const [
           BoxShadow(
@@ -235,22 +242,25 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${widget.valuePrefix}${selectedPoint!.value.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          Text(
             DateFormat('MMM d, yyyy').format(selectedPoint!.date),
             style: const TextStyle(
-              color: Colors.black54,
+              color: Colors.white70,
               fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            rupiahFormatCurrency(selectedPoint!.value.toInt()),
+            style: TextStyle(
+              color: widget.isIncomeOnTop
+                  ? GlobalVariables.secondaryColor
+                  : const Color(0xFFE53935),
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
         ],
@@ -261,7 +271,7 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
   void _updateTooltip(Offset position) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
-    
+
     int index = ((position.dx / size.width) * visiblePoints.length).floor();
     index = index.clamp(0, visiblePoints.length - 1);
 
@@ -279,72 +289,123 @@ class ChartPlotState extends State<ChartPlot> with SingleTickerProviderStateMixi
   }
 }
 
-class LineChartPainter extends CustomPainter {
-  final List<ChartPoint> dataPoints;
-  final Color color;
+class OverlappingLineChartPainter extends CustomPainter {
+  final List<ChartPoint> incomeData;
+  final List<ChartPoint> expenseData;
+  final Color incomeColor;
+  final Color expenseColor;
   final ChartPoint? selectedPoint;
   final Animation<double> animation;
+  final bool isIncomeOnTop;
 
-  LineChartPainter({
-    required this.dataPoints,
-    required this.color,
+  OverlappingLineChartPainter({
+    required this.incomeData,
+    required this.expenseData,
+    required this.incomeColor,
+    required this.expenseColor,
     this.selectedPoint,
     required this.animation,
+    required this.isIncomeOnTop,
   }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (dataPoints.isEmpty) return;
+    if (incomeData.isEmpty || expenseData.isEmpty) return;
 
-    final paint = Paint()
-      ..color = color
+    final incomePaint = Paint()
+      ..color = incomeColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
 
-    final fillPaint = Paint()
+    final expensePaint = Paint()
+      ..color = expenseColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+
+    final incomeFillPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.0),
+          incomeColor.withOpacity(0.3),
+          incomeColor.withOpacity(0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    final points = _getPoints(size);
-    final animatedPoints = _getAnimatedPoints(points, size);
-    final path = _createPath(animatedPoints);
-    final fillPath = _createFillPath(path, size);
+    final expenseFillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          expenseColor.withOpacity(0.3),
+          expenseColor.withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    // Draw gradient fill
-    canvas.drawPath(fillPath, fillPaint);
-    
-    // Draw line
-    canvas.drawPath(path, paint);
+    final incomePoints = _getPoints(size, incomeData);
+    final expensePoints = _getPoints(size, expenseData);
+
+    final animatedIncomePoints = _getAnimatedPoints(incomePoints, size);
+    final animatedExpensePoints = _getAnimatedPoints(expensePoints, size);
+
+    final incomePath = _createPath(animatedIncomePoints);
+    final expensePath = _createPath(animatedExpensePoints);
+
+    final incomeFillPath = _createFillPath(incomePath, size);
+    final expenseFillPath = _createFillPath(expensePath, size);
+
+    // Draw charts based on isIncomeOnTop parameter
+    if (isIncomeOnTop) {
+      _drawChart(
+          canvas, expensePath, expenseFillPath, expensePaint, expenseFillPaint);
+      _drawChart(
+          canvas, incomePath, incomeFillPath, incomePaint, incomeFillPaint);
+    } else {
+      _drawChart(
+          canvas, incomePath, incomeFillPath, incomePaint, incomeFillPaint);
+      _drawChart(
+          canvas, expensePath, expenseFillPath, expensePaint, expenseFillPaint);
+    }
 
     // Draw selected point
     if (selectedPoint != null) {
-      final selectedIndex = dataPoints.indexOf(selectedPoint!);
+      final selectedPoints =
+          isIncomeOnTop ? animatedIncomePoints : animatedExpensePoints;
+      final selectedIndex =
+          (isIncomeOnTop ? incomeData : expenseData).indexOf(selectedPoint!);
       if (selectedIndex != -1) {
-        final dotPaint = Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.fill;
-        
-        final borderPaint = Paint()
-          ..color = color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3;
-
-        canvas.drawCircle(animatedPoints[selectedIndex], 6, borderPaint);
-        canvas.drawCircle(animatedPoints[selectedIndex], 4, dotPaint);
+        _drawSelectedPoint(canvas, selectedPoints[selectedIndex],
+            isIncomeOnTop ? incomePaint : expensePaint);
       }
     }
   }
 
+  void _drawChart(Canvas canvas, Path linePath, Path fillPath, Paint linePaint,
+      Paint fillPaint) {
+    canvas.drawPath(fillPath, fillPaint);
+    canvas.drawPath(linePath, linePaint);
+  }
+
+  void _drawSelectedPoint(Canvas canvas, Offset point, Paint paint) {
+    final dotPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final borderPaint = Paint()
+      ..color = paint.color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+
+    canvas.drawCircle(point, 6, borderPaint);
+    canvas.drawCircle(point, 4, dotPaint);
+  }
+
   List<Offset> _getAnimatedPoints(List<Offset> points, Size size) {
     return points.map((point) {
-      return Offset(point.dx, lerpDouble(size.height, point.dy, animation.value)!);
+      return Offset(
+          point.dx, lerpDouble(size.height, point.dy, animation.value)!);
     }).toList();
   }
 
@@ -383,21 +444,21 @@ class LineChartPainter extends CustomPainter {
     return fillPath;
   }
 
-  List<Offset> _getPoints(Size size) {
-    if (dataPoints.isEmpty) return [];
+  List<Offset> _getPoints(Size size, List<ChartPoint> data) {
+    if (data.isEmpty) return [];
 
     final points = <Offset>[];
     final width = size.width;
     final height = size.height;
-    
-    final values = dataPoints.map((point) => point.value).toList();
+
+    final values = data.map((point) => point.value).toList();
     final minValue = values.reduce(min);
     final maxValue = values.reduce(max);
     final valueRange = maxValue - minValue;
 
-    for (int i = 0; i < dataPoints.length; i++) {
-      final x = (i / (dataPoints.length - 1)) * width;
-      final normalizedValue = (dataPoints[i].value - minValue) / valueRange;
+    for (int i = 0; i < data.length; i++) {
+      final x = (i / (data.length - 1)) * width;
+      final normalizedValue = (data[i].value - minValue) / valueRange;
       final y = height - (normalizedValue * height);
       points.add(Offset(x, y));
     }
@@ -406,10 +467,13 @@ class LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LineChartPainter oldDelegate) {
-    return oldDelegate.dataPoints != dataPoints ||
-        oldDelegate.color != color ||
+  bool shouldRepaint(OverlappingLineChartPainter oldDelegate) {
+    return oldDelegate.incomeData != incomeData ||
+        oldDelegate.expenseData != expenseData ||
+        oldDelegate.incomeColor != incomeColor ||
+        oldDelegate.expenseColor != expenseColor ||
         oldDelegate.selectedPoint != selectedPoint ||
-        oldDelegate.animation != animation;
+        oldDelegate.animation != animation ||
+        oldDelegate.isIncomeOnTop != isIncomeOnTop;
   }
 }

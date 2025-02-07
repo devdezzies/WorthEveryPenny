@@ -252,8 +252,7 @@ double calculateFinancialHealth(User user) {
 
   // 2. Edge case handling
   if (expenses.isEmpty) return 0.0; // Perfect score for no expenses
-  if (expenses.every((e) => e.date.isAtSameMomentAs(today)))
-    return 100.0; // First day
+  if (expenses.every((e) => e.date.isAtSameMomentAs(today))) return 100.0; // First day
 
   // 3. Time-weighted statistics
   final (double mean, double stdDev) = _calculateWeightedStats(user, today);

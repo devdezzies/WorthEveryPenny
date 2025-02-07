@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:swappp/features/analytics/widgets/chart_plot.dart';
+import 'package:swappp/features/analytics/data/chart_point.dart';
 
 class AnalyticsProvider extends ChangeNotifier {
   List<ChartPoint> _incomeData = [];

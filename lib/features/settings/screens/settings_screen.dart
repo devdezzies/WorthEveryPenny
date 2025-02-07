@@ -5,13 +5,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:swappp/common/services/preferences_service.dart';
 import 'package:swappp/features/settings/services/settings_service.dart';
 import 'package:swappp/features/settings/widgets/profile_button.dart';
 import 'package:swappp/features/settings/widgets/profile_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
+import 'package:swappp/features/settings/widgets/settings_switch.dart';
 import 'package:swappp/features/settings/widgets/subscription/premium_subscription_field.dart';
 import 'package:swappp/models/user.dart';
+import 'package:swappp/providers/preferences_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -24,6 +27,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final PreferencesService preferencesService = PreferencesService();
+  late PreferencesProvider preferencesProvider;
   late User user;
   late String cannyToken;
   late TextEditingController usernameController;
@@ -33,6 +38,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late WebViewController webViewController;
   String pickedImagePath = "";
   late UserProvider userProvider;
+
+  @override
+  void initState() {
+    preferencesProvider = Provider.of<PreferencesProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -49,7 +60,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     // TODO: remove unstable code
     try {
-      widget.onLeave(usernameController.text, cardNumberController.text, pickedImagePath);
+      widget.onLeave(
+          usernameController.text, cardNumberController.text, pickedImagePath);
     } catch (e) {
       debugPrint("FIX THIS");
     }
@@ -62,9 +74,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _initializeToken() async {
     settingsService
         .createCannyToken(
-            context: context, id: user.id, name: user.username, email: user.email)
+            context: context,
+            id: user.id,
+            name: user.username,
+            email: user.email)
         .then((token) {
-        cannyToken = token;
+      cannyToken = token;
     });
   }
 
@@ -130,28 +145,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     ClipOval(
                       child: pickedImagePath == ""
-                            ? (user.profilePicture.isEmpty
+                          ? (user.profilePicture.isEmpty
                               ? Container(
-                                width: 150,
-                                height: 150,
-                                color: GlobalVariables.darkerGreyBackgroundColor,
-                                child: const Center(
-                                child: Text(
-                                  "😎",
-                                  style: TextStyle(fontSize: 50),
-                                ),
-                                ),
-                              )
+                                  width: 150,
+                                  height: 150,
+                                  color:
+                                      GlobalVariables.darkerGreyBackgroundColor,
+                                  child: const Center(
+                                    child: Text(
+                                      "😎",
+                                      style: TextStyle(fontSize: 50),
+                                    ),
+                                  ),
+                                )
                               : CachedNetworkImage(
-                                placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                                imageUrl: user.profilePicture,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                width: 150.0,
-                                height: 150.0,
-                              ))
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  imageUrl: user.profilePicture,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  width: 150.0,
+                                  height: 150.0,
+                                ))
                           : kIsWeb
                               ? Image.network(
                                   pickedImagePath,
@@ -193,8 +209,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "Account Settings",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -231,8 +249,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "Integrations",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -248,8 +268,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "Subscription",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -270,8 +292,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "App Settings",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -289,6 +313,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.amber,
                     ),
                   ),
+                  SettingsSwitch(
+                    title: "Double Chart Analytics",
+                    leadingIcon: const Icon(Icons.bar_chart_rounded),
+                    initialValue: preferencesProvider.chartType == "double",
+                    onChanged: (change) async {
+                      await preferencesService.setChart(change ? "double" : "single", context);
+                    },
+                  ),
                 ],
               ),
               Wrap(
@@ -298,14 +330,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "Help and Support",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
                   ProfileButton(
                     onTap: () {
-                      showWebViewModalBottomSheet(context: context, url: "https://wortheverypenny.vercel.app/help-center", title: "Hi ${user.displayName} 👋");
+                      showWebViewModalBottomSheet(
+                          context: context,
+                          url: "https://wortheverypenny.vercel.app/help-center",
+                          title: "Hi ${user.displayName} 👋");
                     },
                     title: "Contact Support",
                     leadingIcon: const Icon(
@@ -317,7 +354,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: "Request Features or Report Bugs",
                     onTap: () {
                       //_showFeatureWebView(context);
-                      showWebViewModalBottomSheet(context: context, url: "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken", title: "Hi ${user.displayName} 👋", subtitle: "Got anything to share with us?");
+                      showWebViewModalBottomSheet(
+                          context: context,
+                          url:
+                              "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
+                          title: "Hi ${user.displayName} 👋",
+                          subtitle: "Got anything to share with us?");
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,
@@ -332,27 +374,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ],
-              ), 
-               Wrap(
+              ),
+              Wrap(
                 children: [
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       "Account Management",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey[500]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.grey[500]),
                       textAlign: TextAlign.start,
                     ),
                   ),
                   ProfileButton(
                     onTap: () async {
-                      bool isConfirmed = await showConfirmationDialog(context, "Are you sure you want to logout?", "Logout");
+                      bool isConfirmed = await showConfirmationDialog(context,
+                          "Are you sure you want to logout?", "Logout");
                       if (isConfirmed) {
                         if (context.mounted) {
                           settingsService.logout(context);
                         }
-                      } 
+                      }
                     },
                     title: "Logout",
                     leadingIcon: const Icon(

@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:swappp/common/services/preferences_service.dart';
 import 'package:swappp/common/widgets/bottom_bar.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/screens/auth_screen.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/analytics_provider.dart';
 import 'package:swappp/providers/bank_provider.dart';
+import 'package:swappp/providers/preferences_provider.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
@@ -20,7 +22,8 @@ void main() {
     ChangeNotifierProvider(create: (context) => UserProvider()), 
     ChangeNotifierProvider(create: (context) => TransactionProvider()),
     ChangeNotifierProvider(create: (context) => BankProvider()),
-    ChangeNotifierProvider(create: (context) => AnalyticsProvider())
+    ChangeNotifierProvider(create: (context) => AnalyticsProvider()),
+    ChangeNotifierProvider(create: (context) => PreferencesProvider()),
   ], child: const MyApp()));
 }
 
@@ -33,11 +36,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
+  final PreferencesService preferencesService = PreferencesService();
 
   @override
   void initState() {
     super.initState();
     authService.getUserData(context);
+    preferencesService.getAllPreferences(context);
   }
 
   @override
