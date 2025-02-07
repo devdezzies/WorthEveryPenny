@@ -131,7 +131,7 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
                 }),
                 const SizedBox(height: 15),
                 CustomButton(
-                    textTitle: "Add New Card",
+                    textTitle: "Add New Account",
                     onTap: () {
                       _nextPage();
                     }),
@@ -229,7 +229,7 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: GlobalVariables.backgroundColor,
-        title: Text(_currentPage == 0 ? "Your Cards" : "Add New Card",
+        title: Text(_currentPage == 0 ? "Your Accounts" : "Add New Account",
             style: const TextStyle(fontWeight: FontWeight.w700)),
         iconTheme: IconThemeData(color: Colors.grey[500]),
         centerTitle: true,

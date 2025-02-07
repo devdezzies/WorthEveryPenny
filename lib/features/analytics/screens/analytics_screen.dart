@@ -66,18 +66,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 if (Provider.of<PreferencesProvider>(context).chartType == 'single')
                   SizedBox(
                     width: double.infinity,
-                    height: 350,
+                    height: 300,
                     child: SingleChartPlot(
                       dataPoints: isIncome ? analyticsProvider.incomeData : analyticsProvider.expenseData,
                       valuePrefix: 'Rp',
-                      height: 350,
+                      height: 300,
                       chartColor: isIncome ? ChartColor.green : ChartColor.red,
                     ),
                   ),
                 if (Provider.of<PreferencesProvider>(context).chartType == 'double')
                   SizedBox(
                     width: double.infinity,
-                    height: 350,
+                    height: 300,
                     child: DoubleChartPlot(
                       incomeData: analyticsProvider.incomeData,
                       expenseData: analyticsProvider.expenseData,
@@ -88,7 +88,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           isIncome = change;
                         });
                       },
-                      height: 350,
+                      height: 300,
                     ),
                   ),
               ],

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/analytics/data/chart_point.dart';
 
 enum ChartColor { red, green }
@@ -104,6 +105,11 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
                   top: 0,
                   child: _buildIntervalTotal(),
                 ),
+                Positioned(
+                  right: 16,
+                  top: 0,
+                  child: _buildNavigationButtons(),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 50),
                   child: GestureDetector(
@@ -137,8 +143,6 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
           ),
           const SizedBox(height: 10),
           _buildDateLabels(),
-          const SizedBox(height: 10),
-          _buildNavigationButtons(),
         ],
       ),
     );
@@ -147,7 +151,7 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
   Widget _buildIntervalTotal() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 5, 16, 24),
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(begin: 0, end: intervalTotal),
         duration: const Duration(milliseconds: 300),
@@ -201,12 +205,12 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: canGoBack ? _goBack : null,
           color: canGoBack ? Colors.white : Colors.white.withOpacity(0.3),
         ),
         IconButton(
-          icon: const Icon(Icons.arrow_forward_ios),
+          icon: const Icon(Icons.arrow_forward_rounded),
           onPressed: canGoForward ? _goForward : null,
           color: canGoForward ? Colors.white : Colors.white.withOpacity(0.3),
         ),
@@ -218,7 +222,7 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black.withOpacity(0.7),
         borderRadius: BorderRadius.circular(6),
         boxShadow: const [
           BoxShadow(
@@ -229,22 +233,25 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${widget.valuePrefix}${selectedPoint!.value.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          Text(
             DateFormat('MMM d, yyyy').format(selectedPoint!.date),
             style: const TextStyle(
-              color: Colors.black54,
+              color: Colors.white70,
               fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            rupiahFormatCurrency(selectedPoint!.value.toInt()),
+            style: TextStyle(
+              color: widget.chartColor == ChartColor.green
+                  ? GlobalVariables.secondaryColor
+                  : const Color(0xFFE53935),
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
         ],

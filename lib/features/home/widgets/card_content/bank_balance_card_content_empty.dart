@@ -14,7 +14,7 @@ class BankBalanceCardContentEmpty extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Your Bank Wallet",
+            "Your Accounts",
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
           ),
           const SizedBox(
@@ -29,7 +29,7 @@ class BankBalanceCardContentEmpty extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25)),
               width: double.infinity,
               child: const Text(
-                "Add Your Bank",
+                "Add Your Account",
                 style: TextStyle(
                     color: GlobalVariables.backgroundColor,
                     fontWeight: FontWeight.w700,

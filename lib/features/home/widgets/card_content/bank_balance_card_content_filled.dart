@@ -19,7 +19,7 @@ class BankBalanceCardContentFilled extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Your Bank",
+                "Your Accounts",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,

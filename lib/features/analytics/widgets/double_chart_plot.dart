@@ -105,6 +105,11 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
                   top: 0,
                   child: _buildIntervalTotal(),
                 ),
+                Positioned(
+                  right: 16,
+                  top: 0,
+                  child: _buildNavigationButtons(),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 50),
                   child: GestureDetector(
@@ -145,8 +150,6 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
           ),
           const SizedBox(height: 10),
           _buildDateLabels(),
-          const SizedBox(height: 10),
-          _buildNavigationButtons(),
         ],
       ),
     );
@@ -155,7 +158,7 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
   Widget _buildIntervalTotal() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 5, 16, 24),
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(begin: 0, end: intervalTotal),
         duration: const Duration(milliseconds: 300),
@@ -214,12 +217,12 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: canGoBack ? _goBack : null,
           color: canGoBack ? Colors.white : Colors.white.withOpacity(0.3),
         ),
         IconButton(
-          icon: const Icon(Icons.arrow_forward_ios),
+          icon: const Icon(Icons.arrow_forward_rounded),
           onPressed: canGoForward ? _goForward : null,
           color: canGoForward ? Colors.white : Colors.white.withOpacity(0.3),
         ),
