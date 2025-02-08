@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    final AuthService authService = AuthService();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: GlobalVariables.backgroundColor,
@@ -112,29 +113,35 @@ class _HomeScreenState extends State<HomeScreen> {
           onRefresh: () {
             return Future.delayed(const Duration(seconds: 1), () {
               // Refresh the user data
-              AuthService().getUserData(context);
+              authService.getUserData(context);
             });
           },
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            // padding: const EdgeInsets.symmetric(horizontal: 16.0),
             children: [
               const SizedBox(height: 5),
-              SpendingPulse(value: calculateFinancialHealth(user)),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SpendingPulse(value: calculateFinancialHealth(user)),
+              ),
               const SizedBox(height: 16),
-              BalanceCard(
-                expense: user.monthlyReport[0].totalExpense.toInt(),
-                totalBalance: user.cash +
-                    (user.bankAccount.isEmpty
-                        ? 0
-                        : user.bankAccount
-                            .map((e) => e.balance.toInt())
-                            .reduce((a, b) => a + b)),
-                income: user.monthlyReport[0].totalIncome.toInt(),
-                expensePercentage: calculateFinancialHealth(user),
-                lastUpdated: user.transactions.isNotEmpty
-                    ? user.transactions[0].createdAt
-                    : user.updatedAt,
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: BalanceCard(
+                  expense: user.monthlyReport[0].totalExpense.toInt(),
+                  totalBalance: user.cash +
+                      (user.bankAccount.isEmpty
+                          ? 0
+                          : user.bankAccount
+                              .map((e) => e.balance.toInt())
+                              .reduce((a, b) => a + b)),
+                  income: user.monthlyReport[0].totalIncome.toInt(),
+                  expensePercentage: calculateFinancialHealth(user),
+                  lastUpdated: user.transactions.isNotEmpty
+                      ? user.transactions[0].createdAt
+                      : user.updatedAt,
+                ),
               ),
               const SizedBox(height: 20),
               Container(
@@ -146,7 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      SizedBox(width: 16,),
                       PersonalizedInsightEmpty(),
+                      GoalWalletEmpty(),
                       GoalWalletEmpty(),
                     ],
                   ),
@@ -155,9 +164,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              user.transactions.isEmpty
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: user.transactions.isEmpty
                   ? const EmptyTransactionList()
                   : const FilledTransactionList()
+              )
             ],
           ),
           builder: (context, child, controller) {
