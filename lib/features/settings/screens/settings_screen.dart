@@ -19,7 +19,7 @@ import 'package:swappp/providers/user_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final Function(String, String, String) onLeave;
+  final Function(String, String) onLeave;
   const SettingsScreen({super.key, required this.onLeave});
 
   @override
@@ -41,7 +41,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void initState() {
-    preferencesProvider = Provider.of<PreferencesProvider>(context, listen: false);
+    preferencesProvider =
+        Provider.of<PreferencesProvider>(context, listen: false);
     super.initState();
   }
 
@@ -61,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // TODO: remove unstable code
     try {
       widget.onLeave(
-          usernameController.text, cardNumberController.text, pickedImagePath);
+          usernameController.text, cardNumberController.text);
     } catch (e) {
       debugPrint("FIX THIS");
     }
@@ -83,8 +84,94 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void _showImagePickerOptions(BuildContext context) {
-    showModalBottomSheet(
+  void _showConfirmationProfilePhotoScreen(
+      BuildContext context, String imagePath) {
+    bool isUpdating = false;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return SimpleDialog(
+            backgroundColor:
+                Colors.transparent, // Make the dialog background transparent
+            elevation: 0, // Remove shadow
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Confirm Photo?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ClipOval(
+                      child: Image.file(
+                        File(imagePath),
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            if (!isUpdating) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              isUpdating = true;
+                            });
+                            await settingsService.updateProfilePicture(context: context, profilePicture: imagePath, id: user.id);
+                            await Future.delayed(const Duration(seconds: 2));
+                            setState(() {
+                              isUpdating = false;
+                              pickedImagePath = imagePath;
+                            });
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: Text(
+                            isUpdating ? "Updating..." : "Confirm",
+                            style: const TextStyle(
+                                color: GlobalVariables.secondaryColor,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<String?> _showImagePickerOptions(BuildContext context) async {
+    return await showModalBottomSheet<String>(
       context: context,
       builder: (context) => SafeArea(
         child: Wrap(
@@ -94,10 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Gallery'),
               onTap: () async {
                 final imagePath = await pickImageFromGallery();
-                setState(() {
-                  pickedImagePath = imagePath ?? pickedImagePath;
-                  Navigator.pop(context);
-                });
+                Navigator.pop(context, imagePath);
               },
             ),
             ListTile(
@@ -105,10 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Camera'),
               onTap: () async {
                 final imagePath = await pickImageFromCamera();
-                setState(() {
-                  pickedImagePath = imagePath ?? pickedImagePath;
-                  Navigator.pop(context);
-                });
+                Navigator.pop(context, imagePath);
               },
             ),
           ],
@@ -158,15 +239,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   ),
                                 )
-                              : CachedNetworkImage(
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                  imageUrl: user.profilePicture,
-                                  fit: BoxFit.cover,
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                  width: 150.0,
-                                  height: 150.0,
+                              : Consumer<UserProvider>(
+                                  builder: (context, userProvider, child) {
+                                    return CachedNetworkImage(
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      imageUrl:
+                                          userProvider.user.profilePicture,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                      width: 150.0,
+                                      height: 150.0,
+                                    );
+                                  },
                                 ))
                           : kIsWeb
                               ? Image.network(
@@ -186,7 +272,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       bottom: 0,
                       right: 10,
                       child: GestureDetector(
-                        onTap: () => _showImagePickerOptions(context),
+                        onTap: () async {
+                          final tempImage =
+                              await _showImagePickerOptions(context);
+                          if (tempImage != null)
+                            _showConfirmationProfilePhotoScreen(
+                                context, tempImage);
+                        },
                         child: const Text(
                           "📸",
                           style: TextStyle(
@@ -318,7 +410,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leadingIcon: const Icon(Icons.bar_chart_rounded),
                     initialValue: preferencesProvider.chartType == "double",
                     onChanged: (change) async {
-                      await preferencesService.setChart(change ? "double" : "single", context);
+                      await preferencesService.setChart(
+                          change ? "double" : "single", context);
                     },
                   ),
                 ],

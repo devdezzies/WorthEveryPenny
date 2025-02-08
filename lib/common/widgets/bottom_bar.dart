@@ -51,12 +51,11 @@ class _BottomBarState extends State<BottomBar> {
 
   // Method to build the SettingsScreen and pass the context
   Widget _buildSettingsScreen(BuildContext context) {
-    return SettingsScreen(onLeave: (username, paymentNumber, profilePicture) {
+    return SettingsScreen(onLeave: (username, paymentNumber) {
       // Pass the context and other parameters to the updateSettings function
       settingsService.updateSettings(
           context: context,
           name: username,
-          profilePicture: profilePicture,
           id: Provider.of<UserProvider>(context, listen: false).user.id,
           paymentNumber: paymentNumber);
     });
