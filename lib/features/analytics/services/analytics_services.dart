@@ -22,6 +22,7 @@ class AnalyticsServices {
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            "ngrok-skip-browser-warning": "69420",
             'x-auth-token': token
           });
       
@@ -30,6 +31,7 @@ class AnalyticsServices {
         http.Response analyticsResponse = await http.get(Uri.parse('$uri/transaction/getDailyAmountTransactions'),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
+              "ngrok-skip-browser-warning": "69420",
               'x-auth-token': token
             });
 

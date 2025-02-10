@@ -31,6 +31,7 @@ class BankService {
         body: bankProvider.bankAccount.toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
           'x-auth-token': token,
         },
       );

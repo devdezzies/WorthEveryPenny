@@ -25,7 +25,8 @@ class SettingsService {
             "name": name,
           }),
           headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8'
+            'Content-Type': 'application/json; charset=UTF-8', 
+            "ngrok-skip-browser-warning": "69420",
           });
 
       if (res.statusCode == 200) {
@@ -56,7 +57,8 @@ class SettingsService {
               "profilePicture": response.secureUrl,
             }),
             headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8'
+              'Content-Type': 'application/json; charset=UTF-8', 
+              "ngrok-skip-browser-warning": "69420",
             },
           );
 
@@ -87,7 +89,8 @@ class SettingsService {
             "paymentNumber": paymentNumber,
           }),
           headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8'
+            'Content-Type': 'application/json; charset=UTF-8', 
+            "ngrok-skip-browser-warning": "69420",
           });
 
       if (res.statusCode == 200 && context.mounted) {
@@ -107,13 +110,14 @@ class SettingsService {
       http.Response res = await http.post(Uri.parse('$uri/logout'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            "ngrok-skip-browser-warning": "69420",
             'x-auth-token': token
           });
 
       if (context.mounted) {
         httpErrorHandle(response: res, context: context, onSuccess: () {
           prefs.remove('x-auth-token');
-          Navigator.pushReplacementNamed(context, "/auth-screen");
+          Navigator.pushReplacementNamed(context, "/onboarding");
           debugPrint('Successfully Logged out');
         }, 
         onFailure: () {

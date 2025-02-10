@@ -72,7 +72,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     strutStyle: const StrutStyle(fontFamily: 'Satoshi'),
                     text: const TextSpan(
                         text: 'Know Your ',
-                        style: TextStyle(fontSize: 30, fontFamily: 'Satoshi', color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Satoshi',
+                            color: Colors.white),
                         children: [
                           TextSpan(
                               text: 'Money ',
@@ -234,7 +237,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // create a divider line 
+                  // create a divider line
                   Divider(
                     color: Colors.grey[800],
                     thickness: 1,
@@ -250,7 +253,10 @@ class _AuthScreenState extends State<AuthScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SvgPicture.asset('assets/icons/jwt.svg', width: 80,),
+                  SvgPicture.asset(
+                    'assets/icons/jwt.svg',
+                    width: 80,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),

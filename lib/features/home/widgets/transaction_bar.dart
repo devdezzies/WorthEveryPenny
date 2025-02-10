@@ -17,7 +17,7 @@ class TransactionBar extends StatelessWidget {
       Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-        color: GlobalVariables.greyBackgroundColor,
+        color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(15),
         ),
         width: double.infinity,

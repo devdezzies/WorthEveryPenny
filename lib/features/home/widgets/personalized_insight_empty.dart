@@ -33,6 +33,10 @@ class PersonalizedInsightEmpty extends StatelessWidget {
             )),
           ), 
           GestureDetector(
+            onTap: () {
+              // Navigate to the survey screen
+              Navigator.pushNamed(context, '/survey');
+            },
             child: Container(
               margin: const EdgeInsets.only(right: 20, left: 20, bottom: 15, top: 10),
               alignment: Alignment.center,

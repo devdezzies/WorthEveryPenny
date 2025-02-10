@@ -88,8 +88,19 @@ flutter:
     - assets/icons/bill-active.svg
     - assets/images/splash-logo.png
     - assets/icons/jwt.svg
+    - assets/icons/AI.svg
     - assets/images/profile.jpg
     - assets/lottie/dollar_refresh.json
+    - assets/images/bangku.jpeg
+    - assets/images/braga.jpeg
+    - assets/images/contemplate.jpeg 
+    - assets/images/daun.jpeg 
+    - assets/images/idk.jpeg
+    - assets/images/tult.jpeg 
+    - assets/images/gedung-3.jpeg
+    - assets/images/duck.jpg
+    - assets/images/shell.jpeg
+    - assets/images/ayam.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

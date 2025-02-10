@@ -113,12 +113,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 16),
                     ClipOval(
-                      child: Image.file(
-                        File(imagePath),
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
+                      child: kIsWeb
+                        ? Image.network(
+                          imagePath,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        )
+                        : Image.file(
+                          File(imagePath),
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
                     ),
                     const SizedBox(height: 16),
                     Row(

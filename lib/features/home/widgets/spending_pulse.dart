@@ -16,7 +16,7 @@ class SpendingPulse extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.grey[900]),
+            borderRadius: BorderRadius.circular(20), color: const Color(0xFF1A1A1A)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

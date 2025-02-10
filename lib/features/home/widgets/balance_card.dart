@@ -49,7 +49,7 @@ class _BalanceCardState extends State<BalanceCard> {
       width: MediaQuery.of(context).size.width,
       height: 210,
       decoration: BoxDecoration(
-          color: GlobalVariables.greyBackgroundColor,
+          color: const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
@@ -109,7 +109,7 @@ class _BalanceCardState extends State<BalanceCard> {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                  color: GlobalVariables.darkerGreyBackgroundColor,
+                  color: GlobalVariables.greyBackgroundColor,
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(25),
                       bottomRight: Radius.circular(25))),
@@ -130,7 +130,7 @@ class _BalanceCardState extends State<BalanceCard> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       color:
-                                          const Color.fromARGB(255, 56, 56, 56),
+                                          GlobalVariables.secondaryColor.withAlpha(30),
                                       borderRadius: BorderRadius.circular(10)),
                                   child: const Icon(
                                     Icons.trending_up_rounded,
@@ -188,7 +188,7 @@ class _BalanceCardState extends State<BalanceCard> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       color:
-                                          const Color.fromARGB(255, 56, 56, 56),
+                                          Colors.redAccent.withAlpha(30),
                                       borderRadius: BorderRadius.circular(10)),
                                   child: const Icon(
                                     Icons.trending_down_rounded,

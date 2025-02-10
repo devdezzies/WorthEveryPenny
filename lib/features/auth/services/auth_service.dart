@@ -57,20 +57,46 @@ class AuthService {
         body: user.toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
         },
       );
 
       // ignore: use_build_context_synchronously
-      if (context.mounted) {
+      if (res.statusCode == 200) {
+        http.Response res = await http.post(
+          Uri.parse('$uri/api/signin'),
+          body: jsonEncode({'email': email, 'password': password}),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        );
+
+        // ignore: use_build_context_synchronously
         httpErrorHandle(
             response: res,
+            // ignore: use_build_context_synchronously
             context: context,
-            onSuccess: () {
-              showSnackBar(context, 'Hello 👋 ${user.username}');
+            onSuccess: () async {
+              // save the token on user's device
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              if (context.mounted) {
+                Provider.of<UserProvider>(context, listen: false)
+                    .setUser(res.body);
+              }
+              await prefs.setString(
+                  'x-auth-token', jsonDecode(res.body)['token']);
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, BottomBar.routeName, (route) => false);
+              }
             },
             onFailure: () {
-              showSnackBar(context, '🚫 Email already exists');
+              // ignore: use_build_context_synchronously
+              showSnackBar(context, '🚫 Invalid email or password');
             });
+      } else {
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, '🚫 Failed to create account');
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -89,6 +115,7 @@ class AuthService {
         body: jsonEncode({'email': email, 'password': password}),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
         },
       );
 
@@ -134,20 +161,22 @@ class AuthService {
         prefs.setString('x-auth-token', '');
         token = '';
       }
-      debugPrint('Token: $token');
 
       var tokenRes = await http.post(Uri.parse('$uri/tokenIsValid'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            "ngrok-skip-browser-warning": "69420",
             'x-auth-token': token
           });
 
+      
       var response = jsonDecode(tokenRes.body);
       if (response) {
         // get user data using the API
         http.Response userResponse = await http.get(Uri.parse('$uri/'),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
+              "ngrok-skip-browser-warning": "69420",
               'x-auth-token': token
             });
 

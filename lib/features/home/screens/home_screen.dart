@@ -9,8 +9,8 @@ import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/features/home/widgets/balance_card.dart';
 import 'package:swappp/features/home/widgets/empty_transaction_list.dart';
 import 'package:swappp/features/home/widgets/filled_transaction_list.dart';
-import 'package:swappp/features/home/widgets/goal_wallet_empty.dart';
-import 'package:swappp/features/home/widgets/personalized_insight_empty.dart';
+import 'package:swappp/features/home/widgets/goal_wallet.dart';
+import 'package:swappp/features/home/widgets/personalized_insight_filled.dart';
 import 'package:swappp/features/home/widgets/spending_pulse.dart';
 import 'package:swappp/providers/user_provider.dart';
 
@@ -154,9 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       SizedBox(width: 16,),
-                      PersonalizedInsightEmpty(),
-                      GoalWalletEmpty(),
-                      GoalWalletEmpty(),
+                      PersonalizedInsightFilled(),
+                      GoalWallet(),
                     ],
                   ),
                 ),
