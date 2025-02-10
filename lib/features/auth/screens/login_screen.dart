@@ -7,7 +7,7 @@ import 'package:swappp/features/auth/services/auth_service.dart';
 
 class LogInScreen extends StatefulWidget {
   static const String routeName = '/log-in-screen';
-  const LogInScreen({Key? key}) : super(key: key);
+  const LogInScreen({super.key});
 
   @override
   State<LogInScreen> createState() => _LogInScreenState();
