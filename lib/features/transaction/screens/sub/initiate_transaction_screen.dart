@@ -11,14 +11,20 @@ import 'package:swappp/features/transaction/widgets/transaction_name_field.dart'
 import 'package:swappp/features/transaction/widgets/transaction_type_picker.dart';
 import 'package:swappp/providers/transaction_provider.dart';
 
-class InitiateTransactionScreen extends StatelessWidget {
+class InitiateTransactionScreen extends StatefulWidget {
   const InitiateTransactionScreen({super.key});
+
+  @override
+  State<InitiateTransactionScreen> createState() => _InitiateTransactionScreenState();
+}
+
+class _InitiateTransactionScreenState extends State<InitiateTransactionScreen> {
+  final TextEditingController transactionNameController =
+        TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final TransactionService transactionService = TransactionService();
-    final TextEditingController transactionNameController =
-        TextEditingController();
     final TransactionProvider transactionProvider = Provider.of<TransactionProvider>(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),

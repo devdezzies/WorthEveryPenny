@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/custom_button.dart';
-import 'package:swappp/common/widgets/custom_password_textfield.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
+
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
 
@@ -46,7 +46,7 @@ class _LogInScreenState extends State<LogInScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Hi! Welcome Back",
+                  "Hi, Welcome Back!",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -66,14 +66,18 @@ class _LogInScreenState extends State<LogInScreen> {
                   key: _signInFormKey,
                   child: Column(
                     children: [
-                      CustomTextfield(
+                      CustomTextField(
                         controller: _emailController,
-                        hintText: "Your Email",
+                        hint: "Your Email",
+                        type: TextFieldType.email,
+                        label: 'Email',
                       ),
                       const SizedBox(height: 18),
-                      CustomPasswordTextfield(
+                      CustomTextField(
                         controller: _passwordController,
-                        hintText: "Your Password",
+                        hint: "Your Password",
+                        type: TextFieldType.password,
+                        label: 'Password',
                       ),
                       // forgot password 
                       const SizedBox(height: 10),

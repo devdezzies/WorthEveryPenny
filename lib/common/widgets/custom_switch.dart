@@ -16,7 +16,7 @@ class CustomToggleSwitchState extends State<CustomToggleSwitch> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: GlobalVariables.darkerGreyBackgroundColor,
+        color: GlobalVariables.darkerGreyBackgroundColor.withAlpha(200),
         borderRadius: BorderRadius.circular(25),
       ),
       child: Padding(

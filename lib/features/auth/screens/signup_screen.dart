@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/custom_button.dart';
-import 'package:swappp/common/widgets/custom_password_textfield.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
@@ -49,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Hi! It's Nice to Meet You Here",
+                  "Just a few more steps, and you're in! 🎉",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -69,25 +68,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   key: _signUpFormKey,
                   child: Column(
                     children: [
-                      CustomTextfield(
+                      CustomTextField(
                         controller: _nameController,
-                        hintText: "Username",
+                        hint: "Username",
+                        label: 'Username',
+                        type: TextFieldType.username,
                       ),
                       const SizedBox(height: 18),
-                      CustomTextfield(
+                      CustomTextField(
                         controller: _emailController,
-                        hintText: "Your Email",
+                        hint: "Your Email",
+                        label: 'Email',
+                        type: TextFieldType.email,
                       ),
                       const SizedBox(height: 18),
-                      CustomPasswordTextfield(
+                      CustomTextField(
                         controller: _passwordController,
-                        hintText: "Your password",
+                        hint: "Your Password",
+                        label: 'Password',
+                        type: TextFieldType.password,
                       ),
                       const SizedBox(height: 40),
                       CustomButton(
                         textTitle: "Sign Up",
                         onTap: () {
-                          if (_signUpFormKey.currentState!.validate()) {
+                          if (_emailController.text.isNotEmpty &&
+                              _passwordController.text.isNotEmpty &&
+                              _nameController.text.isNotEmpty) {
                             signUpUser();
                           }
                         },
@@ -98,6 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 Wrap(
                   alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
                   children: [
                     const Text("By signing up, you agree to our "),
                     GestureDetector(

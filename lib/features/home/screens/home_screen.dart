@@ -168,7 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: user.transactions.isEmpty
                   ? const EmptyTransactionList()
                   : const FilledTransactionList()
-              )
+              ), 
+              const SizedBox(
+                height: 50,
+              ),
             ],
           ),
           builder: (context, child, controller) {

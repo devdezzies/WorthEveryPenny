@@ -92,64 +92,104 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
 
   @override
   Widget build(BuildContext context) {
+    bool isDataSufficient = widget.incomeData.length >= 7 && widget.expenseData.length >= 7;
+
     return SizedBox(
       height: widget.height,
       child: Column(
         children: [
-          Expanded(
-            child: Stack(
+            if (!isDataSufficient)
+            Container(
+              decoration: BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [
+                BoxShadow(
+                color: Colors.black26,
+                blurRadius: 6,
+                offset: Offset(0, 2),
+                ),
+              ],
+              ),
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  child: _buildIntervalTotal(),
+                Text(
+                'Insufficient Data',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                Positioned(
-                  right: 16,
-                  top: 0,
-                  child: _buildNavigationButtons(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 50),
-                  child: GestureDetector(
-                    onPanDown: (details) =>
-                        _updateTooltip(details.localPosition),
-                    onPanUpdate: (details) =>
-                        _updateTooltip(details.localPosition),
-                    onPanEnd: (_) => _hideTooltip(),
-                    child: AnimatedBuilder(
-                      animation: _animation,
-                      builder: (context, child) {
-                        return CustomPaint(
-                          size: Size.infinite,
-                          painter: OverlappingLineChartPainter(
-                            incomeData: widget.incomeData.sublist(
-                                _currentStartIndex, _currentStartIndex + 7),
-                            expenseData: widget.expenseData.sublist(
-                                _currentStartIndex, _currentStartIndex + 7),
-                            incomeColor: GlobalVariables.secondaryColor,
-                            expenseColor: const Color(0xFFE53935),
-                            selectedPoint: selectedPoint,
-                            animation: _animation,
-                            isIncomeOnTop: widget.isIncomeOnTop,
-                          ),
-                        );
-                      },
+                SizedBox(height: 8),
+                Text(
+                'You should have at least 7 transactions for both income and expense to view the chart.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+                ),
+              ],
+              ),
+            ),
+          if (isDataSufficient)
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: _buildIntervalTotal(),
+                  ),
+                  Positioned(
+                    right: 16,
+                    top: 0,
+                    child: _buildNavigationButtons(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: GestureDetector(
+                      onPanDown: (details) =>
+                          _updateTooltip(details.localPosition),
+                      onPanUpdate: (details) =>
+                          _updateTooltip(details.localPosition),
+                      onPanEnd: (_) => _hideTooltip(),
+                      child: AnimatedBuilder(
+                        animation: _animation,
+                        builder: (context, child) {
+                          return CustomPaint(
+                            size: Size.infinite,
+                            painter: OverlappingLineChartPainter(
+                              incomeData: widget.incomeData.sublist(
+                                  _currentStartIndex, _currentStartIndex + 7),
+                              expenseData: widget.expenseData.sublist(
+                                  _currentStartIndex, _currentStartIndex + 7),
+                              incomeColor: GlobalVariables.secondaryColor,
+                              expenseColor: const Color(0xFFE53935),
+                              selectedPoint: selectedPoint,
+                              animation: _animation,
+                              isIncomeOnTop: widget.isIncomeOnTop,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                if (selectedPoint != null && tooltipPosition != null)
-                  Positioned(
-                    left: tooltipPosition!.dx - 50,
-                    top: tooltipPosition!.dy - 45,
-                    child: _buildTooltip(),
-                  ),
-              ],
+                  if (selectedPoint != null && tooltipPosition != null)
+                    Positioned(
+                      left: tooltipPosition!.dx - 50,
+                      top: tooltipPosition!.dy - 45,
+                      child: _buildTooltip(),
+                    ),
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: 10),
-          _buildDateLabels(),
+          if (isDataSufficient) _buildDateLabels(),
         ],
       ),
     );

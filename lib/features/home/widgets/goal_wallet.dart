@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swappp/common/widgets/custom_snackbar.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -19,7 +20,7 @@ class GoalWallet extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(
-              height: 10,
+              height: 16,
             ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,7 +35,7 @@ class GoalWallet extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/log-in-screen');
+                      CustomSnackBar.show(context, type: SnackBarType.warning, message: "Feature not available yet");
                       // Handle menu tap
                     },
                     child: const Icon(
@@ -67,7 +68,7 @@ class GoalWallet extends StatelessWidget {
                       pointColorMapper: (data, _) => data.barColor,
                       cornerStyle: CornerStyle.bothCurve,
                       maximumValue: 100,
-                      radius: '95%',
+                      radius: '90%',
                       innerRadius:
                         '70%', // Added innerRadius to make the chart thinner
                     )

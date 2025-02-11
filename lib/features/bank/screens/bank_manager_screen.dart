@@ -93,9 +93,10 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
                           borderRadius: BorderRadius.circular(5)
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        child: Text(
-                          accountType,
-                          style: const TextStyle(
+                        child: const Text(
+                          // TODO: SHOULE BE ACCOUNT TYPE
+                          "Basic",
+                          style: TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 14, color: GlobalVariables.secondaryColor),
                         ),
                       )
@@ -155,14 +156,26 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
           Column(
             children: [
               const SizedBox(height: 15),
-              CustomTextfield(
-                  controller: _cardNumberController, hintText: "Card Number"),
+              CustomTextField(
+                  controller: _cardNumberController,
+                  hint: "Account Number", 
+                  label: "Account", 
+                  type: TextFieldType.number
+              ),
               const SizedBox(height: 15),
-              CustomTextfield(
-                  controller: _bankNameController, hintText: "Bank Name"),
+              CustomTextField(
+                  controller: _bankNameController,
+                  hint: "Account Name (e.g. Bank, e-Wallet, etc.)", 
+                  label: "Account Name", 
+                  type: TextFieldType.text
+              ),
               const SizedBox(height: 15),
-              CustomTextfield(
-                  controller: _balanceController, hintText: "Current Balance"),
+              CustomTextField(
+                  controller: _balanceController,
+                  hint: "Balance", 
+                  label: "Balance", 
+                  type: TextFieldType.currency
+              ),
               const SizedBox(height: 25),
               Stack(
                 alignment: Alignment.center,
@@ -207,11 +220,15 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
               CustomButton(
                   textTitle: "Finish",
                   onTap: () async {
+                    if (_cardNumberController.text.isEmpty ||
+                        _bankNameController.text.isEmpty || _balanceController.text.isEmpty) {
+                      return;
+                    }
                     bankProvider.setBankAccountDetails(
                         accountNumber: _cardNumberController.text,
                         bankName: _bankNameController.text,
                         balance: _balanceController.text.isNotEmpty
-                            ? double.parse(_balanceController.text)
+                            ? double.parse(_balanceController.text.replaceAll(RegExp(r'[^0-9]'), ''))
                             : 0.0);
                     _bankService.addNewBankAccount(context);
                     Navigator.of(context).pop();

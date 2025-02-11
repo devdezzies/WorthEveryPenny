@@ -3,9 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/custom_switch.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/analytics/widgets/double_chart_plot.dart';
+import 'package:swappp/features/analytics/widgets/budgets_header.dart';
+import 'package:swappp/features/analytics/widgets/month_in_review.dart';
+import 'package:swappp/features/analytics/widgets/recurring_section.dart';
 import 'package:swappp/features/analytics/widgets/single_chart_plot.dart';
 import 'package:swappp/providers/analytics_provider.dart';
 import 'package:swappp/providers/preferences_provider.dart';
+import 'package:swappp/providers/user_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   static const String routeName = '/analytics';
@@ -20,7 +24,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AnalyticsProvider analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+    final AnalyticsProvider analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: true);
+    final UserProvider userProvider = Provider.of<UserProvider>(context, listen: true);
 
     return Scaffold(
         appBar: AppBar(
@@ -91,6 +96,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       height: 300,
                     ),
                   ),
+                const SizedBox(height: 15),
+                MonthInReview(
+                  totalIncome: userProvider.user.monthlyReport[0].totalIncome.toInt(),
+                  totalExpense: userProvider.user.monthlyReport[0].totalExpense.toInt(),
+                  net: userProvider.user.cash +
+                      (userProvider.user.bankAccount.isEmpty
+                          ? 0
+                          : userProvider.user.bankAccount
+                              .map((e) => e.balance.toInt())
+                              .reduce((a, b) => a + b)),
+                ),
+                const SizedBox(height: 15),
+                const BudgetHeader(),
+                const SizedBox(height: 15),
+                const RecurringSection(),
+                const SizedBox(height: 100)
               ],
             ),
           ),

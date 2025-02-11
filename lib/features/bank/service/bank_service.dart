@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swappp/common/widgets/custom_snackbar.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
@@ -40,16 +41,13 @@ class BankService {
         httpErrorHandle(
           response: res,
           context: context,
-          onSuccess: () async {
+          onSuccess: () {
             bankProvider.resetBankAccount();
-            await authService.getUserData(context);
+            authService.getUserData(context);
+            CustomSnackBar.show(context, type: SnackBarType.success, message: 'Added successfully, please refresh the page');
           }, 
           onFailure: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Failed to add bank account'),
-              ),
-            );
+            CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to add bank account');
           },);
       } else { 
         debugPrint('Context is not mounted');
@@ -59,11 +57,7 @@ class BankService {
     } catch (e) {
       // Handle error
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$e.toString()'),
-          ),
-        );
+        CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to add bank account');
       }
     }
   }

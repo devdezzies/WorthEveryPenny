@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/constants/utils.dart';
 import 'package:swappp/providers/analytics_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,7 +39,7 @@ class AnalyticsServices {
       }
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, '⚠️ $e.toString()');
+        debugPrint(e.toString());
       }
     }
   }

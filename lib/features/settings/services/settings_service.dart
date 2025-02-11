@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swappp/common/widgets/custom_snackbar.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/constants/utils.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class SettingsService {
@@ -35,7 +35,7 @@ class SettingsService {
         throw Exception("Failed to create canny token");
       }
     } catch (e) {
-      if (context.mounted) showSnackBar(context, '$e.toString()');
+      if (context.mounted) CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to create canny token');
     }
     return "";
   }
@@ -72,7 +72,7 @@ class SettingsService {
         }
       }
     } catch (e) {
-      if (context.mounted) showSnackBar(context, '$e.toString()');
+      if (context.mounted) CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to update profile picture');
     }
   }
 
@@ -118,10 +118,9 @@ class SettingsService {
         httpErrorHandle(response: res, context: context, onSuccess: () {
           prefs.remove('x-auth-token');
           Navigator.pushReplacementNamed(context, "/onboarding");
-          debugPrint('Successfully Logged out');
         }, 
         onFailure: () {
-          debugPrint('Failed to logout');
+          CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to logout');
         });
       }
     } catch (e) {
