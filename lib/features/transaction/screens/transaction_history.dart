@@ -47,7 +47,59 @@ class _TransactionHistoryState extends State<TransactionHistory> {
         itemCount: monthlyTransaction.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(getFullDate(monthlyTransaction[index]["day"]), style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(getFullDate(monthlyTransaction[index]["day"]), style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                Expanded(
+                    child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                      return Row(
+                        children: List.generate(
+                        (constraints.constrainWidth() / 10).floor(),
+                        (index) => Expanded(
+                          child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          height: 1,
+                          color: Colors.grey,
+                          ),
+                        ),
+                        ),
+                      );
+                      },
+                    ),
+                  ),
+                ),
+                Wrap(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.redAccent.withOpacity(0.1),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.trending_down_rounded, color: Colors.redAccent, size: 20),
+                          const SizedBox(width: 5,),
+                          Text(
+                            rupiahFormatCurrency(monthlyTransaction[index]["transactions"]
+                              .where((transaction) => transaction["type"] == "expense")
+                              .fold(0, (sum, item) => sum + item["amount"])),
+                            style: const TextStyle(
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
             subtitle:
             ListView.builder(
               shrinkWrap: true,

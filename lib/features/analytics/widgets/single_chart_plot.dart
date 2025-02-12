@@ -61,6 +61,12 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
   }
 
   List<ChartPoint> get visiblePoints {
+    if (widget.dataPoints.isEmpty) {
+      return List.generate(7, (index) {
+        final date = DateTime.now().subtract(Duration(days: 6 - index));
+        return ChartPoint(date, 0);
+      });
+    }
     int endIndex = min(_currentStartIndex + 7, widget.dataPoints.length);
     return widget.dataPoints.sublist(_currentStartIndex, endIndex);
   }
@@ -183,13 +189,13 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
               Container(
                 width: 2,
                 height: 15,
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withAlpha((0.5 * 255).toInt()),
               ),
               const SizedBox(height: 8),
               Text(
                 DateFormat('MMM d').format(point.date),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withAlpha((0.7 * 255).toInt()),
                   fontSize: 12,
                 ),
               ),
@@ -207,12 +213,12 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
         IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: canGoBack ? _goBack : null,
-          color: canGoBack ? Colors.white : Colors.white.withOpacity(0.3),
+          color: canGoBack ? Colors.white : Colors.white.withAlpha((0.3 * 255).toInt()),
         ),
         IconButton(
           icon: const Icon(Icons.arrow_forward_rounded),
           onPressed: canGoForward ? _goForward : null,
-          color: canGoForward ? Colors.white : Colors.white.withOpacity(0.3),
+          color: canGoForward ? Colors.white : Colors.white.withAlpha((0.3 * 255).toInt()),
         ),
       ],
     );
@@ -222,7 +228,7 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withAlpha((0.7 * 255).toInt()),
         borderRadius: BorderRadius.circular(6),
         boxShadow: const [
           BoxShadow(
@@ -295,8 +301,6 @@ class LineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (dataPoints.isEmpty) return;
-
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -308,8 +312,8 @@ class LineChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.0),
+          color.withAlpha((0.3 * 255).toInt()),
+          color.withAlpha((0.0 * 255).toInt()),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -345,12 +349,15 @@ class LineChartPainter extends CustomPainter {
 
   List<Offset> _getAnimatedPoints(List<Offset> points, Size size) {
     return points.map((point) {
-      return Offset(point.dx, lerpDouble(size.height, point.dy, animation.value)!);
+      final double lerpedY = lerpDouble(size.height, point.dy, animation.value) ?? size.height;
+      return Offset(point.dx, lerpedY);
     }).toList();
   }
 
   Path _createPath(List<Offset> points) {
     final path = Path();
+    if (points.isEmpty) return path;
+
     path.moveTo(points.first.dx, points.first.dy);
 
     for (int i = 0; i < points.length - 1; i++) {
@@ -398,7 +405,7 @@ class LineChartPainter extends CustomPainter {
 
     for (int i = 0; i < dataPoints.length; i++) {
       final x = (i / (dataPoints.length - 1)) * width;
-      final normalizedValue = (dataPoints[i].value - minValue) / valueRange;
+      final normalizedValue = valueRange > 0 ? (dataPoints[i].value - minValue) / valueRange : 0;
       final y = height - (normalizedValue * height);
       points.add(Offset(x, y));
     }
@@ -414,3 +421,4 @@ class LineChartPainter extends CustomPainter {
         oldDelegate.animation != animation;
   }
 }
+

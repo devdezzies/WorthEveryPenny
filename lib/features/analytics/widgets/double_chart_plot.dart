@@ -39,7 +39,7 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
   @override
   void initState() {
     super.initState();
-    _currentStartIndex = max(0, widget.incomeData.length - 7);
+    _currentStartIndex = 0;
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -57,19 +57,38 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
     super.dispose();
   }
 
-  List<ChartPoint> get visiblePoints {
+  List<ChartPoint> get visibleIncomePoints {
+    if (widget.incomeData.isEmpty) {
+      return _generateEmptyPoints();
+    }
     int endIndex = min(_currentStartIndex + 7, widget.incomeData.length);
-    return widget.isIncomeOnTop
-        ? widget.incomeData.sublist(_currentStartIndex, endIndex)
-        : widget.expenseData.sublist(_currentStartIndex, endIndex);
+    return widget.incomeData.sublist(_currentStartIndex, endIndex);
+  }
+
+  List<ChartPoint> get visibleExpensePoints {
+    if (widget.expenseData.isEmpty) {
+      return _generateEmptyPoints();
+    }
+    int endIndex = min(_currentStartIndex + 7, widget.expenseData.length);
+    return widget.expenseData.sublist(_currentStartIndex, endIndex);
+  }
+
+  List<ChartPoint> _generateEmptyPoints() {
+    final now = DateTime.now();
+    return List.generate(7, (index) {
+      final date = now.subtract(Duration(days: 6 - index));
+      return ChartPoint(date, 0);
+    });
   }
 
   double get intervalTotal {
-    return visiblePoints.fold(0, (sum, point) => sum + point.value);
+    return (widget.isIncomeOnTop ? visibleIncomePoints : visibleExpensePoints)
+        .fold(0, (sum, point) => sum + point.value);
   }
 
   bool get canGoBack => _currentStartIndex > 0;
-  bool get canGoForward => _currentStartIndex + 7 < widget.incomeData.length;
+  bool get canGoForward =>
+      _currentStartIndex + 7 < max(widget.incomeData.length, widget.expenseData.length);
 
   void _goBack() {
     if (canGoBack) {
@@ -83,8 +102,10 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
   void _goForward() {
     if (canGoForward) {
       setState(() {
-        _currentStartIndex =
-            min(widget.incomeData.length - 7, _currentStartIndex + 7);
+        _currentStartIndex = min(
+          max(widget.incomeData.length, widget.expenseData.length) - 7,
+          _currentStartIndex + 7,
+        );
       });
       _animationController.forward(from: 0);
     }
@@ -92,104 +113,62 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
 
   @override
   Widget build(BuildContext context) {
-    bool isDataSufficient = widget.incomeData.length >= 7 && widget.expenseData.length >= 7;
-
     return SizedBox(
       height: widget.height,
       child: Column(
         children: [
-            if (!isDataSufficient)
-            Container(
-              decoration: BoxDecoration(
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: const [
-                BoxShadow(
-                color: Colors.black26,
-                blurRadius: 6,
-                offset: Offset(0, 2),
-                ),
-              ],
-              ),
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Stack(
               children: [
-                Text(
-                'Insufficient Data',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: _buildIntervalTotal(),
                 ),
+                Positioned(
+                  right: 16,
+                  top: 0,
+                  child: _buildNavigationButtons(),
                 ),
-                SizedBox(height: 8),
-                Text(
-                'You should have at least 7 transactions for both income and expense to view the chart.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: GestureDetector(
+                    onPanDown: (details) =>
+                        _updateTooltip(details.localPosition),
+                    onPanUpdate: (details) =>
+                        _updateTooltip(details.localPosition),
+                    onPanEnd: (_) => _hideTooltip(),
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return CustomPaint(
+                          size: Size.infinite,
+                          painter: OverlappingLineChartPainter(
+                            incomeData: visibleIncomePoints,
+                            expenseData: visibleExpensePoints,
+                            incomeColor: GlobalVariables.secondaryColor,
+                            expenseColor: const Color(0xFFE53935),
+                            selectedPoint: selectedPoint,
+                            animation: _animation,
+                            isIncomeOnTop: widget.isIncomeOnTop,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-                ),
+                if (selectedPoint != null && tooltipPosition != null)
+                  Positioned(
+                    left: tooltipPosition!.dx - 50,
+                    top: tooltipPosition!.dy - 45,
+                    child: _buildTooltip(),
+                  ),
               ],
-              ),
             ),
-          if (isDataSufficient)
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: _buildIntervalTotal(),
-                  ),
-                  Positioned(
-                    right: 16,
-                    top: 0,
-                    child: _buildNavigationButtons(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50),
-                    child: GestureDetector(
-                      onPanDown: (details) =>
-                          _updateTooltip(details.localPosition),
-                      onPanUpdate: (details) =>
-                          _updateTooltip(details.localPosition),
-                      onPanEnd: (_) => _hideTooltip(),
-                      child: AnimatedBuilder(
-                        animation: _animation,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            size: Size.infinite,
-                            painter: OverlappingLineChartPainter(
-                              incomeData: widget.incomeData.sublist(
-                                  _currentStartIndex, _currentStartIndex + 7),
-                              expenseData: widget.expenseData.sublist(
-                                  _currentStartIndex, _currentStartIndex + 7),
-                              incomeColor: GlobalVariables.secondaryColor,
-                              expenseColor: const Color(0xFFE53935),
-                              selectedPoint: selectedPoint,
-                              animation: _animation,
-                              isIncomeOnTop: widget.isIncomeOnTop,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  if (selectedPoint != null && tooltipPosition != null)
-                    Positioned(
-                      left: tooltipPosition!.dx - 50,
-                      top: tooltipPosition!.dy - 45,
-                      child: _buildTooltip(),
-                    ),
-                ],
-              ),
-            ),
+          ),
           const SizedBox(height: 10),
-          if (isDataSufficient) _buildDateLabels(),
+          _buildDateLabels(),
         ],
       ),
     );
@@ -225,9 +204,10 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
   }
 
   Widget _buildDateLabels() {
+    final points = widget.isIncomeOnTop ? visibleIncomePoints : visibleExpensePoints;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: visiblePoints.map((point) {
+      children: points.map((point) {
         return SizedBox(
           width: 50,
           child: Column(
@@ -315,11 +295,13 @@ class DoubleChartPlotState extends State<DoubleChartPlot>
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
 
-    int index = ((position.dx / size.width) * visiblePoints.length).floor();
-    index = index.clamp(0, visiblePoints.length - 1);
+    int index = ((position.dx / size.width) * 7).floor();
+    index = index.clamp(0, 6);
 
     setState(() {
-      selectedPoint = visiblePoints[index];
+      selectedPoint = widget.isIncomeOnTop
+          ? visibleIncomePoints[index]
+          : visibleExpensePoints[index];
       tooltipPosition = position;
     });
   }
@@ -353,8 +335,6 @@ class OverlappingLineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (incomeData.isEmpty || expenseData.isEmpty) return;
-
     final incomePaint = Paint()
       ..color = incomeColor
       ..style = PaintingStyle.stroke
@@ -447,13 +427,15 @@ class OverlappingLineChartPainter extends CustomPainter {
 
   List<Offset> _getAnimatedPoints(List<Offset> points, Size size) {
     return points.map((point) {
-      return Offset(
-          point.dx, lerpDouble(size.height, point.dy, animation.value)!);
+      final double lerpedY = lerpDouble(size.height, point.dy, animation.value) ?? size.height;
+      return Offset(point.dx, lerpedY);
     }).toList();
   }
 
   Path _createPath(List<Offset> points) {
     final path = Path();
+    if (points.isEmpty) return path;
+
     path.moveTo(points.first.dx, points.first.dy);
 
     for (int i = 0; i < points.length - 1; i++) {
@@ -501,7 +483,7 @@ class OverlappingLineChartPainter extends CustomPainter {
 
     for (int i = 0; i < data.length; i++) {
       final x = (i / (data.length - 1)) * width;
-      final normalizedValue = (data[i].value - minValue) / valueRange;
+      final normalizedValue = valueRange > 0 ? (data[i].value - minValue) / valueRange : 0;
       final y = height - (normalizedValue * height);
       points.add(Offset(x, y));
     }
@@ -520,3 +502,4 @@ class OverlappingLineChartPainter extends CustomPainter {
         oldDelegate.isIncomeOnTop != isIncomeOnTop;
   }
 }
+

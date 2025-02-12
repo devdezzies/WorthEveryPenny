@@ -27,6 +27,7 @@ class MonthInReview extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const SizedBox(width: 5),
               Column(
                 children: [
                   const Text("Income", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey),),
@@ -50,6 +51,7 @@ class MonthInReview extends StatelessWidget {
                   Text(rupiahFormatCurrency(totalExpense), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.redAccent), overflow: TextOverflow.ellipsis,),
                 ],
               ),
+              const SizedBox(width: 5),
             ],
           ),
           const SizedBox(height: 5),
