@@ -54,6 +54,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String getBankNamebyAccountNumber(String accountNumber) {
+    if (accountNumber == 'cash') return 'Cash';
+    final bankAccount = _user.bankAccount.firstWhere(
+      (element) => element.accountNumber == accountNumber
+    );
+    debugPrint('Bank Name: ${bankAccount.bankName}');
+    return bankAccount.bankName;
+  }
+
   void updateUser({
     String? username,
     String? email,

@@ -157,7 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       SizedBox(width: 16,),
                       PersonalizedInsightFilled(),
-                      GoalWallet(),
+                      // DailyBudgetCard(budgetPercentage: 40.0, spentAmount: 20.0, totalBudget: 90),
+                      GoalWallet()
                     ],
                   ),
                 ),

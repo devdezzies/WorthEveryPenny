@@ -15,6 +15,7 @@ class BankService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('x-auth-token');
+      debugPrint('Token: $token');
 
       if (token == null) {
         if (context.mounted) {
@@ -47,6 +48,7 @@ class BankService {
             CustomSnackBar.show(context, type: SnackBarType.success, message: 'Added successfully, please refresh the page');
           }, 
           onFailure: () {
+            debugPrint(res.body);
             CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to add bank account');
           },);
       } else { 

@@ -56,6 +56,7 @@ class FilledTransactionList extends StatelessWidget {
           itemBuilder: (context, index) {
             return TransactionBar(
               key: ValueKey(userProvider.transactions[index].hashCode),
+              accountNumber: userProvider.transactions[index].source ?? '',
               transactionId: userProvider.transactions[index].id,
               transactionName: userProvider.transactions[index].name,
               transactionAmount: userProvider.transactions[index].amount,

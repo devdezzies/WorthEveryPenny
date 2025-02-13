@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/transaction/services/transaction_service.dart';
+import 'package:swappp/providers/user_provider.dart';
 
 class TransactionBar extends StatelessWidget {
   final String transactionName,
       transactionType,
       transactionCategory,
+      accountNumber,
       transactionId;
   final DateTime transactionDate;
   final String recurring;
@@ -20,7 +23,7 @@ class TransactionBar extends StatelessWidget {
       required this.transactionCategory,
       required this.transactionAmount,
       required this.recurring,
-      required this.transactionId});
+      required this.transactionId, required this.accountNumber});
 
   void _showTransactionDetails(BuildContext context) {
     void _showDeleteConfirmation(String transactionId) {
@@ -89,6 +92,7 @@ class TransactionBar extends StatelessWidget {
       backgroundColor: GlobalVariables.backgroundColor,
       context: context,
       builder: (context) {
+        final userProvider = Provider.of<UserProvider>(context);
         return Container(
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
@@ -211,7 +215,8 @@ class TransactionBar extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            'Mandiri',
+                            // find bankName by accountNumber in userProvider
+                            userProvider.getBankNamebyAccountNumber(accountNumber),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -228,7 +233,7 @@ class TransactionBar extends StatelessWidget {
                     const SizedBox(height: 16),
                     // Card Number
                     Text(
-                      '103012330146',
+                      transactionType == 'cash' ? 'Cash' : accountNumber,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

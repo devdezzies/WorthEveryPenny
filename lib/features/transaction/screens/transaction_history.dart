@@ -106,7 +106,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: monthlyTransaction[index]["transactions"].length,
               itemBuilder: (context, i) {
+                debugPrint(monthlyTransaction[index]["transactions"][i]["source"]);
                 return TransactionBar(
+                    accountNumber: monthlyTransaction[index]["transactions"][i]["source"],
                     transactionId: monthlyTransaction[index]["transactions"][i]["_id"],
                     transactionName: monthlyTransaction[index]["transactions"][i]["name"],
                     transactionAmount: monthlyTransaction[index]["transactions"][i]["amount"],
