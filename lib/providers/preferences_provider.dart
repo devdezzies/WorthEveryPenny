@@ -8,14 +8,28 @@ class PreferencesProvider extends ChangeNotifier {
   final String _currency = 'IDR';
   String _chartType = 'single';
   final String _notification = 'on';
+  bool _spendingPulse = true;
+  String _cannyToken = '';
 
   String get language => _language;
   String get currency => _currency;
   String get chartType => _chartType;
   String get notification => _notification;
+  bool get spendingPulse => _spendingPulse;
+  String get cannyToken => _cannyToken;
+
+  void setCannyToken(String token) {
+    _cannyToken = token;
+    notifyListeners();
+  }
 
   void setLanguage(String language) {
     language = language;
+    notifyListeners();
+  }
+
+  void setSpendingPulse(bool spendingPulse) {
+    _spendingPulse = spendingPulse;
     notifyListeners();
   }
 
@@ -32,11 +46,6 @@ class PreferencesProvider extends ChangeNotifier {
 
   void setNotification(String notification) {
     notification = notification;
-    notifyListeners();
-  }
-
-  void setToken(String token) {
-    _preferencesService.setToken(token);
     notifyListeners();
   }
   

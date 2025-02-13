@@ -12,6 +12,7 @@ import 'package:swappp/features/home/widgets/filled_transaction_list.dart';
 import 'package:swappp/features/home/widgets/goal_wallet.dart';
 import 'package:swappp/features/home/widgets/personalized_insight_filled.dart';
 import 'package:swappp/features/home/widgets/spending_pulse.dart';
+import 'package:swappp/providers/preferences_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -121,10 +122,11 @@ class _HomeScreenState extends State<HomeScreen> {
             // padding: const EdgeInsets.symmetric(horizontal: 16.0),
             children: [
               const SizedBox(height: 5),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SpendingPulse(value: calculateFinancialHealth(user)),
-              ),
+              if (Provider.of<PreferencesProvider>(context).spendingPulse)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SpendingPulse(value: calculateFinancialHealth(user)),
+                ),
               const SizedBox(height: 16),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16.0),

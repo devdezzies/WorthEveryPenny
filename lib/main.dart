@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/common/screens/onboarding.dart';
 import 'package:swappp/common/services/preferences_service.dart';
-import 'package:swappp/common/widgets/bottom_bar.dart';
+import 'package:swappp/common/screens/bottom_bar.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
 import 'package:swappp/providers/analytics_provider.dart';

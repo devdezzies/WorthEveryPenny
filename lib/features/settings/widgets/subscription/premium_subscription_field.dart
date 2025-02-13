@@ -27,7 +27,7 @@ class PremiumSubscriptionField extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Premium Plan", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),), 
-              Text("Expiration Date: 15 March 2025")
+              Text("Expiration Date: -")
             ],
           )
         ],

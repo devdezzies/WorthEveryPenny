@@ -57,6 +57,47 @@ class TransactionService {
     }
   }
 
+  Future<void> deleteTransaction(BuildContext context, String transactionId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('x-auth-token');
+
+      if (token == null) {
+        return;
+      }
+
+      http.Response res = await http.delete(
+        Uri.parse('$uri/transaction/deleteTransaction/$transactionId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+          'x-auth-token': token,
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+            response: res,
+            context: context,
+            onSuccess: () {
+              authService.getUserData(context); 
+              Future.delayed(
+                  const Duration(seconds: 2));
+              // Add 2-second delay
+            },
+            onFailure: () {
+              CustomSnackBar.show(context,
+                  type: SnackBarType.error, message: 'Failed to delete transaction');
+            });
+      }
+    } catch (e) {
+      if (context.mounted) {
+        CustomSnackBar.show(context,
+            type: SnackBarType.error, message: 'Failed to delete transaction');
+      }
+    }
+  }
+
   Future<void> getCategorizedTransactions(BuildContext context) async {
     final TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context, listen: false);

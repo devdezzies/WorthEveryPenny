@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:swappp/common/widgets/unknown_page.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/constants/route_animations.dart';
 import 'package:swappp/features/analytics/screens/analytics_screen.dart';
@@ -7,6 +8,7 @@ import 'package:swappp/features/settings/screens/settings_screen.dart';
 import 'package:swappp/features/home/screens/home_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:swappp/features/settings/services/settings_service.dart';
+import 'package:swappp/features/split-bill/screens/split_bill_screen.dart';
 import 'package:swappp/features/transaction/screens/transaction_screen.dart';
 import 'package:swappp/providers/user_provider.dart';
 
@@ -38,12 +40,8 @@ class _BottomBarState extends State<BottomBar> {
     super.initState();
     pages = [
       const HomeScreen(),
-      const Center(
-        child: Text("page 1"),
-      ),
-      const Center(
-        child: Text("page 2"),
-      ),
+      const SplitBillScreen(),
+      const UnknownPage(),
       const AnalyticsScreen(),
       _buildSettingsScreen(context)
     ];

@@ -17,6 +17,7 @@ import 'package:swappp/models/user.dart';
 import 'package:swappp/providers/preferences_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function(String, String) onLeave;
@@ -61,8 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     // TODO: remove unstable code
     try {
-      widget.onLeave(
-          usernameController.text, cardNumberController.text);
+      widget.onLeave(usernameController.text, cardNumberController.text);
     } catch (e) {
       debugPrint("FIX THIS");
     }
@@ -73,15 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _initializeToken() async {
-    settingsService
-        .createCannyToken(
-            context: context,
-            id: user.id,
-            name: user.username,
-            email: user.email)
-        .then((token) {
-      cannyToken = token;
-    });
+    cannyToken = await PreferencesService().getCannyToken();
   }
 
   void _showConfirmationProfilePhotoScreen(
@@ -114,18 +106,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 16),
                     ClipOval(
                       child: kIsWeb
-                        ? Image.network(
-                          imagePath,
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        )
-                        : Image.file(
-                          File(imagePath),
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
+                          ? Image.network(
+                              imagePath,
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(imagePath),
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -148,7 +140,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             setState(() {
                               isUpdating = true;
                             });
-                            await settingsService.updateProfilePicture(context: context, profilePicture: imagePath, id: user.id);
+                            await settingsService.updateProfilePicture(
+                                context: context,
+                                profilePicture: imagePath,
+                                id: user.id);
                             await Future.delayed(const Duration(seconds: 2));
                             setState(() {
                               isUpdating = false;
@@ -421,6 +416,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           change ? "double" : "single", context);
                     },
                   ),
+                  SettingsSwitch(
+                    title: "Spending Pulse",
+                    leadingIcon: const Icon(Icons.monitor_heart_rounded),
+                    initialValue: preferencesProvider.spendingPulse,
+                    onChanged: (change) async {
+                      await preferencesService.setSpendingPulse(
+                          change, context);
+                    },
+                  ),
                 ],
               ),
               Wrap(
@@ -452,14 +456,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   ProfileButton(
                     title: "Request Features or Report Bugs",
-                    onTap: () {
+                    onTap: () async {
                       //_showFeatureWebView(context);
-                      showWebViewModalBottomSheet(
-                          context: context,
-                          url:
-                              "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
-                          title: "Hi ${user.displayName} 👋",
-                          subtitle: "Got anything to share with us?");
+                      if (kIsWeb) {
+                        final url =
+                            "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken";
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url));
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      } else {
+                        showWebViewModalBottomSheet(
+                            context: context,
+                            url:
+                                "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
+                            title: "Hi ${user.displayName} 👋",
+                            subtitle: "Got anything to share with us?");
+                      }
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,

@@ -107,6 +107,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               itemCount: monthlyTransaction[index]["transactions"].length,
               itemBuilder: (context, i) {
                 return TransactionBar(
+                    transactionId: monthlyTransaction[index]["transactions"][i]["_id"],
                     transactionName: monthlyTransaction[index]["transactions"][i]["name"],
                     transactionAmount: monthlyTransaction[index]["transactions"][i]["amount"],
                     recurring: monthlyTransaction[index]["transactions"][i]["recurrenceInterval"] ?? 'never',

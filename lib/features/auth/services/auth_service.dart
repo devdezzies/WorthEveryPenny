@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swappp/common/widgets/bottom_bar.dart';
+import 'package:swappp/common/screens/bottom_bar.dart';
+import 'package:swappp/common/services/preferences_service.dart';
 import 'package:swappp/common/widgets/custom_snackbar.dart';
 import 'package:swappp/constants/error_handling.dart';
 import 'package:swappp/constants/global_variables.dart';
@@ -99,6 +100,28 @@ class AuthService {
                   type: SnackBarType.error);
             });
       }
+
+      if (res.statusCode == 200) {
+        http.Response cannyRes = await http.post(
+          Uri.parse('$uri/api/createCannyToken'),
+          body: jsonEncode({
+            "email": email,
+            "id": jsonDecode(res.body)['_id'],
+            "name": jsonDecode(res.body)['username'],
+          }),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8', 
+            "ngrok-skip-browser-warning": "69420",
+          });
+
+        if (res.statusCode == 200) {
+          await PreferencesService().setCannyToken(jsonDecode(cannyRes.body)['body']);
+        } else {
+          // ignore: use_build_context_synchronously
+          CustomSnackBar.show(context,
+              message: 'Failed to create canny token', type: SnackBarType.error);
+        }
+      }
     } catch (e) {
       // ignore: use_build_context_synchronously
       CustomSnackBar.show(context,
@@ -145,6 +168,26 @@ class AuthService {
             CustomSnackBar.show(context,
                 message: 'Invalid email or password', type: SnackBarType.error);
           });
+
+      http.Response cannyRes = await http.post(
+          Uri.parse('$uri/api/createCannyToken'),
+          body: jsonEncode({
+            "email": email,
+            "id": jsonDecode(res.body)['_id'],
+            "name": jsonDecode(res.body)['username'],
+          }),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8', 
+            "ngrok-skip-browser-warning": "69420",
+          });
+
+      if (res.statusCode == 200) {
+        await PreferencesService().setCannyToken(jsonDecode(cannyRes.body)['body']);
+      } else {
+        // ignore: use_build_context_synchronously
+        CustomSnackBar.show(context,
+            message: 'Failed to create canny token', type: SnackBarType.error);
+      }
     } catch (e) {
       // ignore: use_build_context_synchronously
       CustomSnackBar.show(context,
@@ -161,6 +204,7 @@ class AuthService {
       // Use SharedPreferences for mobile
       SharedPreferences prefs = await SharedPreferences.getInstance();
       token = prefs.getString('x-auth-token');
+
       if (token == null) {
         prefs.setString('x-auth-token', '');
         token = '';
@@ -168,9 +212,9 @@ class AuthService {
 
       var tokenRes = await http
           .post(Uri.parse('$uri/tokenIsValid'), headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "ngrok-skip-browser-warning": "69420",
-        'x-auth-token': token
+            'Content-Type': 'application/json; charset=UTF-8',
+            "ngrok-skip-browser-warning": "69420",
+            'x-auth-token': token
       });
 
       var response = jsonDecode(tokenRes.body);

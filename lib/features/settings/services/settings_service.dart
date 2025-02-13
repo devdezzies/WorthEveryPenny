@@ -120,7 +120,7 @@ class SettingsService {
           Navigator.pushReplacementNamed(context, "/onboarding");
         }, 
         onFailure: () {
-          CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to logout');
+          // CustomSnackBar.show(context, type: SnackBarType.error, message: 'Failed to logout');
         });
       }
     } catch (e) {

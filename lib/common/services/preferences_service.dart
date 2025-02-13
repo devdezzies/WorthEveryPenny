@@ -8,8 +8,8 @@ class PreferencesService {
   static const String _keyCurrency = 'IDR';
   static const String _keyChart = 'chart'; 
   static const String _notification = 'true';
-  // TODO: UPDATE THE TOKEN SERVICE
-  static const String _keyToken = 'x-auth-token';
+  static const String _spendingPulse = 'spending-pulse';
+  static const String _cannyToken = 'canny-token';
 
   Future<void> getAllPreferences(BuildContext context) async {
     final PreferencesProvider preferencesProvider = Provider.of<PreferencesProvider>(context, listen: false);
@@ -18,6 +18,25 @@ class PreferencesService {
     preferencesProvider.setCurrency(prefs.getString(_keyCurrency) ?? 'IDR');
     preferencesProvider.setChart(prefs.getString(_keyChart) ?? 'single');
     preferencesProvider.setNotification(prefs.getString(_notification) ?? 'true');
+    preferencesProvider.setSpendingPulse(prefs.getBool(_spendingPulse) ?? true);
+    preferencesProvider.setCannyToken(prefs.getString(_cannyToken) ?? '');
+  }
+
+  Future<void> setCannyToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_cannyToken, token);
+  }
+
+  Future<String> getCannyToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_cannyToken) ?? '';
+  }
+
+  Future<void> setSpendingPulse(bool spendingPulse, BuildContext context) async {
+    final PreferencesProvider preferencesProvider = Provider.of<PreferencesProvider>(context, listen: false);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_spendingPulse, spendingPulse);
+    preferencesProvider.setSpendingPulse(spendingPulse);
   }
 
   Future<void> setLanguage(String language, BuildContext context) async {
@@ -25,6 +44,11 @@ class PreferencesService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyLanguage, language);
     preferencesProvider.setLanguage(language);
+  }
+
+  Future<bool> getSpendingPulse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_spendingPulse) ?? true;
   }
 
   Future<String> getLanguage() async {
@@ -71,15 +95,5 @@ class PreferencesService {
   Future<void> clearPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-  }
-
-  Future<void> setToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyToken, token);
-  }
-
-  Future<String> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyToken) ?? '';
   }
 }
