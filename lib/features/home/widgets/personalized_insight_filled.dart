@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swappp/common/widgets/custom_snackbar.dart';
 
 class PersonalizedInsightFilled extends StatelessWidget {
   const PersonalizedInsightFilled({super.key});
@@ -62,20 +63,30 @@ class PersonalizedInsightFilled extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    "More",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w800,
+                GestureDetector(
+                  onTap: () {
+                    CustomSnackBar.show(
+                      context,
+                      message: "Feature not available yet",
+                      type: SnackBarType.warning,
+                      duration: const Duration(seconds: 2),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      "More",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ),

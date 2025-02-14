@@ -21,6 +21,7 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool enabled;
   final FocusNode? focusNode;
+  final int maxLength; // Add maxLength parameter
 
   const CustomTextField({
     super.key,
@@ -33,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.enabled = true,
     this.focusNode,
+    this.maxLength = 100, // Default maxLength
   });
 
   @override
@@ -115,13 +117,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 
   String? _usernameValidator(String value) {
-    final usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
+    final usernameRegex = RegExp(r'^[a-z0-9_-]+$');
     if (value.length < 8 || value.length > 20) {
       return 'Username must be between 8 and 20 characters';
     }
     return usernameRegex.hasMatch(value) 
         ? null 
-        : 'Username can only contain letters, numbers, underscores, and dashes';
+        : 'Username can only contain lowercase letters, numbers, underscores, and dashes';
   }
 
   String? _passwordValidator(String value) {
@@ -131,6 +133,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     }
     if (!value.contains(RegExp(r'[0-9]'))) {
       return 'Password must contain at least one number';
+    }
+    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'Password must contain at least one special character';
     }
     return null;
   }
@@ -202,15 +207,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
             onChanged: (value) {
               _isDirty = true;
               if (widget.type == TextFieldType.currency) {
-          final formattedValue = _formatCurrency(value);
-          widget.controller.value = TextEditingValue(
-            text: formattedValue,
-            selection: TextSelection.collapsed(offset: formattedValue.length),
-          );
-          final numericValue = double.tryParse(value.replaceAll(RegExp(r'[^\d.]'), '')) ?? 0.0;
-          widget.onChanged?.call(numericValue.toString());
+                final formattedValue = _formatCurrency(value);
+                widget.controller.value = TextEditingValue(
+                  text: formattedValue,
+                  selection: TextSelection.collapsed(offset: formattedValue.length),
+                );
+                final numericValue = double.tryParse(value.replaceAll(RegExp(r'[^\d.]'), '')) ?? 0.0;
+                widget.onChanged?.call(numericValue.toString());
               } else {
-          widget.onChanged?.call(value);
+                widget.onChanged?.call(value);
               }
             },
             style: const TextStyle(
@@ -218,33 +223,35 @@ class _CustomTextFieldState extends State<CustomTextField> {
               fontSize: 16,
             ),
             keyboardType: widget.type == TextFieldType.number || widget.type == TextFieldType.currency
-          ? TextInputType.number
-          : TextInputType.text,
-            inputFormatters: widget.type == TextFieldType.number || widget.type == TextFieldType.currency
-          ? [FilteringTextInputFormatter.digitsOnly]
-          : [],
+                ? TextInputType.number
+                : TextInputType.text,
+            inputFormatters: [
+              if (widget.type == TextFieldType.number || widget.type == TextFieldType.currency)
+                FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(widget.maxLength), // Add length limiting formatter
+            ],
             decoration: InputDecoration(
               hintText: widget.hint,
               hintStyle: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 16,
+                color: Colors.grey[600],
+                fontSize: 16,
               ),
               contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+                horizontal: 16,
+                vertical: 16,
               ),
               border: InputBorder.none,
               suffixIcon: widget.type == TextFieldType.password
-            ? IconButton(
-                icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-            color: Colors.grey[600],
-                ),
-                onPressed: () {
-            setState(() => _obscureText = !_obscureText);
-                },
-              )
-            : null,
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey[600],
+                      ),
+                      onPressed: () {
+                        setState(() => _obscureText = !_obscureText);
+                      },
+                    )
+                  : null,
             ),
           ),
         ),

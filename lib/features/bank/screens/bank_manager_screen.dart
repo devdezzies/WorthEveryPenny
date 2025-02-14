@@ -160,14 +160,16 @@ class _BankManagerScreenState extends State<BankManagerScreen> {
                   controller: _cardNumberController,
                   hint: "Account Number", 
                   label: "Account", 
-                  type: TextFieldType.number
+                  type: TextFieldType.number, 
+                  maxLength: 16,
               ),
               const SizedBox(height: 15),
               CustomTextField(
                   controller: _bankNameController,
                   hint: "Account Name (e.g. Bank, e-Wallet, etc.)", 
                   label: "Account Name", 
-                  type: TextFieldType.text
+                  type: TextFieldType.text,
+                  maxLength: 20,
               ),
               const SizedBox(height: 15),
               CustomTextField(

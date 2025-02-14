@@ -47,89 +47,95 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Just a few more steps, and you're in! 🎉",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Let's get you started with your account",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Form(
-                  key: _signUpFormKey,
+                Center(
                   child: Column(
                     children: [
-                      CustomTextField(
-                        controller: _nameController,
-                        hint: "Username",
-                        label: 'Username',
-                        type: TextFieldType.username,
+                      const Text(
+                        "Just a few more steps, and you're in! 🎉",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                      const SizedBox(height: 18),
-                      CustomTextField(
-                        controller: _emailController,
-                        hint: "Your Email",
-                        label: 'Email',
-                        type: TextFieldType.email,
-                      ),
-                      const SizedBox(height: 18),
-                      CustomTextField(
-                        controller: _passwordController,
-                        hint: "Your Password",
-                        label: 'Password',
-                        type: TextFieldType.password,
+                      const SizedBox(height: 10),
+                      const Text(
+                        "Let's get you started with your account",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                        ),
                       ),
                       const SizedBox(height: 40),
-                      CustomButton(
-                        textTitle: "Sign Up",
-                        onTap: () {
-                          if (_emailController.text.isNotEmpty &&
-                              _passwordController.text.isNotEmpty &&
-                              _nameController.text.isNotEmpty) {
-                            signUpUser();
-                          }
-                        },
+                      Form(
+                        key: _signUpFormKey,
+                        child: Column(
+                          children: [
+                            CustomTextField(
+                              controller: _nameController,
+                              hint: "Username",
+                              label: 'Username',
+                              type: TextFieldType.username,
+                            ),
+                            const SizedBox(height: 18),
+                            CustomTextField(
+                              controller: _emailController,
+                              hint: "Your Email",
+                              label: 'Email',
+                              type: TextFieldType.email,
+                            ),
+                            const SizedBox(height: 18),
+                            CustomTextField(
+                              controller: _passwordController,
+                              hint: "Your Password",
+                              label: 'Password',
+                              type: TextFieldType.password,
+                            ),
+                            const SizedBox(height: 40),
+                            CustomButton(
+                              textTitle: "Sign Up",
+                              onTap: () {
+                                if (_emailController.text.isNotEmpty &&
+                                    _passwordController.text.isNotEmpty &&
+                                    _nameController.text.isNotEmpty) {
+                                  signUpUser();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        runAlignment: WrapAlignment.center,
+                        children: [
+                          const Text("By signing up, you agree to our "),
+                          GestureDetector(
+                            onTap: () {},
+                            child: const Text(
+                              "Terms of Service",
+                              style: TextStyle(
+                                color: GlobalVariables.secondaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Text(" and "),
+                          GestureDetector(
+                            onTap: () {},
+                            child: const Text(
+                              "Privacy Policy",
+                              style: TextStyle(
+                                color: GlobalVariables.secondaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 20),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  children: [
-                    const Text("By signing up, you agree to our "),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        "Terms of Service",
-                        style: TextStyle(
-                          color: GlobalVariables.secondaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Text(" and "),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        "Privacy Policy",
-                        style: TextStyle(
-                          color: GlobalVariables.secondaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
@@ -139,4 +145,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-

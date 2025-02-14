@@ -95,9 +95,15 @@ class GoalWallet extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)),
                 width: double.infinity,
-                child: const Text(
-                  "Set Your Goal",
-                  style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black),
+                child: GestureDetector(
+                  onTap: () {
+                    CustomSnackBar.show(context, type: SnackBarType.warning, message: "Feature not available yet");
+                    // Handle button tap
+                  },
+                  child: const Text(
+                    "Set Your Goal",
+                    style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black),
+                  ),
                 ),
               ),
             )

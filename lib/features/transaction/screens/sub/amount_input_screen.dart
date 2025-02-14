@@ -15,6 +15,7 @@ class NumberKeyboard extends StatefulWidget {
 class _NumberKeyboardState extends State<NumberKeyboard> {
   String _input = '';
   int _tappedIndex = -1;
+  final int _maxLength = 10; // Set the maximum length for the input
 
   @override  
   void didChangeDependencies() {
@@ -24,12 +25,14 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
 
   void _onKeyTap(String value, int index) {
     setState(() {
-      if (_input == '0') {
-      _input = value;
-      } else {
-      _input += value;
+      if (_input.length < _maxLength) {
+        if (_input == '0') {
+          _input = value;
+        } else {
+          _input += value;
+        }
+        _tappedIndex = index;
       }
-      _tappedIndex = index;
     });
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/constants/global_variables.dart';
@@ -100,11 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             GestureDetector(
               child: Container(
-                margin: const EdgeInsets.only(right: 16.0),
-                child: const Icon(
-                  Icons.notifications_outlined,
-                  color: GlobalVariables.secondaryColor,
-                  size: 30,
+                margin: const EdgeInsets.only(right: 25.0),
+                child: SvgPicture.asset(
+                  'assets/icons/alarm-bell.svg',
+                  width: 25,
+                  height: 25,
                 ),
               ),
             ),
