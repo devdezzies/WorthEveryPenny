@@ -13,11 +13,12 @@ import 'package:swappp/providers/transaction_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 import 'package:swappp/router.dart';
 import 'package:flutter_web_frame/flutter_web_frame.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 import 'common/widgets/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserProvider()),
     ChangeNotifierProvider(create: (context) => TransactionProvider()),

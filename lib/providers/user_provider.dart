@@ -6,6 +6,7 @@ import 'package:swappp/models/monthly_report.dart';
 import 'package:swappp/models/subscription.dart';
 import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class UserProvider extends ChangeNotifier {
   User _user = User(
@@ -37,6 +38,7 @@ class UserProvider extends ChangeNotifier {
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     token: '',
+    timeZone: tz.getLocation('Asia/Jakarta').toString(),
   );
 
   bool _isLoading = true;
@@ -83,6 +85,7 @@ class UserProvider extends ChangeNotifier {
     String? currency,
     int? savings,
     String? token,
+    String? timeZone,
   }) {
     _user = User(
       id: _user.id,
@@ -107,6 +110,7 @@ class UserProvider extends ChangeNotifier {
       createdAt: _user.createdAt,
       updatedAt: DateTime.now(),
       token: token ?? _user.token,
+      timeZone: timeZone ?? _user.timeZone,
     );
     notifyListeners();
   }

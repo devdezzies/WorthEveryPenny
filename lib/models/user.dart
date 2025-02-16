@@ -1,4 +1,5 @@
 import 'dart:convert';
+// Removed unused import
 import 'package:swappp/constants/utils.dart';
 
 import 'transaction.dart';
@@ -7,6 +8,7 @@ import 'subscription.dart';
 import 'bank_account.dart';
 import 'bill.dart';
 import 'friend.dart';
+import 'package:timezone/timezone.dart' as tz;
 class User {
   final String id;
   final String username;
@@ -30,6 +32,7 @@ class User {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String token;
+  final String timeZone;
 
   const User({
     required this.id,
@@ -54,6 +57,7 @@ class User {
     required this.createdAt,
     required this.updatedAt,
     required this.token,
+    required this.timeZone,
   });
 
   // Convert a User object into a Map object
@@ -80,6 +84,7 @@ class User {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'token': token,
+      'timeZone': timeZone,
     };
   }
 
@@ -115,6 +120,7 @@ class User {
       createdAt: convertUtcToDateTime(DateTime.parse(map['createdAt'])),
       updatedAt: convertUtcToDateTime(DateTime.parse(map['updatedAt'])),
       token: map['token'] ?? '',
+      timeZone: map['timeZone'] ?? tz.getLocation('Asia/Jakarta').toString(),
     );
   }
 
@@ -148,6 +154,7 @@ class User {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? token,
+    String? timeZone,
   }) {
     return User(
       id: id ?? this.id,
@@ -171,7 +178,8 @@ class User {
       bankAccount: bankAccount ?? this.bankAccount,
       debts: debts ?? this.debts,
       cash: cash ?? this.cash,
-      monthlyReport: monthlyReport ?? this.monthlyReport
+      monthlyReport: monthlyReport ?? this.monthlyReport,
+      timeZone: timeZone ?? this.timeZone,
     );
   }
   
@@ -198,5 +206,6 @@ class User {
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     token: '',
+    timeZone: 'Asia/Jakarta',
   );
 }

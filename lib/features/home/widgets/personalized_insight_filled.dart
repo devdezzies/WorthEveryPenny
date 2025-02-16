@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/custom_snackbar.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class PersonalizedInsightFilled extends StatelessWidget {
   const PersonalizedInsightFilled({super.key});
@@ -65,6 +66,7 @@ class PersonalizedInsightFilled extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
+                    debugPrint("timeZone: ${tz.getLocation('Asia/Jakarta')}");
                     CustomSnackBar.show(
                       context,
                       message: "Feature not available yet",

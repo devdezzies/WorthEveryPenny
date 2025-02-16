@@ -12,6 +12,7 @@ import 'package:swappp/models/user.dart';
 import 'package:swappp/models/subscription.dart'; // Import the Subscription class
 import 'package:http/http.dart' as http;
 import 'package:swappp/providers/user_provider.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class AuthService {
   // SIGN UP USER
@@ -21,6 +22,7 @@ class AuthService {
       required String password,
       required String name}) async {
     try {
+
       User user = User(
           id: '',
           username: name,
@@ -50,7 +52,8 @@ class AuthService {
           savings: 0,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          token: '');
+          token: '', 
+          timeZone: tz.getLocation('Asia/Jakarta').toString());
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),

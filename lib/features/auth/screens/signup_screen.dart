@@ -3,6 +3,8 @@ import 'package:swappp/common/widgets/custom_button.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class SignUpScreen extends StatefulWidget {
   static const String routeName = '/sign-up-screen';
