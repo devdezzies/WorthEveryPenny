@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
+import 'package:universal_html/html.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:ui_web' as ui;
 
 Future<String?> pickImageFromCamera() async {
   try {
@@ -238,7 +239,8 @@ double calculateFinancialHealth(User user) {
 
   // 2. Edge case handling
   if (expenses.isEmpty) return 0.0; // Perfect score for no expenses
-  if (expenses.every((e) => e.date.isAtSameMomentAs(today))) return 100.0; // First day
+  if (expenses.every((e) => e.date.isAtSameMomentAs(today)))
+    return 100.0; // First day
 
   // 3. Time-weighted statistics
   final (double mean, double stdDev) = _calculateWeightedStats(user, today);
@@ -754,6 +756,19 @@ void showWebViewModalBottomSheet({
   String? subtitle,
   bool isScrollControlled = true,
 }) {
+  // Register the view factory
+  if (kIsWeb) {
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(
+      'webview',
+      (int viewId) => IFrameElement()
+      ..src = url
+      ..style.border = 'none'
+      ..style.overflow = 'hidden' // Remove scrollbar
+      ..style.backgroundColor = 'white' // Light mode background
+    );
+  }
+
   // Initialize WebView controller for better performance
   final WebViewController webViewController = WebViewController();
 
@@ -791,25 +806,29 @@ void showWebViewModalBottomSheet({
             ),
             // WebView
             Expanded(
-              child: WebViewWidget(
-                controller: webViewController
-                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                  ..setNavigationDelegate(NavigationDelegate(
-                    onProgress: (_) {
+                child: kIsWeb
+                  ? const HtmlElementView(
+                    viewType: 'webview',
+                  )
+                  : WebViewWidget(
+                    controller: webViewController
+                    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                    ..setNavigationDelegate(NavigationDelegate(
+                      onProgress: (_) {
                       const CircularProgressIndicator();
+                      },
+                      onPageStarted: (String url) {},
+                      onPageFinished: (String url) {},
+                      onHttpError: (HttpResponseError error) {},
+                    ))
+                    ..loadRequest(Uri.parse(url)),
+                    gestureRecognizers: <Factory<
+                      OneSequenceGestureRecognizer>>{
+                    Factory<OneSequenceGestureRecognizer>(
+                      () => EagerGestureRecognizer(),
+                    ),
                     },
-                    onPageStarted: (String url) {},
-                    onPageFinished: (String url) {},
-                    onHttpError: (HttpResponseError error) {},
-                    onWebResourceError: (WebResourceError error) {},
-                  ))
-                  ..loadRequest(Uri.parse(url)),
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<OneSequenceGestureRecognizer>(
-                    () => EagerGestureRecognizer(),
                   ),
-                },
-              ),
             ),
           ],
         ),

@@ -442,11 +442,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   ProfileButton(
-                    onTap: () {
-                      showWebViewModalBottomSheet(
-                          context: context,
-                          url: "https://wortheverypenny.vercel.app/help-center",
-                          title: "Hi ${user.displayName} 👋");
+                    onTap: () async {
+                      const url =
+                          "https://wortheverypenny.vercel.app/help-center";
+                      if (await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(Uri.parse(url));
+                      } else {
+                        throw 'Could not launch $url';
+                      }
                     },
                     title: "Contact Support",
                     leadingIcon: const Icon(
@@ -458,22 +461,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: "Request Features or Report Bugs",
                     onTap: () async {
                       //_showFeatureWebView(context);
-                      if (kIsWeb) {
-                        final url =
-                            "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken";
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(Uri.parse(url));
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      } else {
-                        showWebViewModalBottomSheet(
-                            context: context,
-                            url:
-                                "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
-                            title: "Hi ${user.displayName} 👋",
-                            subtitle: "Got anything to share with us?");
-                      }
+                      showWebViewModalBottomSheet(
+                          context: context,
+                          url:
+                              "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
+                          title: "Hi ${user.displayName} 👋",
+                          subtitle: "Have anything to share with us?");
                     },
                     leadingIcon: const Icon(
                       Icons.how_to_vote,
