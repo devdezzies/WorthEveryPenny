@@ -792,8 +792,6 @@ void showWebViewModalBottomSheet({
                 src: url, // Use Html syntax
                 isMarkdown: false, // Use markdown syntax
                 convertToWidgets: false, // Try to convert to flutter widgets
-                // width: 100,
-                // height: 100,
               ),
             ),
           ],

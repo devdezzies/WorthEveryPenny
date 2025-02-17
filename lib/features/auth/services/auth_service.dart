@@ -184,7 +184,7 @@ class AuthService {
             "ngrok-skip-browser-warning": "69420",
           });
 
-      if (res.statusCode == 200) {
+      if (res.statusCode >= 200 && res.statusCode < 300) {
         await PreferencesService().setCannyToken(jsonDecode(cannyRes.body)['body']);
       } else {
         // ignore: use_build_context_synchronously

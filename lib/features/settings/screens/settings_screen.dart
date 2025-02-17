@@ -464,7 +464,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       showWebViewModalBottomSheet(
                           context: context,
                           url:
-                              "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken",
+                              "https://webview.canny.io?boardToken=cdb606fe-8483-7567-f363-76e7fab5ba64&ssoToken=$cannyToken&theme=dark",
                           title: "Hi ${user.displayName} 👋",
                           subtitle: "Have anything to share with us?");
                     },
