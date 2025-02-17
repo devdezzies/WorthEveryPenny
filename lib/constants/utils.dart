@@ -1,14 +1,11 @@
 import 'dart:math';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
-import 'package:universal_html/html.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:ui_web' as ui;
+
 
 Future<String?> pickImageFromCamera() async {
   try {
@@ -756,21 +753,6 @@ void showWebViewModalBottomSheet({
   String? subtitle,
   bool isScrollControlled = true,
 }) {
-  // Register the view factory
-  if (kIsWeb) {
-    // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(
-      'webview',
-      (int viewId) => IFrameElement()
-      ..src = url
-      ..style.border = 'none'
-      ..style.overflow = 'hidden' // Remove scrollbar
-      ..style.backgroundColor = 'white' // Light mode background
-    );
-  }
-
-  // Initialize WebView controller for better performance
-  final WebViewController webViewController = WebViewController();
 
   showModalBottomSheet(
     useSafeArea: true,
@@ -806,29 +788,13 @@ void showWebViewModalBottomSheet({
             ),
             // WebView
             Expanded(
-                child: kIsWeb
-                  ? const HtmlElementView(
-                    viewType: 'webview',
-                  )
-                  : WebViewWidget(
-                    controller: webViewController
-                    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                    ..setNavigationDelegate(NavigationDelegate(
-                      onProgress: (_) {
-                      const CircularProgressIndicator();
-                      },
-                      onPageStarted: (String url) {},
-                      onPageFinished: (String url) {},
-                      onHttpError: (HttpResponseError error) {},
-                    ))
-                    ..loadRequest(Uri.parse(url)),
-                    gestureRecognizers: <Factory<
-                      OneSequenceGestureRecognizer>>{
-                    Factory<OneSequenceGestureRecognizer>(
-                      () => EagerGestureRecognizer(),
-                    ),
-                    },
-                  ),
+              child: EasyWebView(
+                src: url, // Use Html syntax
+                isMarkdown: false, // Use markdown syntax
+                convertToWidgets: false, // Try to convert to flutter widgets
+                // width: 100,
+                // height: 100,
+              ),
             ),
           ],
         ),
