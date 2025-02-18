@@ -42,9 +42,11 @@ class UserProvider extends ChangeNotifier {
   );
 
   bool _isLoading = true;
+  bool _isProcessing = false;
 
   User get user => _user;
   bool get isLoading => _isLoading;
+  bool get isProcessing => _isProcessing;
 
   void setUser(String user) {
     _user = User.fromJson(user);
@@ -53,6 +55,11 @@ class UserProvider extends ChangeNotifier {
 
   void setLoading(bool loading) {
     _isLoading = loading;
+    notifyListeners();
+  }
+
+  void setProcessing(bool processing) {
+    _isProcessing = processing;
     notifyListeners();
   }
 

@@ -166,14 +166,7 @@ class _BalanceCardState extends State<BalanceCard> {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: VerticalDivider(
-                      color: Color.fromARGB(255, 56, 56, 56),
-                      thickness: 1,
-                      width: 1,
-                    ),
-                  ),
+                  
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -210,6 +203,7 @@ class _BalanceCardState extends State<BalanceCard> {
                                 const SizedBox(width: 5),
                                 Text(
                                   rupiahFormatCurrency(widget.expense),
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                       overflow: TextOverflow.ellipsis,

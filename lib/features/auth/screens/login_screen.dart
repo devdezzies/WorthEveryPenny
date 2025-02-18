@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/custom_button.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
 
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
+import 'package:swappp/providers/user_provider.dart';
 
 class LogInScreen extends StatefulWidget {
   static const String routeName = '/log-in-screen';
@@ -99,6 +101,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(height: 30),
                       CustomButton(
                         textTitle: "Log In",
+                        isLoading: context.watch<UserProvider>().isProcessing,
                         onTap: () {
                           if (_signInFormKey.currentState!.validate()) {
                             signInUser();

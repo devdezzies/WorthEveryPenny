@@ -6,7 +6,6 @@ import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/models/transaction.dart';
 import 'package:swappp/models/user.dart';
 
-
 Future<String?> pickImageFromCamera() async {
   try {
     final XFile? image =
@@ -753,48 +752,73 @@ void showWebViewModalBottomSheet({
   String? subtitle,
   bool isScrollControlled = true,
 }) {
-
   showModalBottomSheet(
     useSafeArea: true,
     context: context,
     isScrollControlled: true,
     builder: (context) {
+      bool isLoading = true;
       return FractionallySizedBox(
         heightFactor: 0.8,
-        child: Column(
-          children: [
-            Column(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            Future.delayed(const Duration(seconds: 3), () {
+              if (isLoading) {
+                setState(() => isLoading = false);
+              }
+            });
+            return Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text(
-                    title ?? 'WebView',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                        title ?? 'WebView',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+                // WebView with loading indicator
+                Expanded(
+                  child: Stack(
+                    children: [
+                      EasyWebView(
+                              src: url, // Use Html syntax
+                              isMarkdown: false, // Use markdown syntax
+                              convertToWidgets:
+                                  false, // Try to convert to flutter widgets
+                              onLoaded: (_) {
+                                // When webview is fully loaded
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              },
+                            ),
+                      if (isLoading)
+                        Container(
+                          color: GlobalVariables.backgroundColor,
+                          child: const Center(child: CircularProgressIndicator())
+                        )
+                    ],
                   ),
                 ),
-                if (subtitle != null)
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                const SizedBox(height: 16),
               ],
-            ),
-            // WebView
-            Expanded(
-              child: EasyWebView(
-                src: url, // Use Html syntax
-                isMarkdown: false, // Use markdown syntax
-                convertToWidgets: false, // Try to convert to flutter widgets
-              ),
-            ),
-          ],
+            );
+          },
         ),
       );
     },

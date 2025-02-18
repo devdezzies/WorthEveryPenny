@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/custom_button.dart';
 import 'package:swappp/common/widgets/custom_textfield.dart';
 import 'package:swappp/constants/global_variables.dart';
 import 'package:swappp/features/auth/services/auth_service.dart';
+import 'package:swappp/providers/user_provider.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -96,6 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 40),
                             CustomButton(
                               textTitle: "Sign Up",
+                              isLoading: context.watch<UserProvider>().isProcessing,
                               onTap: () {
                                 if (_emailController.text.isNotEmpty &&
                                     _passwordController.text.isNotEmpty &&

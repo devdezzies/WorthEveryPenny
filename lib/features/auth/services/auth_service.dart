@@ -22,6 +22,7 @@ class AuthService {
       required String password,
       required String name}) async {
     try {
+      Provider.of<UserProvider>(context, listen: false).setProcessing(true);
 
       User user = User(
           id: '',
@@ -129,6 +130,10 @@ class AuthService {
       // ignore: use_build_context_synchronously
       CustomSnackBar.show(context,
           message: e.toString(), type: SnackBarType.error);
+    } finally {
+      if (context.mounted) {
+        Provider.of<UserProvider>(context, listen: false).setProcessing(false);
+      }
     }
   }
 
@@ -172,7 +177,8 @@ class AuthService {
                 message: 'Invalid email or password', type: SnackBarType.error);
           });
 
-      http.Response cannyRes = await http.post(
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        http.Response cannyRes = await http.post(
           Uri.parse('$uri/api/createCannyToken'),
           body: jsonEncode({
             "email": email,
@@ -184,13 +190,15 @@ class AuthService {
             "ngrok-skip-browser-warning": "69420",
           });
 
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        await PreferencesService().setCannyToken(jsonDecode(cannyRes.body)['body']);
-      } else {
-        // ignore: use_build_context_synchronously
-        CustomSnackBar.show(context,
-            message: 'Failed to create canny token', type: SnackBarType.error);
-      }
+        httpErrorHandle(response: cannyRes, context: context, 
+          onSuccess: () async {
+            await PreferencesService().setCannyToken(jsonDecode(cannyRes.body)['body']);
+          }, onFailure: () {
+            // ignore: use_build_context_synchronously
+            CustomSnackBar.show(context,
+                message: 'Failed to create canny token', type: SnackBarType.error);
+        });
+      } 
     } catch (e) {
       // ignore: use_build_context_synchronously
       CustomSnackBar.show(context,
