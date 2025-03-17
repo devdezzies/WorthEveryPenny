@@ -10,7 +10,7 @@ class CustomToggleSwitch extends StatefulWidget {
 }
 
 class CustomToggleSwitchState extends State<CustomToggleSwitch> {
-  bool isIncome = true;
+  bool isIncome = false;
 
   @override
   Widget build(BuildContext context) {

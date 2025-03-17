@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swappp/common/widgets/custom_switch.dart';
 import 'package:swappp/constants/global_variables.dart';
-import 'package:swappp/features/analytics/widgets/double_chart_plot.dart';
 import 'package:swappp/features/analytics/widgets/budgets_header.dart';
 import 'package:swappp/features/analytics/widgets/month_in_review.dart';
 import 'package:swappp/features/analytics/widgets/recurring_section.dart';
 import 'package:swappp/features/analytics/widgets/single_chart_plot.dart';
 import 'package:swappp/providers/analytics_provider.dart';
-import 'package:swappp/providers/preferences_provider.dart';
 import 'package:swappp/providers/user_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
@@ -20,7 +18,7 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  bool isIncome = true;
+  bool isIncome = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,34 +66,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ],
                 ),
-                if (Provider.of<PreferencesProvider>(context).chartType == 'single')
-                  SizedBox(
-                    width: double.infinity,
+                
+                SizedBox(
+                  width: double.infinity,
+                  height: 300,
+                  child: SingleChartPlot(
+                    dataPoints: isIncome ? analyticsProvider.incomeData : analyticsProvider.expenseData,
+                    valuePrefix: 'Rp',
                     height: 300,
-                    child: SingleChartPlot(
-                      dataPoints: isIncome ? analyticsProvider.incomeData : analyticsProvider.expenseData,
-                      valuePrefix: 'Rp',
-                      height: 300,
-                      chartColor: isIncome ? ChartColor.green : ChartColor.red,
-                    ),
+                    chartColor: isIncome ? ChartColor.green : ChartColor.red,
                   ),
-                if (Provider.of<PreferencesProvider>(context).chartType == 'double')
-                  SizedBox(
-                    width: double.infinity,
-                    height: 300,
-                    child: DoubleChartPlot(
-                      incomeData: analyticsProvider.incomeData,
-                      expenseData: analyticsProvider.expenseData,
-                      isIncomeOnTop: isIncome,
-                      valuePrefix: 'Rp',
-                      onLayerChanged: (change) {
-                        setState(() {
-                          isIncome = change;
-                        });
-                      },
-                      height: 300,
-                    ),
-                  ),
+                ),
+                
                 const SizedBox(height: 15),
                 MonthInReview(
                   totalIncome: userProvider.user.monthlyReport[0].totalIncome.toInt(),

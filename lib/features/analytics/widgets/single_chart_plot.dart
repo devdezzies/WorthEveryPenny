@@ -8,6 +8,8 @@ import 'package:swappp/features/analytics/data/chart_point.dart';
 
 enum ChartColor { red, green }
 
+enum TimeInterval { day, week, month, threeMonths, ytd, year, all }
+
 class SingleChartPlot extends StatefulWidget {
   final List<ChartPoint> dataPoints;
   final ChartColor chartColor;
@@ -27,16 +29,15 @@ class SingleChartPlot extends StatefulWidget {
 }
 
 class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProviderStateMixin {
-  late int _currentStartIndex;
   ChartPoint? selectedPoint;
   Offset? tooltipPosition;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  TimeInterval _selectedInterval = TimeInterval.threeMonths;
 
   @override
   void initState() {
     super.initState();
-    _currentStartIndex = max(0, widget.dataPoints.length - 7);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -67,30 +68,63 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
         return ChartPoint(date, 0);
       });
     }
-    int endIndex = min(_currentStartIndex + 7, widget.dataPoints.length);
-    return widget.dataPoints.sublist(_currentStartIndex, endIndex);
+
+    final now = DateTime.now();
+    final filteredPoints = _filterPointsByInterval(now);
+    
+    if (filteredPoints.isEmpty) {
+      return List.generate(7, (index) {
+        final date = now.subtract(Duration(days: 6 - index));
+        return ChartPoint(date, 0);
+      });
+    }
+    
+    return filteredPoints;
+  }
+
+  List<ChartPoint> _filterPointsByInterval(DateTime now) {
+    if (widget.dataPoints.isEmpty) return [];
+    
+    final List<ChartPoint> sortedPoints = List.from(widget.dataPoints)
+      ..sort((a, b) => a.date.compareTo(b.date));
+    
+    switch (_selectedInterval) {
+      case TimeInterval.day:
+        // Only show data points from the current day (midnight to now)
+        final startOfDay = DateTime(now.year, now.month, now.day);
+        return sortedPoints.where((point) => 
+          point.date.isAfter(startOfDay) || 
+          (point.date.year == startOfDay.year && 
+           point.date.month == startOfDay.month && 
+           point.date.day == startOfDay.day)).toList();
+      case TimeInterval.week:
+        return sortedPoints.where((point) => 
+          point.date.isAfter(now.subtract(const Duration(days: 7)))).toList();
+      case TimeInterval.month:
+        return sortedPoints.where((point) => 
+          point.date.isAfter(DateTime(now.year, now.month - 1, now.day))).toList();
+      case TimeInterval.threeMonths:
+        return sortedPoints.where((point) => 
+          point.date.isAfter(DateTime(now.year, now.month - 3, now.day))).toList();
+      case TimeInterval.ytd:
+        return sortedPoints.where((point) => 
+          point.date.isAfter(DateTime(now.year, 1, 1))).toList();
+      case TimeInterval.year:
+        return sortedPoints.where((point) => 
+          point.date.isAfter(DateTime(now.year - 1, now.month, now.day))).toList();
+      case TimeInterval.all:
+        return sortedPoints;
+    }
   }
 
   double get intervalTotal {
     return visiblePoints.fold(0, (sum, point) => sum + point.value);
   }
 
-  bool get canGoBack => _currentStartIndex > 0;
-  bool get canGoForward => _currentStartIndex + 7 < widget.dataPoints.length;
-
-  void _goBack() {
-    if (canGoBack) {
+  void _setTimeInterval(TimeInterval interval) {
+    if (_selectedInterval != interval) {
       setState(() {
-        _currentStartIndex = max(0, _currentStartIndex - 7);
-      });
-      _animationController.forward(from: 0);
-    }
-  }
-
-  void _goForward() {
-    if (canGoForward) {
-      setState(() {
-        _currentStartIndex = min(widget.dataPoints.length - 7, _currentStartIndex + 7);
+        _selectedInterval = interval;
       });
       _animationController.forward(from: 0);
     }
@@ -110,11 +144,6 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
                   right: 0,
                   top: 0,
                   child: _buildIntervalTotal(),
-                ),
-                Positioned(
-                  right: 16,
-                  top: 0,
-                  child: _buildNavigationButtons(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 50),
@@ -148,7 +177,7 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
             ),
           ),
           const SizedBox(height: 10),
-          _buildDateLabels(),
+          _buildTimeIntervalSelector(),
         ],
       ),
     );
@@ -178,49 +207,48 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
     );
   }
 
-  Widget _buildDateLabels() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: visiblePoints.map((point) {
-        return SizedBox(
-          width: 50,
-          child: Column(
-            children: [
-              Container(
-                width: 2,
-                height: 15,
-                color: Colors.white.withAlpha((0.5 * 255).toInt()),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                DateFormat('MMM d').format(point.date),
-                style: TextStyle(
-                  color: Colors.white.withAlpha((0.7 * 255).toInt()),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+  Widget _buildTimeIntervalSelector() {
+    return Container(
+      height: 36,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildIntervalButton(TimeInterval.day, '1D'),
+          _buildIntervalButton(TimeInterval.week, '1W'),
+          _buildIntervalButton(TimeInterval.month, '1M'),
+          _buildIntervalButton(TimeInterval.threeMonths, '3M'),
+          _buildIntervalButton(TimeInterval.ytd, 'YTD'),
+          _buildIntervalButton(TimeInterval.year, '1Y'),
+          _buildIntervalButton(TimeInterval.all, 'ALL'),
+        ],
+      ),
     );
   }
 
-  Widget _buildNavigationButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: canGoBack ? _goBack : null,
-          color: canGoBack ? Colors.white : Colors.white.withAlpha((0.3 * 255).toInt()),
+  Widget _buildIntervalButton(TimeInterval interval, String label) {
+    final isSelected = _selectedInterval == interval;
+    
+    return GestureDetector(
+      onTap: () => _setTimeInterval(interval),
+      child: Container(
+        width: 40,
+        height: 30,
+        decoration: BoxDecoration(
+          color: isSelected ? GlobalVariables.secondaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(15),
         ),
-        IconButton(
-          icon: const Icon(Icons.arrow_forward_rounded),
-          onPressed: canGoForward ? _goForward : null,
-          color: canGoForward ? Colors.white : Colors.white.withAlpha((0.3 * 255).toInt()),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.black : Colors.white.withAlpha((0.7 * 255).toInt()),
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -243,7 +271,7 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            DateFormat('MMM d, yyyy').format(selectedPoint!.date),
+            _formatTooltipDate(selectedPoint!.date),
             style: const TextStyle(
               color: Colors.white70,
               fontSize: 12,
@@ -263,6 +291,22 @@ class SingleChartPlotState extends State<SingleChartPlot> with SingleTickerProvi
         ],
       ),
     );
+  }
+
+  // Format date based on selected interval
+  String _formatTooltipDate(DateTime date) {
+    switch (_selectedInterval) {
+      case TimeInterval.day:
+        return DateFormat('h:mm a').format(date); // AM/PM format for 1D view
+      case TimeInterval.week:
+        return DateFormat('EEE, MMM d').format(date);
+      case TimeInterval.month:
+      case TimeInterval.threeMonths:
+      case TimeInterval.ytd:
+      case TimeInterval.year:
+      case TimeInterval.all:
+        return DateFormat('MMM d, yyyy').format(date);
+    }
   }
 
   void _updateTooltip(Offset position) {
@@ -421,4 +465,3 @@ class LineChartPainter extends CustomPainter {
         oldDelegate.animation != animation;
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swappp/common/widgets/custom_snackbar.dart';
 import 'package:swappp/constants/global_variables.dart';
+import 'package:swappp/features/analytics/widgets/recurring_list.dart';
 
 class RecurringSection extends StatelessWidget {
   const RecurringSection({super.key});
@@ -49,13 +50,12 @@ class RecurringSection extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          Container(
-            child: Column(
-              children: [
-                
-              ],
+            const SizedBox(
+            height: 100,
+            child: Center(
+              child: Text("Will be available soon"),
             ),
-          )
+            )
         ],
       ),
     );

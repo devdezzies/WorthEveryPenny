@@ -29,7 +29,7 @@ class BalanceCard extends StatefulWidget {
 
 class _BalanceCardState extends State<BalanceCard> {
   final PageController _pageController = PageController();
-  final Color _overlayColor = const Color.fromARGB(255, 23, 22, 22);
+  final Color _overlayColor = GlobalVariables.greyBackgroundColor;
 
   @override
   void dispose() {

@@ -408,15 +408,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   SettingsSwitch(
-                    title: "Double Chart Analytics",
-                    leadingIcon: const Icon(Icons.bar_chart_rounded),
-                    initialValue: preferencesProvider.chartType == "double",
-                    onChanged: (change) async {
-                      await preferencesService.setChart(
-                          change ? "double" : "single", context);
-                    },
-                  ),
-                  SettingsSwitch(
                     title: "Spending Pulse",
                     leadingIcon: const Icon(Icons.monitor_heart_rounded),
                     initialValue: preferencesProvider.spendingPulse,
@@ -521,6 +512,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
+              //add a app version 
+              const SizedBox(height: 10),
+              const Text(
+                "WorthEveryPenny v0.1.0-beta",
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: Colors.grey),
+              ),
+              const SizedBox(height: 30),
             ],
           ),
         ),

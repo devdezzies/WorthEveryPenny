@@ -6,7 +6,7 @@ import 'package:swappp/constants/utils.dart';
 import 'package:swappp/features/transaction/services/transaction_service.dart';
 import 'package:swappp/providers/user_provider.dart';
 
-class TransactionBar extends StatelessWidget {
+class TransactionBar extends StatefulWidget {
   final String transactionName,
       transactionType,
       transactionCategory,
@@ -15,15 +15,52 @@ class TransactionBar extends StatelessWidget {
   final DateTime transactionDate;
   final String recurring;
   final int transactionAmount;
-  const TransactionBar(
-      {super.key,
-      required this.transactionName,
-      required this.transactionType,
-      required this.transactionDate,
-      required this.transactionCategory,
-      required this.transactionAmount,
-      required this.recurring,
-      required this.transactionId, required this.accountNumber});
+  
+  const TransactionBar({
+    super.key,
+    required this.transactionName,
+    required this.transactionType,
+    required this.transactionDate,
+    required this.transactionCategory,
+    required this.transactionAmount,
+    required this.recurring,
+    required this.transactionId, 
+    required this.accountNumber
+  });
+
+  @override
+  State<TransactionBar> createState() => _TransactionBarState();
+}
+
+class _TransactionBarState extends State<TransactionBar> with SingleTickerProviderStateMixin {
+  bool _isPressed = false;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.98,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+  
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void _showTransactionDetails(BuildContext context) {
     void _showDeleteConfirmation(String transactionId) {
@@ -114,7 +151,7 @@ class TransactionBar extends StatelessWidget {
                             color: GlobalVariables.secondaryColor.withAlpha(50),
                             borderRadius: BorderRadius.circular(20)),
                         child: Text(
-                          "${getCategoryEmoji(transactionCategory)} ${transactionCategory}",
+                          "${getCategoryEmoji(widget.transactionCategory)} ${widget.transactionCategory}",
                           style: const TextStyle(
                             fontSize: 13,
                             color: GlobalVariables.secondaryColor,
@@ -125,7 +162,7 @@ class TransactionBar extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        formatDateTime(transactionDate),
+                        formatDateTime(widget.transactionDate),
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.grey,
@@ -136,7 +173,7 @@ class TransactionBar extends StatelessWidget {
                   IconButton(
                       onPressed: () {
                         _showDeleteConfirmation(
-                          transactionId,
+                          widget.transactionId,
                         );
                       },
                       icon: const Icon(
@@ -149,7 +186,7 @@ class TransactionBar extends StatelessWidget {
 
               // Transaction name and amount
               Text(
-                transactionName,
+                widget.transactionName,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -158,11 +195,11 @@ class TransactionBar extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                "${transactionType == 'income' ? "+" : "-"} ${rupiahFormatCurrency(transactionAmount)}",
+                "${widget.transactionType == 'income' ? "+" : "-"} ${rupiahFormatCurrency(widget.transactionAmount)}",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: transactionType == 'income'
+                  color: widget.transactionType == 'income'
                       ? GlobalVariables.secondaryColor
                       : Colors.redAccent,
                 ),
@@ -209,14 +246,14 @@ class TransactionBar extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: Colors.black26,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             // find bankName by accountNumber in userProvider
-                            userProvider.getBankNamebyAccountNumber(accountNumber),
+                            userProvider.getBankNamebyAccountNumber(widget.accountNumber),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -233,15 +270,15 @@ class TransactionBar extends StatelessWidget {
                     const SizedBox(height: 16),
                     // Card Number
                     Text(
-                      transactionType == 'cash' ? 'Cash' : accountNumber,
-                      style: TextStyle(
+                      widget.transactionType == 'cash' ? 'Cash' : widget.accountNumber,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         letterSpacing: 5,
                         fontFamily: 'monospace',
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // Card Holder
                     Text(
                       'Basic',
@@ -262,84 +299,120 @@ class TransactionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isIncome = transactionType == 'income';
+    final bool isIncome = widget.transactionType == 'income';
+    
     return Stack(
       children: [
         GestureDetector(
-          onTap: () => _showTransactionDetails(context),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
+          onTapDown: (_) {
+            setState(() {
+              _isPressed = true;
+            });
+            _animationController.forward();
+          },
+          onTapUp: (_) {
+            setState(() {
+              _isPressed = false;
+            });
+            _animationController.reverse();
+            _showTransactionDetails(context);
+          },
+          onTapCancel: () {
+            setState(() {
+              _isPressed = false;
+            });
+            _animationController.reverse();
+          },
+          child: AnimatedBuilder(
+            animation: _scaleAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _scaleAnimation.value,
+                child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: GlobalVariables.backgroundColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    isIncome ? "💸" : getCategoryEmoji(transactionCategory),
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              transactionName,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                            ),
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: _isPressed 
+                      ? [] 
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        formatDateTime(transactionDate),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
+                  ),
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: GlobalVariables.backgroundColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
+                        child: Text(
+                          isIncome ? "💸" : getCategoryEmoji(widget.transactionCategory),
+                          style: const TextStyle(fontSize: 20),
+                        ),
                       ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    widget.transactionName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              formatDateTime(widget.transactionDate),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "${isIncome ? "+" : "-"} ${rupiahFormatCurrency(widget.transactionAmount)}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: isIncome
+                              ? GlobalVariables.secondaryColor
+                              : Colors.redAccent,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                     ],
                   ),
                 ),
-                Text(
-                  "${isIncome ? "+" : "-"} ${rupiahFormatCurrency(transactionAmount)}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: isIncome
-                        ? GlobalVariables.secondaryColor
-                        : Colors.redAccent,
-                  ),
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
+              );
+            },
           ),
         ),
-        if (recurring != 'never')
+        if (widget.recurring != 'never')
           Positioned(
             top: 0,
             right: 0,
@@ -350,7 +423,7 @@ class TransactionBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                recurring[0].toUpperCase() + recurring.substring(1),
+                widget.recurring[0].toUpperCase() + widget.recurring.substring(1),
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 10,
@@ -363,3 +436,4 @@ class TransactionBar extends StatelessWidget {
     );
   }
 }
+
